@@ -1,4 +1,5 @@
 import User from "../modal/User.js";
+
 export const getProfileInfo = async (req, res) => {
   try {
     const userId = req.user.id; 
@@ -40,14 +41,12 @@ export const getProfileInfo = async (req, res) => {
   }
 };
 
-
 export const updatePersonalDetails = async (req, res) => {
   try {
-    const userId = req.user.id; // from auth middleware
+    const userId = req.user.id;
 
     const { firstName, lastName, phoneNumber, bio } = req.body;
 
-    // Block restricted fields
     if (req.body.email || req.body.avatar || req.body.password) {
       return res.status(400).json({
         success: false,
@@ -56,7 +55,6 @@ export const updatePersonalDetails = async (req, res) => {
     }
 
     const updateData = {};
-
     if (firstName) updateData.firstName = firstName;
     if (lastName) updateData.lastName = lastName;
     if (phoneNumber) updateData.phoneNumber = phoneNumber;
@@ -75,10 +73,25 @@ export const updatePersonalDetails = async (req, res) => {
       });
     }
 
+    // Transform for UI
+    const profile = {
+      fullName: `${updatedUser.firstName} ${updatedUser.lastName}`,
+      email: updatedUser.email,
+      phone: updatedUser.phoneNumber || "",
+      bio: updatedUser.bio || "",
+      role: updatedUser.role || "",
+      dailyGoal: updatedUser.dailyGoal || 0,
+      weeklyGoal: updatedUser.weeklyGoal || 0,
+      defaultCategory: updatedUser.defaultCategory || "",
+      joinDate: new Date(updatedUser.createdAt).toDateString(),
+      hoursTracked: updatedUser.hoursTracked || 0,
+      avatar: updatedUser.avatar || "",
+    };
+
     res.status(200).json({
       success: true,
       message: "Profile updated successfully",
-      user: updatedUser,
+      user: profile,
     });
   } catch (err) {
     res.status(500).json({
@@ -88,3 +101,4 @@ export const updatePersonalDetails = async (req, res) => {
     });
   }
 };
+
