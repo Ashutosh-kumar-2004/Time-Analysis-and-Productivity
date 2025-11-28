@@ -14,10 +14,17 @@ export default function useProfileUpload() {
     formData.append("image", file);
 
     try {
-      const res = await axios.post("http://localhost:5000/profile/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true, // if you use cookies for auth
-      });
+      const token = localStorage.getItem("token"); 
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/profile/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`, // attach token
+          },
+        }
+      );
 
       setUrl(res.data.url);
       setLoading(false);

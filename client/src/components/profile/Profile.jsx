@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useProfile } from "../../hooks/profile/useProfile";
 import ProfileShimmer from "../profile/ProfileShimmer";
 import SecurityTab from "./SecurityTab";
@@ -12,6 +12,7 @@ import {
   FiCalendar,
 } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa";
+import axios from "axios";
 
 const TAB_LIST = [
   { id: "profile", label: "Profile", icon: FiUser },
@@ -25,6 +26,10 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");
   const [photo, setPhoto] = useState(null);
   const [editing, setEditing] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState(null);
+  
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (profileData) {
@@ -32,6 +37,36 @@ export default function SettingsPage() {
       setPhoto(profileData.avatar || null);
     }
   }, [profileData]);
+
+  const uploadProfilePic = async (file) => {
+    setUploading(true);
+    setUploadError(null);
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const token = localStorage.getItem("token"); 
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/profile/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setUploading(false);
+      return res.data.url;
+    } catch (err) {
+      console.error(err);
+      setUploadError("Upload failed");
+      setUploading(false);
+      return null;
+    }
+  };
 
   if (loading || !profile) return <ProfileShimmer />;
 
@@ -41,32 +76,44 @@ export default function SettingsPage() {
   };
 
   const saveProfile = () => {
-  const [firstName, ...rest] = profile.fullName.split(" ");
-  const lastName = rest.join(" ");
+    const [firstName, ...rest] = profile.fullName.split(" ");
+    const lastName = rest.join(" ");
 
-  const payload = {
-    firstName,
-    lastName,
-    phoneNumber: profile.phone,
-    bio: profile.bio,
+    const payload = {
+      firstName,
+      lastName,
+      phoneNumber: profile.phone,
+      bio: profile.bio,
+      
+    };
+
+    setEditing(false);
+    updateProfile(payload);
   };
 
-  setEditing(false);
-  updateProfile(payload);
-};
+  const handleFileClick = () => {
+    fileInputRef.current?.click();
+  };
 
+  const handleFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  const handleFile = (e) => {
-    const f = e.target.files?.[0];
-    if (!f) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => setPhoto(ev.target.result);
-    reader.readAsDataURL(f);
+    // Preview immediately
+    const previewUrl = URL.createObjectURL(file);
+    setPhoto(previewUrl);
+
+    // Upload to backend
+    const uploadedUrl = await uploadProfilePic(file);
+    if (uploadedUrl) {
+      setPhoto(uploadedUrl);
+    } else {
+      setPhoto(profileData?.avatar || null);
+      URL.revokeObjectURL(previewUrl);
+    }
   };
 
   const removePhoto = () => setPhoto(null);
-
-  const shouldShowEditButtons = activeTab !== "password";
 
   return (
     <div className="min-h-[85vh] bg-[#f0f5fa] dark:bg-[#1B1A19] text-gray-900 dark:text-gray-100 flex items-center justify-center p-4">
@@ -106,27 +153,47 @@ export default function SettingsPage() {
               {profile.email}
             </div>
 
-            {/* Action Buttons */}
+            {/* Action Buttons - USING useRef APPROACH */}
             <div className="mt-3 flex flex-wrap gap-2 justify-center sm:justify-start">
-              <label className="inline-flex items-center px-3 py-2 rounded-lg bg-white border border-[#4E80EE] dark:bg-[#4E80EE] dark:border-blue-500 text-xs sm:text-sm cursor-pointer hover:bg-blue-700 hover:border-blue-700 transition shrink-0">
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden"
+                onChange={handleFile}
+                accept="image/*"
+                disabled={!editing || uploading}
+              />
+              <button
+                type="button"
+                onClick={handleFileClick}
+                disabled={!editing || uploading}
+                className={`inline-flex items-center px-3 py-2 rounded-lg border text-xs sm:text-sm transition shrink-0 ${
+                  !editing || uploading
+                    ? "bg-gray-100 border-gray-300 text-gray-400 cursor-not-allowed"
+                    : "bg-white border-[#4E80EE] dark:bg-[#4E80EE] dark:border-blue-500 hover:bg-blue-700 hover:border-blue-700"
+                }`}
+              >
                 <FiUpload className="mr-1 sm:mr-2" />
-                <input
-                  type="file"
-                  className="hidden"
-                  onChange={handleFile}
-                  accept="image/*"
-                />
-                Upload Photo
-              </label>
+                {uploading ? "Uploading..." : "Upload Photo"}
+              </button>
+              
               {photo && (
                 <button
                   onClick={removePhoto}
-                  className="px-3 py-2 rounded-lg bg-gray-100 dark:bg-red-500 border border-gray-200 dark:border-red-600 text-xs sm:text-sm hover:bg-red-600 transition shrink-0"
+                  disabled={!editing}
+                  className={`px-3 py-2 rounded-lg border text-xs sm:text-sm transition shrink-0 ${
+                    !editing
+                      ? "bg-gray-100 border-gray-300 text-gray-400 cursor-not-allowed"
+                      : "bg-gray-100 dark:bg-red-500 border-gray-200 dark:border-red-600 hover:bg-red-600"
+                  }`}
                 >
                   Remove
                 </button>
               )}
             </div>
+            {uploadError && (
+              <p className="text-red-500 text-xs mt-2">{uploadError}</p>
+            )}
           </div>
 
           {/* Stats */}
@@ -170,7 +237,7 @@ export default function SettingsPage() {
                       } shrink-0 transition-colors`}
                       size={20}
                     />
-                    <span className=" sm:block">{t.label}</span>
+                    <span className="sm:block">{t.label}</span>
                   </button>
                 </li>
               );
@@ -350,4 +417,4 @@ export default function SettingsPage() {
       </div>
     </div>
   );
-}  
+}
