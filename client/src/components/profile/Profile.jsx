@@ -14,7 +14,6 @@ import {
 import { FaUserCircle } from "react-icons/fa";
 import SecurityTab from "./SecurityTab";
 
-// --- Updated Tab List (PASSWORD Included) ---
 const TAB_LIST = [
   { id: "profile", label: "Profile", icon: FiUser },
   { id: "productivity", label: "Productivity", icon: FiTarget },

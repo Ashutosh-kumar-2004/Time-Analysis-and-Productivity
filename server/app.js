@@ -4,6 +4,9 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 
 import authRoutes from "./routes/authRoutes.js";
+import profileRoutes from "./routes/profileRoutes.js";
+
+import protect from "./middleware/auth.js";
 
 const app = express();
 
@@ -18,9 +21,12 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 
+app.use(protect);
+app.use("/profile",profileRoutes);
+
 app.get("/api/serverStatus", (req, res) => {
   res.send("Server is running...");
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

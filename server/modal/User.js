@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
@@ -34,6 +34,20 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+
+    phoneNumber: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    bio: {
+      type: String,
+      default: "",
+      trim: true,
+      maxlength: 300,
+    },
+
     projects: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -53,7 +67,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-// Compare password method for login
+// Compare password
 userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
