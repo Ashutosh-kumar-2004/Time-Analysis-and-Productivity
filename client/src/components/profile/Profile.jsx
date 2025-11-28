@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useProfile } from "../../hooks/profile/useProfile";
-import useProfileUpload from "../../hooks/profile/useProfileUpload";
 import ProfileShimmer from "../profile/ProfileShimmer";
 import SecurityTab from "./SecurityTab";
 import {
@@ -27,13 +26,6 @@ export default function SettingsPage() {
   const [photo, setPhoto] = useState(null);
   const [editing, setEditing] = useState(false);
 
-  const {
-    url: uploadedUrl,
-    loading: uploading,
-    error,
-    uploadProfilePic,
-  } = useProfileUpload();
-
   useEffect(() => {
     if (profileData) {
       setProfile(profileData.user);
@@ -41,47 +33,38 @@ export default function SettingsPage() {
     }
   }, [profileData]);
 
-  // Update field helper
+  if (loading || !profile) return <ProfileShimmer />;
+
   const updateField = (field, value) => {
     if (field === "email") return;
     setProfile((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Save profile
   const saveProfile = () => {
-    const [firstName, ...rest] = profile.fullName.split(" ");
-    const lastName = rest.join(" ");
+  const [firstName, ...rest] = profile.fullName.split(" ");
+  const lastName = rest.join(" ");
 
-    const payload = {
-      firstName,
-      lastName,
-      phoneNumber: profile.phone,
-      bio: profile.bio,
-      avatar: uploadedUrl || photo, // save the uploaded URL if exists
-    };
-
-    setEditing(false);
-    updateProfile(payload);
+  const payload = {
+    firstName,
+    lastName,
+    phoneNumber: profile.phone,
+    bio: profile.bio,
   };
 
-  // Handle file selection & upload
-  const handleFile = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  setEditing(false);
+  updateProfile(payload);
+};
 
-    // preview first
-    setPhoto(URL.createObjectURL(file));
 
-    // upload to backend
-    const uploaded = await uploadProfilePic(file);
-    if (!uploaded) setPhoto(null); // reset if failed
+  const handleFile = (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => setPhoto(ev.target.result);
+    reader.readAsDataURL(f);
   };
 
-  const removePhoto = () => {
-    setPhoto(null);
-  };
-
-  if (loading || !profile) return <ProfileShimmer />;
+  const removePhoto = () => setPhoto(null);
 
   const shouldShowEditButtons = activeTab !== "password";
 
@@ -132,9 +115,8 @@ export default function SettingsPage() {
                   className="hidden"
                   onChange={handleFile}
                   accept="image/*"
-                  disabled={!editing || uploading}
                 />
-                {uploading ? "Uploading..." : "Upload Photo"}
+                Upload Photo
               </label>
               {photo && (
                 <button
@@ -144,7 +126,6 @@ export default function SettingsPage() {
                   Remove
                 </button>
               )}
-              {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
             </div>
           </div>
 
@@ -237,7 +218,6 @@ export default function SettingsPage() {
             {/* Profile Tab */}
             {activeTab === "profile" && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                {/* Left Column */}
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-semibold mb-2">
@@ -274,8 +254,6 @@ export default function SettingsPage() {
                     />
                   </div>
                 </div>
-
-                {/* Right Column */}
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-semibold mb-2">
@@ -372,4 +350,4 @@ export default function SettingsPage() {
       </div>
     </div>
   );
-}
+}  
