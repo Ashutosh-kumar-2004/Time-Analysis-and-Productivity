@@ -223,16 +223,15 @@ const Navbar = () => {
             </a>
           ))}
           <a
-                      href="/profile"
-                      className="flex items-center px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
-                      onClick={() => setIsProfileOpen(false)}
-                    >
-                      <AiOutlineUser className="mr-3" />
-                      Profile
-                    </a>
+            href="/profile"
+            className="flex items-center px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+            onClick={() => setIsProfileOpen(false)}
+          >
+            <AiOutlineUser className="mr-3" />
+            Profile
+          </a>
           {/* Profile Section in Mobile Menu */}
           <div className="px-4 py-3 flex items-center">
-            
             <div className="w-10 h-10 rounded-full overflow-hidden bg-purple-600 flex items-center justify-center text-white mr-3">
               {details && details.avatar ? (
                 <img
