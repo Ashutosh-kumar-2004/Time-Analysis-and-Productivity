@@ -231,26 +231,6 @@ export default function SettingsPage() {
                 <h2 className="text-xl font-semibold capitalize">
                   {activeTab}
                 </h2>
-                <div className="flex items-center justify-center sm:justify-end gap-3">
-                  <button
-                    disabled={!editing}
-                    onClick={saveProfile}
-                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition ${
-                      editing
-                        ? "bg-red-500 text-white hover:bg-red-600"
-                        : "bg-gray-100 text-gray-500 cursor-not-allowed"
-                    }`}
-                  >
-                    <FiSave />
-                    Save
-                  </button>
-                  <button
-                    onClick={() => setEditing((s) => !s)}
-                    className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-                  >
-                    {editing ? "Cancel" : "Edit"}
-                  </button>
-                </div>
               </div>
             )}
 
@@ -275,7 +255,7 @@ export default function SettingsPage() {
                           First Name
                         </label>
                         <input
-                          value={profile.firstName ||""}
+                          value={profile.firstName}
                           onChange={(e) =>
                             updateField("firstName", e.target.value)
                           }
@@ -293,7 +273,7 @@ export default function SettingsPage() {
                           Last Name
                         </label>
                         <input
-                          value={profile.lastName ||""}
+                          value={profile.lastName}
                           onChange={(e) =>
                             updateField("lastName", e.target.value)
                           }
@@ -311,7 +291,7 @@ export default function SettingsPage() {
                         Phone
                       </label>
                       <input
-                        value={profile.phone ||""}
+                        value={profile.phone}
                         onChange={(e) => updateField("phone", e.target.value)}
                         disabled={!editing}
                         className="w-full px-3 py-2 sm:px-4 sm:py-3 border rounded-lg bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 disabled:opacity-70 disabled:cursor-not-allowed transition-colors"
@@ -323,7 +303,7 @@ export default function SettingsPage() {
                       </label>
                       <textarea
                         rows="4"
-                        value={profile.bio ||""}
+                        value={profile.bio}
                         onChange={(e) => updateField("bio", e.target.value)}
                         disabled={!editing}
                         className="w-full px-3 py-2 sm:px-4 sm:py-3 border rounded-lg bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 disabled:opacity-70 disabled:cursor-not-allowed transition-colors resize-none"
@@ -377,6 +357,29 @@ export default function SettingsPage() {
                         <option>Creative</option>
                       </select>
                     </div>
+                  </div>
+                  {/* Save and Edit button */}
+
+                  <div className="flex items-center justify-center sm:justify-end lg:justify-end lg:col-span-2 gap-3">
+                    <button
+                      disabled={!editing}
+                      onClick={saveProfile}
+                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition ${
+                        editing
+                          ? "bg-red-500 text-white hover:bg-red-600"
+                          : "bg-gray-100 text-gray-500 cursor-not-allowed"
+                      }`}
+                    >
+                      <FiSave />
+                      Save
+                    </button>
+
+                    <button
+                      onClick={() => setEditing((s) => !s)}
+                      className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+                    >
+                      {editing ? "Cancel" : "Edit"}
+                    </button>
                   </div>
                 </div>
               )}
