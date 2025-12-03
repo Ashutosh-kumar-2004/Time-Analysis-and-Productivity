@@ -4,6 +4,13 @@ import mongoose from "mongoose";
 const projectSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
+    description: { type: String, default: "" },
+    projectAvatar: { type: String, default: "" },
+    color: { type: String, default: "#007bff" },
+    status:{ type: String, enum: ["In Progress", "Started", "Completed"], default: "Started" },
+    tags: [{ type: String }],
+    archived: { type: Boolean, default: false },
+    priority: { type: String, enum: ["low", "medium", "high", "critical"], default: "medium" },
 
     teamMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     suspendedMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
@@ -12,11 +19,11 @@ const projectSchema = new mongoose.Schema(
 
     tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
 
-    managingUserId: {
+    managingUserId: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-    },
+    }],
 
     projectStartedBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -28,13 +35,12 @@ const projectSchema = new mongoose.Schema(
     endDate: { type: Date },
 
     totalDuration: { type: Number, default: 0 }, // minutes
-
     completed: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-// Update total duration
+// Calculate total duration
 projectSchema.pre("save", function (next) {
   if (this.isModified("startDate") || this.isModified("endDate")) {
     if (this.startDate && this.endDate) {
@@ -45,7 +51,7 @@ projectSchema.pre("save", function (next) {
   next();
 });
 
-// Fixed static method
+// Utility static method
 projectSchema.statics.getProjectName = async function (projectId) {
   const project = await this.findById(projectId);
   return project ? project.name : null;

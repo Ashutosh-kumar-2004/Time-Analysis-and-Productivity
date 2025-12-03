@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import navbarRoutes from "./routes/navbarRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
 
 import protect from "./middleware/auth.js";
 
@@ -25,6 +26,7 @@ app.use("/api/auth", authRoutes);
 app.use(protect);
 app.use("/api/navbar",navbarRoutes);
 app.use("/profile",profileRoutes);
+app.use("/api/projects",projectRoutes);
 
 app.get("/api/serverStatus", (req, res) => {
   res.send("Server is running...");
