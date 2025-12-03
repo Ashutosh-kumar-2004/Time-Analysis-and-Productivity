@@ -53,6 +53,45 @@ export const addProject = async (req, res) => {
   }
 };
 
+export const deleteProject = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    // Find the project
+    const project = await Project.findById(projectId);
+    if (!project) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Project not found" });
+    }
 
+    // only allow managingUserId or creator to archive
+    if (
+      !project.managingUserId.includes(req.user.id) &&
+      project.projectStartedBy.toString() !== req.user.id.toString()
+    ) {
+      return res
+        .status(403)
+        .json({
+          success: false,
+          message: "You are not authorized to delete this project",
+        });
+    }
+
+    // Soft delete
+    project.archived = true;
+    await project.save();
+
+    return res
+      .status(200)
+      .json({
+        success: true,
+        message: "Project archived successfully",
+        project,
+      });
+  } catch (error) {
+    console.error("Delete Project Error:", error);
+    return res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
 
 export const getAllUserProjects = () => {};
