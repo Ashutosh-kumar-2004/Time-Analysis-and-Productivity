@@ -9,13 +9,11 @@ const CreateProjectModal = ({ open, onClose }) => {
   const [form, setForm] = useState({
     name: "",
     description: "",
-    manager: "",
     startDate: "",
     endDate: "",
     status: "Started",
     priority: "medium",
     tags: [],
-    projectAvatar: "",
   });
   const [tagInput, setTagInput] = useState("");
 
@@ -98,7 +96,7 @@ const CreateProjectModal = ({ open, onClose }) => {
     <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm">
       {/* Glassy background */}
       <div
-        className="absolute inset-0 bg-gradient-to-br from-blue-50/30 to-purple-50/30 dark:from-gray-900/70 dark:to-gray-800/70"
+        className="absolute inset-0 bg-linear-to-br from-blue-50/30 to-purple-50/30 dark:from-gray-900/70 dark:to-gray-800/70"
         onClick={onClose}
       />
 
@@ -106,12 +104,12 @@ const CreateProjectModal = ({ open, onClose }) => {
       <div className="relative bg-white/90 dark:bg-gray-800/90 w-full max-w-2xl mx-4 p-6 rounded-2xl shadow-2xl border border-white/20 dark:border-gray-700/20">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
             Create New Project
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl"
+            className="text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white text-2xl"
           >
             ×
           </button>
@@ -123,7 +121,7 @@ const CreateProjectModal = ({ open, onClose }) => {
           <div className="space-y-4">
             {/* Project Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
                 Project Name *
               </label>
               <input
@@ -131,82 +129,83 @@ const CreateProjectModal = ({ open, onClose }) => {
                 value={form.name}
                 placeholder="Enter project name"
                 onChange={handleChange}
-                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white/50 dark:bg-gray-700/50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white/50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400"
                 required
-              />
-            </div>
-
-            {/* Manager */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Manager Name
-              </label>
-              <input
-                name="manager"
-                value={form.manager}
-                placeholder="Enter manager name"
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white/50 dark:bg-gray-700/50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               />
             </div>
 
             {/* Status */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
                 Status
               </label>
               <select
                 name="status"
                 value={form.status}
                 onChange={handleChange}
-                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white/50 dark:bg-gray-700/50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white/50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               >
-                <option value="Started">Started</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Completed">Completed</option>
+                <option
+                  value="Started"
+                  className="text-gray-900 dark:text-white"
+                >
+                  Started
+                </option>
+                <option
+                  value="In Progress"
+                  className="text-gray-900 dark:text-white"
+                >
+                  In Progress
+                </option>
+                <option
+                  value="Completed"
+                  className="text-gray-900 dark:text-white"
+                >
+                  Completed
+                </option>
               </select>
             </div>
 
             {/* Priority */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
                 Priority
               </label>
               <select
                 name="priority"
                 value={form.priority}
                 onChange={handleChange}
-                className={`w-full p-3 border rounded-lg bg-white/50 dark:bg-gray-700/50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${getPriorityColor(
+                className={`w-full p-3 border rounded-lg bg-white/50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${getPriorityColor(
                   form.priority
                 )}`}
               >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-                <option value="critical">Critical</option>
+                <option value="low" className="text-gray-900 dark:text-white">
+                  Low
+                </option>
+                <option
+                  value="medium"
+                  className="text-gray-900 dark:text-white"
+                >
+                  Medium
+                </option>
+                <option value="high" className="text-gray-900 dark:text-white">
+                  High
+                </option>
+                <option
+                  value="critical"
+                  className="text-gray-900 dark:text-white"
+                >
+                  Critical
+                </option>
               </select>
             </div>
           </div>
 
           {/* Right Column */}
           <div className="space-y-4">
-            {/* Project Avatar URL */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Project Avatar URL
-              </label>
-              <input
-                name="projectAvatar"
-                value={form.projectAvatar}
-                placeholder="https://example.com/avatar.jpg"
-                onChange={handleChange}
-                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white/50 dark:bg-gray-700/50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-              />
-            </div>
-
             {/* Start Date */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
                 Start Date *
               </label>
               <input
@@ -214,14 +213,14 @@ const CreateProjectModal = ({ open, onClose }) => {
                 name="startDate"
                 value={form.startDate}
                 onChange={handleChange}
-                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white/50 dark:bg-gray-700/50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white/50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 required
               />
             </div>
 
             {/* End Date */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
                 End Date *
               </label>
               <input
@@ -230,14 +229,14 @@ const CreateProjectModal = ({ open, onClose }) => {
                 value={form.endDate}
                 onChange={handleChange}
                 min={getMinEndDate()}
-                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white/50 dark:bg-gray-700/50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white/50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 required
               />
             </div>
 
             {/* Tags Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
                 Tags
               </label>
               <div className="flex gap-2">
@@ -247,12 +246,12 @@ const CreateProjectModal = ({ open, onClose }) => {
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Add a tag and press Enter"
-                  className="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white/50 dark:bg-gray-700/50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white/50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-gray-500 dark:placeholder:text-gray-400"
                 />
                 <button
                   type="button"
                   onClick={handleAddTag}
-                  className="px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+                  className="px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
                 >
                   Add
                 </button>
@@ -264,20 +263,20 @@ const CreateProjectModal = ({ open, onClose }) => {
         {/* Tags Display */}
         {form.tags.length > 0 && (
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
               Added Tags ({form.tags.length})
             </label>
             <div className="flex flex-wrap gap-2">
               {form.tags.map((tag, index) => (
                 <span
                   key={index}
-                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                 >
                   {tag}
                   <button
                     type="button"
                     onClick={() => handleRemoveTag(tag)}
-                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                    className="text-blue-700 hover:text-blue-900 dark:text-blue-300 dark:hover:text-blue-100"
                   >
                     ×
                   </button>
@@ -289,7 +288,7 @@ const CreateProjectModal = ({ open, onClose }) => {
 
         {/* Description (Full width) */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
             Project Description
           </label>
           <textarea
@@ -298,7 +297,7 @@ const CreateProjectModal = ({ open, onClose }) => {
             placeholder="Describe your project..."
             onChange={handleChange}
             rows="3"
-            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white/50 dark:bg-gray-700/50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+            className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white/50 dark:bg-gray-700/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none placeholder:text-gray-500 dark:placeholder:text-gray-400"
           />
         </div>
 
@@ -306,20 +305,20 @@ const CreateProjectModal = ({ open, onClose }) => {
         <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
           <button
             onClick={onClose}
-            className="px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg font-medium transition-colors"
+            className="px-6 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 rounded-lg font-medium transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
-            className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all"
+            className="px-6 py-3 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all"
           >
             Create Project
           </button>
         </div>
 
         {/* Required fields note */}
-        <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+        <div className="mt-4 text-sm text-gray-700 dark:text-gray-300">
           <span className="text-red-500">*</span> Required fields
         </div>
       </div>

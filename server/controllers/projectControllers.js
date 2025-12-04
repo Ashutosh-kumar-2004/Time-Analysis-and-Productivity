@@ -48,7 +48,6 @@ export const addProject = async (req, res) => {
     const newProject = new Project({
       name,
       description,
-      projectAvatar,
       color,
       tags,
       priority,

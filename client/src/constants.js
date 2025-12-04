@@ -59,18 +59,18 @@ export const validateSignUp = ({
     isValid = false;
   }
 
-  setErrors(newErrors); 
-  return isValid; 
+  setErrors(newErrors);
+  return isValid;
 };
 
 export const strengthColors = [
-    "bg-gray-300",
-    "bg-red-500",
-    "bg-orange-500",
-    "bg-yellow-500",
-    "bg-green-500",
-    "bg-green-600",
-  ];
+  "bg-gray-300",
+  "bg-red-500",
+  "bg-orange-500",
+  "bg-yellow-500",
+  "bg-green-500",
+  "bg-green-600",
+];
 
 export function formatDateTime(isoString) {
   const date = new Date(isoString);
@@ -86,3 +86,20 @@ export function formatDateTime(isoString) {
     second: "2-digit",
   });
 }
+
+// Format duration from minutes to readable format
+export const formatDuration = (minutes) => {
+  if (!minutes) return "0 mins";
+
+  const days = Math.floor(minutes / (24 * 60));
+  const hours = Math.floor((minutes % (24 * 60)) / 60);
+  const mins = minutes % 60;
+
+  let result = [];
+  if (days > 0) result.push(`${days} day${days !== 1 ? "s" : ""}`);
+  if (hours > 0) result.push(`${hours} hour${hours !== 1 ? "s" : ""}`);
+  if (mins > 0 || result.length === 0)
+    result.push(`${mins} min${mins !== 1 ? "s" : ""}`);
+
+  return result.join(", ");
+};
