@@ -15,7 +15,7 @@ const initialState = {
     sortBy: "newest",
     status: "all",
     search: "",
-    priority: "all", 
+    priority: "all",
     tag: "",
     search: "",
   },
@@ -47,9 +47,6 @@ const projectSlice = createSlice({
       .addCase(getProjects.fulfilled, (state, action) => {
         state.loading = false;
 
-        // Now action.payload is the full API response: { success, message, projects, currentUserId }
-        console.log("Full response:", action.payload);
-
         // Extract projects array
         if (action.payload.projects && Array.isArray(action.payload.projects)) {
           state.projects = action.payload.projects;
@@ -59,9 +56,6 @@ const projectSlice = createSlice({
         if (action.payload.currentUserId) {
           state.currentUserId = action.payload.currentUserId;
         }
-
-        console.log("Projects loaded:", state.projects.length);
-        console.log("Current user ID:", state.currentUserId);
       })
       .addCase(getProjects.rejected, (state) => {
         state.loading = false;
@@ -76,9 +70,6 @@ const projectSlice = createSlice({
       })
       .addCase(addProject.fulfilled, (state, action) => {
         state.loading = false;
-
-        // action.payload is now the full API response: { success, message, project }
-        console.log("Add project response:", action.payload);
 
         // Add the new project to state
         if (action.payload.project) {
@@ -98,9 +89,6 @@ const projectSlice = createSlice({
       })
       .addCase(deleteProject.fulfilled, (state, action) => {
         state.loading = false;
-
-        // action.payload is now the full API response: { success, message, project }
-        console.log("Archive response:", action.payload);
 
         // Get the updated project from API response
         const updatedProject = action.payload.project;
@@ -128,9 +116,6 @@ const projectSlice = createSlice({
       })
       .addCase(restoreProject.fulfilled, (state, action) => {
         state.loading = false;
-
-        // action.payload is now the full API response: { success, message, project }
-        console.log("Restore response:", action.payload);
 
         // Get the restored project from API response
         const restoredProject = action.payload.project;

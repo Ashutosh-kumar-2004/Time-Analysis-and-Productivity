@@ -23,7 +23,7 @@ export const addProject = createAsyncThunk(
     const res = await axios.post(`${API}/add-project`, projectData, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    return res.data; // Full response
+    return res.data; 
   }
 );
 
@@ -39,7 +39,7 @@ export const deleteProject = createAsyncThunk(
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    return res.data; // Full response
+    return res.data; 
   }
 );
 
@@ -55,6 +55,6 @@ export const restoreProject = createAsyncThunk(
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    return res.data; // Full response
+    return res.data; 
   }
 );

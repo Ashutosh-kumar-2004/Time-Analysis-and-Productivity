@@ -30,19 +30,23 @@ const ProjectCard = ({ project, showArchived = false, currentUserId }) => {
   // Check if current user is a manager
   const isCurrentUserManager = () => {
     if (!currentUserId || !project.managingUserId) return false;
-    return project.managingUserId.some(manager => manager._id === currentUserId);
+    return project.managingUserId.some(
+      (manager) => manager._id === currentUserId
+    );
   };
-  
+
   // Check if current user is project creator
   const isCurrentUserCreator = () => {
     if (!currentUserId || !project.projectStartedBy) return false;
     return project.projectStartedBy._id === currentUserId;
   };
-  
+
   const canManageProject = isCurrentUserManager() || isCurrentUserCreator();
-  const userRole = isCurrentUserCreator() ? "creator" : 
-                  isCurrentUserManager() ? "manager" : 
-                  "member";
+  const userRole = isCurrentUserCreator()
+    ? "creator"
+    : isCurrentUserManager()
+    ? "manager"
+    : "member";
 
   const handleArchive = (e) => {
     e.stopPropagation();
@@ -61,13 +65,7 @@ const ProjectCard = ({ project, showArchived = false, currentUserId }) => {
       dispatch(restoreProject(project._id));
     }
   };
-console.log("Project data:", {
-  name: project.name,
-  managingUserId: project.managingUserId,
-  firstManager: project.managingUserId?.[0],
-  hasFirstName: project.managingUserId?.[0]?.firstName,
-  projectStartedBy: project.projectStartedBy
-});
+
   return (
     <div
       className={`rounded-xl shadow-sm p-6 hover:shadow-md transition-all duration-200 ${getCardBackground(
@@ -87,16 +85,22 @@ console.log("Project data:", {
                 : ""}
             </span>
           </div>
-          
+
           {/* User role badge */}
           {currentUserId && (
-            <div className={`text-xs px-2 py-1 rounded-full ${
-              canManageProject
-                ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
-            }`}>
-              {isCurrentUserCreator() && <FiUser className="inline w-3 h-3 mr-1" />}
-              {isCurrentUserManager() && <FiShield className="inline w-3 h-3 mr-1" />}
+            <div
+              className={`text-xs px-2 py-1 rounded-full ${
+                canManageProject
+                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                  : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
+              }`}
+            >
+              {isCurrentUserCreator() && (
+                <FiUser className="inline w-3 h-3 mr-1" />
+              )}
+              {isCurrentUserManager() && (
+                <FiShield className="inline w-3 h-3 mr-1" />
+              )}
               {userRole.charAt(0).toUpperCase() + userRole.slice(1)}
             </div>
           )}
@@ -246,27 +250,31 @@ console.log("Project data:", {
                 Restore
               </button>
             ) : (
-              <span className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 rounded-lg cursor-not-allowed" title="Only managers can restore archived projects">
+              <span
+                className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 rounded-lg cursor-not-allowed"
+                title="Only managers can restore archived projects"
+              >
                 <FiRotateCcw className="w-4 h-4" />
                 Restore
               </span>
             )
+          ) : // Active project action - Archive only for managers
+          canManageProject ? (
+            <button
+              onClick={handleArchive}
+              className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/30 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/50 transition-colors"
+            >
+              <FiArchive className="w-4 h-4" />
+              Archive
+            </button>
           ) : (
-            // Active project action - Archive only for managers
-            canManageProject ? (
-              <button
-                onClick={handleArchive}
-                className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/30 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-900/50 transition-colors"
-              >
-                <FiArchive className="w-4 h-4" />
-                Archive
-              </button>
-            ) : (
-              <span className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 rounded-lg cursor-not-allowed" title="Only managers can archive projects">
-                <FiArchive className="w-4 h-4" />
-                Archive
-              </span>
-            )
+            <span
+              className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-800 rounded-lg cursor-not-allowed"
+              title="Only managers can archive projects"
+            >
+              <FiArchive className="w-4 h-4" />
+              Archive
+            </span>
           )}
         </div>
       </div>
@@ -422,7 +430,8 @@ console.log("Project data:", {
                 Manageable By
               </p>
               <p className="font-semibold text-gray-600 dark:text-gray-500">
-                {project.managingUserId?.length || 1} {project.managingUserId?.length === 1 ? "Manager" : "Managers"}
+                {project.managingUserId?.length || 1}{" "}
+                {project.managingUserId?.length === 1 ? "Manager" : "Managers"}
               </p>
             </div>
           )}
