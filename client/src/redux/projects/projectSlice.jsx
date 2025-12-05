@@ -1,10 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getProjects, addProject, deleteProject } from "./projectThunks";
+import {
+  getProjects,
+  addProject,
+  deleteProject,
+  restoreProject,
+} from "./projectThunks";
 
 const initialState = {
   projects: [],
   loading: false,
   error: null,
+  currentUserId: null,
   filters: {
     sortBy: "newest",
     status: "all",
@@ -21,7 +27,7 @@ const projectSlice = createSlice({
     },
     updateProject: (state, action) => {
       const { id, data } = action.payload;
-      const index = state.projects.findIndex((p) => p._id === id); 
+      const index = state.projects.findIndex((p) => p._id === id);
       if (index !== -1) {
         state.projects[index] = { ...state.projects[index], ...data };
       }
@@ -37,7 +43,22 @@ const projectSlice = createSlice({
       })
       .addCase(getProjects.fulfilled, (state, action) => {
         state.loading = false;
-        state.projects = action.payload;
+
+        // Now action.payload is the full API response: { success, message, projects, currentUserId }
+        console.log("Full response:", action.payload);
+
+        // Extract projects array
+        if (action.payload.projects && Array.isArray(action.payload.projects)) {
+          state.projects = action.payload.projects;
+        }
+
+        // Extract currentUserId
+        if (action.payload.currentUserId) {
+          state.currentUserId = action.payload.currentUserId;
+        }
+
+        console.log("Projects loaded:", state.projects.length);
+        console.log("Current user ID:", state.currentUserId);
       })
       .addCase(getProjects.rejected, (state) => {
         state.loading = false;
@@ -52,14 +73,21 @@ const projectSlice = createSlice({
       })
       .addCase(addProject.fulfilled, (state, action) => {
         state.loading = false;
-        state.projects.push(action.payload);
+
+        // action.payload is now the full API response: { success, message, project }
+        console.log("Add project response:", action.payload);
+
+        // Add the new project to state
+        if (action.payload.project) {
+          state.projects.push(action.payload.project);
+        }
       })
       .addCase(addProject.rejected, (state) => {
         state.loading = false;
         state.error = "Failed to add project";
       });
 
-    // DELETE PROJECT
+    // DELETE PROJECT (SOFT DELETE/ARCHIVE)
     builder
       .addCase(deleteProject.pending, (state) => {
         state.loading = true;
@@ -67,11 +95,56 @@ const projectSlice = createSlice({
       })
       .addCase(deleteProject.fulfilled, (state, action) => {
         state.loading = false;
-        state.projects = state.projects.filter((p) => p._id !== action.payload);
+
+        // action.payload is now the full API response: { success, message, project }
+        console.log("Archive response:", action.payload);
+
+        // Get the updated project from API response
+        const updatedProject = action.payload.project;
+
+        // Find and update the project (set archived: true)
+        if (updatedProject) {
+          const index = state.projects.findIndex(
+            (p) => p._id === updatedProject._id
+          );
+          if (index !== -1) {
+            state.projects[index] = updatedProject;
+          }
+        }
       })
       .addCase(deleteProject.rejected, (state) => {
         state.loading = false;
-        state.error = "Failed to delete project";
+        state.error = "Failed to archive project";
+      });
+
+    // RESTORE PROJECT
+    builder
+      .addCase(restoreProject.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(restoreProject.fulfilled, (state, action) => {
+        state.loading = false;
+
+        // action.payload is now the full API response: { success, message, project }
+        console.log("Restore response:", action.payload);
+
+        // Get the restored project from API response
+        const restoredProject = action.payload.project;
+
+        // Find and update the project (set archived: false)
+        if (restoredProject) {
+          const index = state.projects.findIndex(
+            (p) => p._id === restoredProject._id
+          );
+          if (index !== -1) {
+            state.projects[index] = restoredProject;
+          }
+        }
+      })
+      .addCase(restoreProject.rejected, (state) => {
+        state.loading = false;
+        state.error = "Failed to restore project";
       });
   },
 });

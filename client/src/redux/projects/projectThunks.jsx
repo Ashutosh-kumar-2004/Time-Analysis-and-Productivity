@@ -11,7 +11,7 @@ export const getProjects = createAsyncThunk(
     const res = await axios.get(`${API}/get-all-user-project`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    return res.data.projects;
+    return res.data; // Full response
   }
 );
 
@@ -23,7 +23,7 @@ export const addProject = createAsyncThunk(
     const res = await axios.post(`${API}/add-project`, projectData, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    return res.data.project;
+    return res.data; // Full response
   }
 );
 
@@ -39,7 +39,22 @@ export const deleteProject = createAsyncThunk(
         headers: { Authorization: `Bearer ${token}` },
       }
     );
+    return res.data; // Full response
+  }
+);
 
-    return projectId;
+// RESTORE PROJECT
+export const restoreProject = createAsyncThunk(
+  "projects/restoreProject",
+  async (projectId) => {
+    const token = localStorage.getItem("token");
+    const res = await axios.patch(
+      `${API}/restore-project/${projectId}`,
+      { archived: false },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return res.data; // Full response
   }
 );

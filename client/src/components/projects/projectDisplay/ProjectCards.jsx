@@ -5,7 +5,12 @@ import ProjectCard from "./ProjectCard";
 import { HiOutlineInbox } from "react-icons/hi";
 
 const ProjectCards = () => {
-  const { projects, filters } = useSelector((state) => state.project);
+  // Get currentUserId from Redux state
+  const { projects, filters, currentUserId } = useSelector((state) => ({
+    projects: state.project.projects,
+    filters: state.project.filters,
+    currentUserId: state.project.currentUserId 
+  }));
 
   const filteredProjects = useMemo(() => {
     let result = [...projects];
@@ -62,7 +67,11 @@ const ProjectCards = () => {
   return (
     <div className="space-y-6">
       {filteredProjects.map((project) => (
-        <ProjectCard key={project._id || project.id} project={project} />
+        <ProjectCard 
+          key={project._id || project.id} 
+          project={project} 
+          currentUserId={currentUserId} 
+        />
       ))}
     </div>
   );
