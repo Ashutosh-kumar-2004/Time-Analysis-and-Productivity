@@ -439,3 +439,157 @@ export const deleteSubtask = async (req, res) => {
     });
   }
 };
+
+// Log hours worked on a subtask
+export const logSubtaskHours = async (req, res) => {
+  try {
+    const { taskId, subtaskId } = req.params;
+    const userId = req.user.id;
+    const { hours, notes } = req.body;
+
+    // 1. Validate input
+    if (!hours || typeof hours !== 'number' || hours <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Valid hours (number > 0) is required"
+      });
+    }
+
+    // Optional: Limit max hours per entry (e.g., 24 hours)
+    const MAX_HOURS_PER_ENTRY = 24;
+    if (hours > MAX_HOURS_PER_ENTRY) {
+      return res.status(400).json({
+        success: false,
+        message: `Cannot log more than ${MAX_HOURS_PER_ENTRY} hours at once`
+      });
+    }
+
+    // 2. Find the task
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found"
+      });
+    }
+
+    // 3. Find the subtask
+    const subtask = task.subtasks.id(subtaskId);
+    if (!subtask) {
+      return res.status(404).json({
+        success: false,
+        message: "Subtask not found"
+      });
+    }
+
+    // 4. Check permissions
+    // ONLY the assigned user can log hours to their own subtask
+    // (Trust-based system - user reports their own work)
+    const isAssigned = subtask.assignedTo && subtask.assignedTo.toString() === userId.toString();
+    
+    if (!isAssigned) {
+      return res.status(403).json({
+        success: false,
+        message: "Only the assigned user can log hours to this subtask"
+      });
+    }
+
+    // 5. Get previous hours for calculations
+    const previousSubtaskHours = subtask.loggedHours || 0;
+    const previousTaskHours = task.loggedHours || 0;
+
+    // 6. Update subtask hours
+    subtask.loggedHours = previousSubtaskHours + hours;
+    
+    // 7. Update subtask work notes (append or replace)
+    if (notes && notes.trim() !== '') {
+      if (subtask.workNotes && subtask.workNotes.trim() !== '') {
+        // Append to existing notes
+        subtask.workNotes = `${subtask.workNotes}\n\n${new Date().toLocaleDateString()}: ${notes.trim()}`;
+      } else {
+        // Set new notes
+        subtask.workNotes = `${new Date().toLocaleDateString()}: ${notes.trim()}`;
+      }
+    }
+
+    // 8. Update subtask status if it was "todo"
+    if (subtask.status === 'todo' && hours > 0) {
+      subtask.status = 'in-progress';
+    }
+
+    // 9. Update subtask updatedAt
+    subtask.updatedAt = new Date();
+
+    // 10. Update task's total logged hours
+    task.loggedHours = previousTaskHours + hours;
+
+    // 11. Update task status if needed
+    if (task.status === 'todo' && hours > 0) {
+      task.status = 'in-progress';
+    }
+
+    // 12. Calculate efficiency score (optional analytics)
+    const efficiencyScore = subtask.estimatedHours > 0 
+      ? Math.round((subtask.estimatedHours / (subtask.loggedHours || 1)) * 100) 
+      : null;
+
+    // 13. Save the task
+    await task.save();
+
+    // 14. Return success response
+    res.status(200).json({
+      success: true,
+      message: "Hours logged successfully",
+      data: {
+        timeEntry: {
+          subtaskId: subtask._id,
+          hoursLogged: hours,
+          totalSubtaskHours: subtask.loggedHours,
+          notes: notes || '',
+          loggedAt: new Date()
+        },
+        subtask: {
+          _id: subtask._id,
+          title: subtask.title,
+          assignedTo: subtask.assignedTo,
+          estimatedHours: subtask.estimatedHours,
+          loggedHours: subtask.loggedHours,
+          status: subtask.status,
+          workNotes: subtask.workNotes,
+          updatedAt: subtask.updatedAt
+        },
+        task: {
+          _id: task._id,
+          title: task.title,
+          loggedHours: task.loggedHours,
+          status: task.status
+        },
+        analytics: {
+          hoursAdded: hours,
+          totalTaskHours: task.loggedHours,
+          efficiencyScore: efficiencyScore,
+          efficiencyMessage: efficiencyScore ? 
+            (efficiencyScore > 100 ? `${efficiencyScore - 100}% ahead of estimate` :
+             efficiencyScore < 100 ? `${100 - efficiencyScore}% behind estimate` :
+             "Right on estimate!") : "No estimate to compare"
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error("Error logging subtask hours:", error);
+    
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid ID format"
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: "Server error logging hours",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
