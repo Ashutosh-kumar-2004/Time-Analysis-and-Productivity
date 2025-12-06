@@ -323,7 +323,7 @@ export const updateTask = async (req, res) => {
     if (!task) {
       return res.status(404).json({
         success: false,
-        message: "Task not found"
+        message: "Task not found",
       });
     }
 
@@ -332,7 +332,7 @@ export const updateTask = async (req, res) => {
     if (!project) {
       return res.status(404).json({
         success: false,
-        message: "Project not found"
+        message: "Project not found",
       });
     }
 
@@ -340,11 +340,14 @@ export const updateTask = async (req, res) => {
     // Who can update? Project , Project managers, Task creator, Assigned user (for some fields)
 
     const isCreator = project.projectStartedBy.toString() === userId.toString();
-    const isManager = project.managingUserId.some(manager => 
-      manager._id ? manager._id.toString() === userId.toString() : manager.toString() === userId.toString()
+    const isManager = project.managingUserId.some((manager) =>
+      manager._id
+        ? manager._id.toString() === userId.toString()
+        : manager.toString() === userId.toString()
     );
     const isTaskCreator = task.createdBy.toString() === userId.toString();
-    const isAssigned = task.assignedTo && task.assignedTo.toString() === userId.toString();
+    const isAssigned =
+      task.assignedTo && task.assignedTo.toString() === userId.toString();
 
     const canUpdateAll = isCreator || isManager || isTaskCreator;
     const canUpdateAssigned = isAssigned;
@@ -352,29 +355,38 @@ export const updateTask = async (req, res) => {
     if (!canUpdateAll && !canUpdateAssigned) {
       return res.status(403).json({
         success: false,
-        message: "You don't have permission to update this task"
+        message: "You don't have permission to update this task",
       });
     }
 
     // 4. Define what fields each role can update
     const allowedFieldsForAll = [
-      'title', 'description', 'priority', 'estimatedHours', 
-      'dueDate', 'assignedTo', 'labels', 'isPrivate', 'order'
+      "title",
+      "description",
+      "priority",
+      "estimatedHours",
+      "dueDate",
+      "assignedTo",
+      "labels",
+      "isPrivate",
+      "order",
     ];
 
     const allowedFieldsForAssigned = [
-      'status', 'loggedHours', 'workDescription'
+      "status",
+      "loggedHours",
+      "workDescription",
     ];
 
     // 5. Filter updates based on permissions
     const filteredUpdates = {};
-    
-    Object.keys(updates).forEach(key => {
+
+    Object.keys(updates).forEach((key) => {
       if (canUpdateAll && allowedFieldsForAll.includes(key)) {
         filteredUpdates[key] = updates[key];
       } else if (canUpdateAssigned && allowedFieldsForAssigned.includes(key)) {
         filteredUpdates[key] = updates[key];
-      } else if (key === 'status' && canUpdateAssigned) {
+      } else if (key === "status" && canUpdateAssigned) {
         // Assigned user can update status
         filteredUpdates[key] = updates[key];
       }
@@ -382,14 +394,14 @@ export const updateTask = async (req, res) => {
 
     // 6. Special validation for assignee updates
     if (filteredUpdates.assignedTo) {
-      const isValidAssignee = project.teamMembers.some(member => 
-        member.toString() === filteredUpdates.assignedTo
+      const isValidAssignee = project.teamMembers.some(
+        (member) => member.toString() === filteredUpdates.assignedTo
       );
-      
+
       if (!isValidAssignee) {
         return res.status(400).json({
           success: false,
-          message: "Assignee must be a team member of the project"
+          message: "Assignee must be a team member of the project",
         });
       }
     }
@@ -399,31 +411,31 @@ export const updateTask = async (req, res) => {
       const due = new Date(filteredUpdates.dueDate);
       const projectStart = new Date(project.startDate);
       const projectEnd = new Date(project.endDate);
-      
+
       if (due < projectStart) {
         return res.status(400).json({
           success: false,
-          message: "Due date cannot be before project start date"
+          message: "Due date cannot be before project start date",
         });
       }
-      
+
       if (due > projectEnd) {
         return res.status(400).json({
           success: false,
-          message: "Due date cannot be after project end date"
+          message: "Due date cannot be after project end date",
         });
       }
     }
 
     // 8. Special handling for status updates
-    if (filteredUpdates.status === 'completed' && !task.completedAt) {
+    if (filteredUpdates.status === "completed" && !task.completedAt) {
       filteredUpdates.completedAt = new Date();
-    } else if (filteredUpdates.status !== 'completed' && task.completedAt) {
+    } else if (filteredUpdates.status !== "completed" && task.completedAt) {
       filteredUpdates.completedAt = null;
     }
 
     // 9. Apply updates
-    Object.keys(filteredUpdates).forEach(key => {
+    Object.keys(filteredUpdates).forEach((key) => {
       task[key] = filteredUpdates[key];
     });
 
@@ -447,16 +459,125 @@ export const updateTask = async (req, res) => {
           dueDate: task.dueDate,
           completedAt: task.completedAt,
           completionPercentage: task.completionPercentage || 0,
-          updatedAt: task.updatedAt
-        }
-      }
+          updatedAt: task.updatedAt,
+        },
+      },
     });
-
   } catch (error) {
     console.error("Error updating task:", error);
     res.status(500).json({
       success: false,
       message: "Server error updating task",
+    });
+  }
+};
+
+// Update only task status
+export const updateTaskStatus = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const userId = req.user.id;
+    const { status } = req.body;
+
+    // Validate status
+    const validStatuses = [
+      "todo",
+      "in-progress",
+      "review",
+      "completed",
+      "blocked",
+    ];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid status. Must be one of: ${validStatuses.join(", ")}`,
+      });
+    }
+
+    // Find the task
+    const task = await Task.findById(taskId);
+    console.log(status)
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
+      });
+    }
+
+    // Get project for permission check
+    const project = await Project.findById(task.projectId);
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Project not found",
+      });
+    }
+
+    // Check permissions - who can update status?
+    const isCreator = project.projectStartedBy.toString() === userId.toString();
+    const isManager = project.managingUserId.some((manager) =>
+      manager._id
+        ? manager._id.toString() === userId.toString()
+        : manager.toString() === userId.toString()
+    );
+    const isTaskCreator = task.createdBy.toString() === userId.toString();
+    const isAssigned =
+      task.assignedTo && task.assignedTo.toString() === userId.toString();
+
+    // Anyone related to task can update status
+    const canUpdateStatus =
+      isCreator || isManager || isTaskCreator || isAssigned;
+
+    if (!canUpdateStatus) {
+      return res.status(403).json({
+        success: false,
+        message: "You don't have permission to update task status",
+      });
+    }
+
+    // Update status
+    const oldStatus = task.status;
+    task.status = status;
+
+    // Auto-set completedAt if marking as completed
+    if (status === "completed" && !task.completedAt) {
+      task.completedAt = new Date();
+    } else if (status !== "completed" && task.completedAt) {
+      task.completedAt = null;
+    }
+
+    // Auto-update subtask statuses if task is completed
+    if (status === "completed" && task.subtasks.length > 0) {
+      task.subtasks.forEach((subtask) => {
+        if (subtask.status !== "completed") {
+          subtask.status = "completed";
+          subtask.completedAt = new Date();
+        }
+      });
+    }
+
+    await task.save();
+
+    res.status(200).json({
+      success: true,
+      message: `Task status updated from ${oldStatus} to ${status}`,
+      data: {
+        task: {
+          _id: task._id,
+          title: task.title,
+          status: task.status,
+          completedAt: task.completedAt,
+          completionPercentage: task.completionPercentage || 0,
+          updatedAt: task.updatedAt,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error updating task status:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error updating task status",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
     });
   }
 };

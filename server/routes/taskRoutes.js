@@ -3,6 +3,7 @@ import {
   createQuickTask,
   createTask,
   updateTask,
+  updateTaskStatus,
 } from "../controllers/taskController.js";
 
 const router = express.Router();
@@ -10,6 +11,8 @@ const router = express.Router();
 router.post("/", createTask);
 router.post("/quick", createQuickTask);
 router.put("/:taskId", updateTask);
+router.put("/:taskId/status", updateTaskStatus);
+
 
 // ⬜ GET /api/tasks           - Get all tasks (with filters)
 // ⬜ GET /api/tasks/:id       - Get single task with subtasks/comments
