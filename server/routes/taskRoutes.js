@@ -5,6 +5,7 @@ import {
   deleteTask,
   updateTask,
   updateTaskStatus,
+  getTasks,
 } from "../controllers/taskController.js";
 import {
   addSubtask,
@@ -26,6 +27,7 @@ router.post("/:taskId/subtasks", addSubtask);
 router.put("/:taskId/subtasks/:subtaskId", updateSubtask);
 router.delete("/:taskId/subtasks/:subtaskId", deleteSubtask);
 router.post("/:taskId/subtasks/:subtaskId/time", logSubtaskHours);
+router.get("/", getTasks);
 
 // pending works
 // ⬜ GET /api/tasks           - Get all tasks (with filters)

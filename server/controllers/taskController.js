@@ -277,36 +277,124 @@ export const createQuickTask = async (req, res) => {
 
 //get all the task for the user
 
+// export const getTasks = async (req, res) => {
+//   try {
+//     const userId = req.user._id;
+
+//     // Get tasks where user is:
+//     // 1. Assigned to task
+//     // 2. Assigned to any subtask
+//     // 3. Created the task
+//     // 4. Is manager/creator of project
+//     const tasks = await Task.find({
+//       $or: [
+//         { assignedTo: userId },
+//         { "subtasks.assignedTo": userId },
+//         { createdBy: userId },
+//       ],
+//     })
+//       .populate("projectId", "name")
+//       .populate("assignedTo", "firstName lastName")
+//       .sort({ createdAt: -1 })
+//       .limit(50);
+
+//     res.json({
+//       success: true,
+//       count: tasks.length,
+//       data: tasks,
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: "Server error",
+//     });
+//   }
+// };
+
+// @desc    Get all tasks for the logged-in user
+// @route   GET /api/tasks
+// @access  Private
 export const getTasks = async (req, res) => {
   try {
     const userId = req.user._id;
+    const { 
+      status, 
+      priority, 
+      projectId,
+      limit = 50 
+    } = req.query;
 
-    // Get tasks where user is:
-    // 1. Assigned to task
-    // 2. Assigned to any subtask
-    // 3. Created the task
-    // 4. Is manager/creator of project
-    const tasks = await Task.find({
+    // Build filter
+    const filter = {
       $or: [
         { assignedTo: userId },
         { "subtasks.assignedTo": userId },
-        { createdBy: userId },
-      ],
-    })
-      .populate("projectId", "name")
-      .populate("assignedTo", "firstName lastName")
-      .sort({ createdAt: -1 })
-      .limit(50);
+        { createdBy: userId }
+      ]
+    };
 
-    res.json({
+    // Add optional filters
+    if (status) filter.status = status;
+    if (priority) filter.priority = priority;
+    if (projectId) filter.projectId = projectId;
+
+    // Get tasks
+    const tasks = await Task.find(filter)
+      .sort({ createdAt: -1 })
+      .limit(parseInt(limit))
+      .populate('projectId', 'name') // Just project name
+      .lean();
+
+    // Format response
+    const formattedTasks = tasks.map(task => ({
+      _id: task._id,
+      title: task.title,
+      description: task.description,
+      status: task.status,
+      priority: task.priority,
+      project: task.projectId ? {
+        _id: task.projectId._id,
+        name: task.projectId.name
+      } : null,
+      assignedTo: task.assignedTo,
+      estimatedHours: task.estimatedHours,
+      loggedHours: task.loggedHours,
+      dueDate: task.dueDate,
+      createdAt: task.createdAt,
+      updatedAt: task.updatedAt,
+      
+      // Calculated fields
+      completionPercentage: task.subtasks?.length > 0 
+        ? Math.round((task.subtasks.filter(st => st.status === 'completed').length / task.subtasks.length) * 100)
+        : (task.status === 'completed' ? 100 : 0),
+      subtaskCount: task.subtasks?.length || 0,
+      isOverdue: task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'completed'
+    }));
+
+    // Get statistics
+    const stats = {
+      total: tasks.length,
+      todo: tasks.filter(t => t.status === 'todo').length,
+      inProgress: tasks.filter(t => t.status === 'in-progress').length,
+      completed: tasks.filter(t => t.status === 'completed').length,
+      overdue: formattedTasks.filter(t => t.isOverdue).length
+    };
+
+    res.status(200).json({
       success: true,
-      count: tasks.length,
-      data: tasks,
+      message: "Tasks fetched successfully",
+      data: {
+        tasks: formattedTasks,
+        stats: stats,
+        userRole: "All tasks you're involved with"
+      }
     });
+
   } catch (error) {
+    console.error("Error fetching tasks:", error);
     res.status(500).json({
       success: false,
-      message: "Server error",
+      message: "Server error fetching tasks",
     });
   }
 };
