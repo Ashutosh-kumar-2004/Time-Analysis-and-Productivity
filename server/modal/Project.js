@@ -23,7 +23,7 @@ const projectSchema = new mongoose.Schema(
     removedMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     invitedMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 
-    tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
+    tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "taskSchema" }],
 
     managingUserId: [
       {
