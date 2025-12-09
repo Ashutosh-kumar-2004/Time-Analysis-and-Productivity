@@ -323,6 +323,7 @@ export const getTasks = async (req, res) => {
       estimatedHours: task.estimatedHours,
       loggedHours: task.loggedHours,
       dueDate: task.dueDate,
+      projectId,
       createdAt: task.createdAt,
       updatedAt: task.updatedAt,
       

@@ -18,7 +18,6 @@ import {
 } from "react-icons/fa";
 import { createSelector } from "@reduxjs/toolkit";
 import { formatDateTime } from "../../../constants";
-import CreateTaskModal from "../task/CreateTaskModal";
 
 const ProjectDetailsPage = () => {
   const { projectID } = useParams();
@@ -43,7 +42,13 @@ const ProjectDetailsPage = () => {
   const [editedProject, setEditedProject] = useState({});
   const [activeTab, setActiveTab] = useState("active"); // active, suspended, removed, invited
   const [showTaskModal, setShowTaskModal] = useState(false);
-  
+  const [newTask, setNewTask] = useState({
+    title: "",
+    description: "",
+    assignedTo: "",
+    priority: "medium",
+    dueDate: "",
+  });
 
   // Initialize edited project & comments
   useEffect(() => {
@@ -718,7 +723,121 @@ const ProjectDetailsPage = () => {
       </div>
 
       {/* Task Creation Modal */}
-      {showTaskModal && <CreateTaskModal />}
+      {showTaskModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-900 rounded-xl p-6 max-w-md w-full border border-gray-200 dark:border-gray-800">
+            <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+              Create New Task
+            </h3>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Task Title *
+                </label>
+                <input
+                  type="text"
+                  value={newTask.title}
+                  onChange={(e) =>
+                    setNewTask({ ...newTask, title: e.target.value })
+                  }
+                  className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
+                  placeholder="Enter task title"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Description
+                </label>
+                <textarea
+                  value={newTask.description}
+                  onChange={(e) =>
+                    setNewTask({ ...newTask, description: e.target.value })
+                  }
+                  rows="3"
+                  className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
+                  placeholder="Task description"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Assign To
+                </label>
+                <select
+                  value={newTask.assignedTo}
+                  onChange={(e) =>
+                    setNewTask({ ...newTask, assignedTo: e.target.value })
+                  }
+                  className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
+                >
+                  <option value="">Select a team member</option>
+                  {activeMembers.map((member) => (
+                    <option key={member._id} value={member._id}>
+                      {member.firstName} {member.lastName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Priority
+                  </label>
+                  <select
+                    value={newTask.priority}
+                    onChange={(e) =>
+                      setNewTask({ ...newTask, priority: e.target.value })
+                    }
+                    className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Due Date
+                  </label>
+                  <input
+                    type="date"
+                    value={newTask.dueDate}
+                    onChange={(e) =>
+                      setNewTask({ ...newTask, dueDate: e.target.value })
+                    }
+                    className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setShowTaskModal(false)}
+                className="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCreateTask}
+                disabled={!newTask.title.trim()}
+                className={`px-4 py-2 text-white rounded-lg ${
+                  newTask.title.trim()
+                    ? "bg-blue-600 hover:bg-blue-700"
+                    : "bg-gray-300 dark:bg-gray-700 cursor-not-allowed"
+                }`}
+              >
+                Create Task
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
