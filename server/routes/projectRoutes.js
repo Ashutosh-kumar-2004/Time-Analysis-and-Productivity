@@ -10,6 +10,7 @@ import { getProjectFullDetails } from "../controllers/projectDataControllers.js"
 import {
   addProjectMember,
   getProjectMembers,
+  revokeProjectMember,
   suspendProjectMember,
 } from "../controllers/projectMembersController.js";
 

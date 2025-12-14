@@ -6,6 +6,7 @@ export const useRevokeMember = () => {
   const { project, setProject } = useProjectContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const revokeMember = async (memberId) => {
     if (!project) return;
@@ -16,7 +17,7 @@ export const useRevokeMember = () => {
     try {
       const token = localStorage.getItem("token");
       const { data } = await axios.put(
-        `/api/projects/${project._id}/members/revoke`,
+        `${API_URL}/api/projects/${project._id}/members/revoke`,
         { memberId },
         {
           headers: {
