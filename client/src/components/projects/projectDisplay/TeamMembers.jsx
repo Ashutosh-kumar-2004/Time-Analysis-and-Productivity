@@ -1,8 +1,9 @@
 import { useContext, useState } from "react";
 import { FaTrash, FaUndo, FaUserPlus, FaUserSlash } from "react-icons/fa";
 import { ProjectContext } from "../../../context/project/ProjectContext";
+import ViewAllMembersModal from "./ViewAllMembersModal";
 
-const MAX_VISIBLE = 4;
+const MAX_VISIBLE = 1;
 
 const TeamMembers = () => {
   const [activeTab, setActiveTab] = useState("active");
@@ -41,7 +42,7 @@ const TeamMembers = () => {
   };
 
   /* ---------------- MEMBER CARD ---------------- */
-  const MemberCard = ({ member, type }) => {
+  const MemberCard = ({ member, type, showActions = true }) => {
     const isSelf = member._id === currentUserId;
 
     return (
@@ -64,7 +65,8 @@ const TeamMembers = () => {
           </p>
         </div>
 
-        {isManager && (
+        {/* MANAGER ACTIONS (LIST ONLY, NOT MODAL) */}
+        {showActions && isManager && (
           <div className="flex gap-2">
             {type === "active" && (
               <>
@@ -145,20 +147,20 @@ const TeamMembers = () => {
           </button>
         </div>
 
-        {/* Members */}
+        {/* Preview Members */}
         <div className="space-y-3">
           {activeTab === "active" &&
             visibleActive.map((m) => (
-              <MemberCard key={m._id} member={m} type="active" />
+              <MemberCard key={m._id} member={m} type="active" showActions />
             ))}
 
           {activeTab === "suspended" &&
             visibleSuspended.map((m) => (
-              <MemberCard key={m._id} member={m} type="suspended" />
+              <MemberCard key={m._id} member={m} type="suspended" showActions />
             ))}
         </div>
 
-        {/* View All */}
+        {/* View All → everyone */}
         {showViewAll && (
           <button
             onClick={() => setShowAllModal(true)}
@@ -168,23 +170,30 @@ const TeamMembers = () => {
           </button>
         )}
 
-        {/* Add Member */}
-        <button className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 dark:text-white rounded-lg">
-          <FaUserPlus /> Add Member
-        </button>
+        {/* Add Member → manager only */}
+        {isManager && (
+          <button className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 dark:text-white rounded-lg">
+            <FaUserPlus /> Add Member
+          </button>
+        )}
       </div>
 
-      {/* VIEW ALL MODAL */}
+      {/* VIEW ALL MODAL (READ-ONLY) */}
       {showAllModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-gray-900 rounded-xl p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto">
             <h3 className="text-lg font-bold mb-4 text-gray-900 dark:text-white">
-              All Members
+              Project Members
             </h3>
 
             {(activeTab === "active" ? activeMembers : suspendedMembers).map(
               (m) => (
-                <MemberCard key={m._id} member={m} type={activeTab} />
+                <MemberCard
+                  key={m._id}
+                  member={m}
+                  type={activeTab}
+                  showActions={false} // 🔐 IMPORTANT
+                />
               )
             )}
 
@@ -199,14 +208,14 @@ const TeamMembers = () => {
       )}
 
       {/* CONFIRMATION MODAL */}
-      {confirmData && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      {confirmData && isManager && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-500">
           <div className="bg-white dark:bg-gray-900 rounded-xl p-6 w-full max-w-sm">
             <h3 className="text-lg font-bold mb-2 text-gray-900 dark:text-white">
               Are you sure?
             </h3>
             <p className="text-sm text-gray-500 mb-4">
-              You want to remove the member
+              This action cannot be undone.
             </p>
 
             <div className="flex gap-3">
@@ -226,6 +235,19 @@ const TeamMembers = () => {
           </div>
         </div>
       )}
+      <ViewAllMembersModal
+        isOpen={showAllModal}
+        onClose={() => setShowAllModal(false)}
+        members={activeMembers}
+        suspendedMembers={suspendedMembers}
+        activeTab={activeTab}
+        isManager={isManager}
+        currentUserId={currentUserId}
+        onSuspend={(id) => openConfirm("suspend", id)}
+        onRemove={(id) => openConfirm("remove", id)}
+        onRevoke={(id) => openConfirm("revoke", id)}
+        onAddMember={() => console.log("Open add member modal")}
+      />
     </>
   );
 };
