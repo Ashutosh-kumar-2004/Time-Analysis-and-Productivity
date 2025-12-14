@@ -22,9 +22,6 @@ const ProjectDetailsPage = () => {
   const navigate = useNavigate();
   const { isDark } = useContext(ThemeContext);
   const { project, loading } = useContext(ProjectContext);
-
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editedProject, setEditedProject] = useState({});
   const [activeTab, setActiveTab] = useState("active"); // active, suspended, invited
@@ -39,7 +36,7 @@ const ProjectDetailsPage = () => {
     dueDate: "",
   });
 
-  // Initialize edited project & comments
+  // Initialize edited project
   useEffect(() => {
     if (!project) return;
 
@@ -52,8 +49,6 @@ const ProjectDetailsPage = () => {
       endDate: project.endDate || "",
       tags: project.tags || [],
     });
-
-    setComments(project.comments || []);
   }, [project]);
 
   if (loading) return <ProjectDetailsShimmer />;
@@ -73,37 +68,6 @@ const ProjectDetailsPage = () => {
   const handleCancelEdit = () => {
     setIsEditing(false);
     setEditedProject({ ...project });
-  };
-
-  const handleAddComment = () => {
-    if (!newComment.trim()) return;
-    const comment = {
-      id: comments.length + 1,
-      author: "You",
-      role: "Viewer",
-      avatar:
-        "https://ui-avatars.com/api/?name=You&background=6366f1&color=fff",
-      content: newComment,
-      timestamp: "Just now",
-      likes: 0,
-      liked: false,
-    };
-    setComments([comment, ...comments]);
-    setNewComment("");
-  };
-
-  const handleLikeComment = (id) => {
-    setComments(
-      comments.map((c) =>
-        c.id === id
-          ? {
-              ...c,
-              liked: !c.liked,
-              likes: c.liked ? c.likes - 1 : c.likes + 1,
-            }
-          : c
-      )
-    );
   };
 
   const handleCreateTask = () => {
@@ -378,84 +342,6 @@ const ProjectDetailsPage = () => {
                   <p>No tasks yet. Create your first task!</p>
                 </div>
               )}
-            </div>
-
-            {/* Comments Section */}
-            <div className="space-y-6">
-              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
-                <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-                  Comments
-                </h3>
-                <textarea
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Add a comment..."
-                  rows="3"
-                  className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-3 mb-2 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
-                />
-                <div className="flex justify-end">
-                  <button
-                    onClick={handleAddComment}
-                    disabled={!newComment.trim()}
-                    className={`px-4 py-2 rounded-lg text-white ${
-                      newComment.trim()
-                        ? "bg-blue-600 hover:bg-blue-700"
-                        : "bg-gray-300 dark:bg-gray-700 cursor-not-allowed"
-                    }`}
-                  >
-                    Post Comment
-                  </button>
-                </div>
-              </div>
-              <div className="space-y-4">
-                {comments.map((c) => (
-                  <div
-                    key={c.id}
-                    className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-4"
-                  >
-                    <div className="flex gap-3 items-start">
-                      <img
-                        src={c.avatar}
-                        alt={c.author}
-                        className="w-10 h-10 rounded-full"
-                      />
-                      <div className="flex-1">
-                        <div className="flex justify-between">
-                          <div>
-                            <h4 className="font-semibold text-gray-900 dark:text-white">
-                              {c.author}
-                            </h4>
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
-                              {c.role} • {c.timestamp}
-                            </span>
-                          </div>
-                          {c.author === "You" && (
-                            <button
-                              onClick={() =>
-                                setComments(
-                                  comments.filter((x) => x.id !== c.id)
-                                )
-                              }
-                              className="text-red-500 hover:text-red-700"
-                            >
-                              <FaTrash />
-                            </button>
-                          )}
-                        </div>
-                        <p className="mt-2 text-gray-700 dark:text-gray-300">
-                          {c.content}
-                        </p>
-                        <button
-                          onClick={() => handleLikeComment(c.id)}
-                          className="flex items-center gap-1 mt-2 text-sm text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
-                        >
-                          {c.liked ? "❤️" : "🤍"} {c.likes}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
 
