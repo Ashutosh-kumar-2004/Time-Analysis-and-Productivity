@@ -1,6 +1,6 @@
 // ProjectDetailsPage.jsx
 import React, { useState, useEffect, useContext } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   FaArrowLeft,
   FaEdit,
@@ -8,9 +8,6 @@ import {
   FaCheck,
   FaTrash,
   FaUserPlus,
-  FaUserCheck,
-  FaUserMinus,
-  FaUserClock,
   FaPlus,
   FaTasks,
 } from "react-icons/fa";
@@ -18,18 +15,22 @@ import { ThemeContext } from "../../../context/ThemeContext";
 import { ProjectContext } from "../../../context/project/ProjectContext";
 import { formatDateTime } from "../../../constants";
 import CreateTaskModal from "../task/CreateTaskModal";
+import TaskModalDetails from "../task/TaskModalDetails";
 import ProjectDetailsShimmer from "./ProjectDetailsShimmer";
 
 const ProjectDetailsPage = () => {
   const navigate = useNavigate();
   const { isDark } = useContext(ThemeContext);
   const { project, loading } = useContext(ProjectContext);
+
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editedProject, setEditedProject] = useState({});
   const [activeTab, setActiveTab] = useState("active"); // active, suspended, invited
   const [showTaskModal, setShowTaskModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [showSubTaskModal, setShowSubTaskModal] = useState(false);
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
@@ -55,20 +56,16 @@ const ProjectDetailsPage = () => {
     setComments(project.comments || []);
   }, [project]);
 
-  if (loading) {
-    return <ProjectDetailsShimmer />;
-  }
+  if (loading) return <ProjectDetailsShimmer />;
 
-  if (!project) {
+  if (!project)
     return (
       <div className="text-center mt-24 text-gray-500 dark:text-gray-400">
         Project not found
       </div>
     );
-  }
 
   const handleSaveChanges = () => {
-    // Update logic here, e.g., call context function
     console.log("Save Project:", editedProject);
     setIsEditing(false);
   };
@@ -109,13 +106,10 @@ const ProjectDetailsPage = () => {
     );
   };
 
-  const handleMemberAction = (memberId, action) => {
-    console.log(`${action} member ${memberId}`);
-  };
-
   const handleCreateTask = () => {
     console.log("Create task:", newTask);
     setShowTaskModal(false);
+    setSelectedTask(null);
     setNewTask({
       title: "",
       description: "",
@@ -141,39 +135,15 @@ const ProjectDetailsPage = () => {
   const getPriorityColor = (priority) => {
     switch (priority?.toLowerCase()) {
       case "low":
-        return `
-        bg-green-100 dark:bg-green-950
-        text-green-900 dark:text-green-300
-        border border-green-400 dark:border-green-700
-      `;
-
+        return "bg-green-100 dark:bg-green-950 text-green-900 dark:text-green-300 border border-green-400 dark:border-green-700";
       case "medium":
-        return `
-        bg-yellow-100 dark:bg-yellow-950
-        text-yellow-900 dark:text-yellow-300
-        border border-yellow-400 dark:border-yellow-700
-      `;
-
+        return "bg-yellow-100 dark:bg-yellow-950 text-yellow-900 dark:text-yellow-300 border border-yellow-400 dark:border-yellow-700";
       case "high":
-        return `
-        bg-orange-200 dark:bg-orange-950
-        text-orange-900 dark:text-orange-300
-        border border-orange-500 dark:border-orange-700
-      `;
-
+        return "bg-orange-200 dark:bg-orange-950 text-orange-900 dark:text-orange-300 border border-orange-500 dark:border-orange-700";
       case "critical":
-        return `
-        bg-red-200 dark:bg-red-950
-        text-red-900 dark:text-red-300
-        border border-red-600 dark:border-red-700
-      `;
-
+        return "bg-red-200 dark:bg-red-950 text-red-900 dark:text-red-300 border border-red-600 dark:border-red-700";
       default:
-        return `
-        bg-gray-100 dark:bg-gray-800
-        text-gray-900 dark:text-gray-300
-        border border-gray-300 dark:border-gray-600
-      `;
+        return "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-300 border border-gray-300 dark:border-gray-600";
     }
   };
 
@@ -212,9 +182,7 @@ const ProjectDetailsPage = () => {
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Project Header */}
-            <div
-              className={`bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6`}
-            >
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
               <div className="flex justify-between items-start mb-6">
                 <div className="flex-1">
                   {isEditing ? (
@@ -316,7 +284,7 @@ const ProjectDetailsPage = () => {
                 </div>
               )}
 
-              {/* Progress Bar */}
+              {/* Progress */}
               <div className="mb-6">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-gray-900 dark:text-white">
@@ -351,6 +319,7 @@ const ProjectDetailsPage = () => {
                 </div>
               )}
             </div>
+
             {/* Task Section */}
             <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
               <div className="flex justify-between items-center mb-4">
@@ -358,25 +327,28 @@ const ProjectDetailsPage = () => {
                   Tasks
                 </h2>
                 <button
-                  onClick={() => setShowTaskModal(true)}
+                  onClick={() => {
+                    setShowTaskModal(true);
+                    setSelectedTask(null);
+                  }}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
                 >
                   <FaPlus /> Create Task
                 </button>
               </div>
 
-              {/* Tasks List OR Empty State */}
+              {/* Task list */}
               {project.tasks && project.tasks.length > 0 ? (
                 <div className="space-y-3">
                   {project.tasks.map((task) => (
                     <div
                       key={task._id}
-                      className={`p-4 rounded-lg border ${getPriorityColor(
+                      className={`p-4 rounded-lg border cursor-pointer ${getPriorityColor(
                         task.priority
                       )}`}
                       onClick={() => {
                         setSelectedTask(task);
-                        setShowTaskDetails(true);
+                        setShowSubTaskModal(true);
                       }}
                     >
                       <div className="flex justify-between items-center">
@@ -387,11 +359,9 @@ const ProjectDetailsPage = () => {
                           {task.status}
                         </span>
                       </div>
-
                       <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                         {task.description || "No description"}
                       </p>
-
                       <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2">
                         <span>Priority: {task.priority}</span>
                         <span>
@@ -409,25 +379,6 @@ const ProjectDetailsPage = () => {
                 </div>
               )}
             </div>
-
-            {/* Task Section */}
-            {/* <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                  Tasks
-                </h2>
-                <button
-                  onClick={() => setShowTaskModal(true)}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
-                >
-                  <FaPlus /> Create Task
-                </button>
-              </div>
-              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                <FaTasks className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                <p>No tasks yet. Create your first task!</p>
-              </div>
-            </div> */}
 
             {/* Comments Section */}
             <div className="space-y-6">
@@ -629,7 +580,29 @@ const ProjectDetailsPage = () => {
         </div>
       </div>
 
-      {showTaskModal && <CreateTaskModal onCreate={handleCreateTask} />}
+      {/* Create Task Modal */}
+      {showTaskModal && (
+        <CreateTaskModal
+          task={selectedTask}
+          onCreate={handleCreateTask}
+          onClose={() => {
+            setShowTaskModal(false);
+            setSelectedTask(null);
+          }}
+        />
+      )}
+
+      {/* Task Details Modal */}
+      {showSubTaskModal && selectedTask && (
+        <TaskModalDetails
+          isOpen={showSubTaskModal}
+          task={selectedTask}
+          onClose={() => {
+            setShowSubTaskModal(false);
+            setSelectedTask(null);
+          }}
+        />
+      )}
     </div>
   );
 };
