@@ -2,8 +2,9 @@ import { useContext, useState } from "react";
 import { FaTrash, FaUndo, FaUserPlus, FaUserSlash } from "react-icons/fa";
 import { ProjectContext } from "../../../context/project/ProjectContext";
 import ViewAllMembersModal from "./ViewAllMembersModal";
+import { useSuspendMember } from "../../../hooks/projects/membersActions/useSuspendMember";
 
-const MAX_VISIBLE = 1;
+const MAX_VISIBLE = 1; //currently for the ui checking i have kept it as 1 later i will make it 4
 
 const TeamMembers = () => {
   const [activeTab, setActiveTab] = useState("active");
@@ -11,6 +12,11 @@ const TeamMembers = () => {
   const [confirmData, setConfirmData] = useState(null);
 
   const { project } = useContext(ProjectContext);
+  const {
+    suspendMember,
+    loading: suspending,
+    error: suspendError,
+  } = useSuspendMember();
 
   const activeMembers = project.teamMembers || [];
   const suspendedMembers = project.suspendedMembers || [];
@@ -21,7 +27,14 @@ const TeamMembers = () => {
   );
 
   /* ---------------- ACTION HANDLERS ---------------- */
-  const handleSuspend = (id) => console.log("Suspend:", id);
+const handleSuspend = async (memberId) => {
+  try {
+    await suspendMember(memberId);
+    setConfirmData(null); // close confirmation modal
+  } catch (err) {
+    console.error("Failed to suspend member:", err);
+  }
+};
   const handleRemove = (id) => console.log("Remove:", id);
   const handleRevoke = (id) => console.log("Revoke:", id);
 

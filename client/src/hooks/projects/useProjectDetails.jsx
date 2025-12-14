@@ -25,7 +25,6 @@ export function useProjectDetails(projectId) {
         }
       );
       setProject(res.data.projects[0]);
-      console.log(res.data.projects[0])
     } catch (err) {
       console.error(err);
       toast.error("Failed to fetch project details");

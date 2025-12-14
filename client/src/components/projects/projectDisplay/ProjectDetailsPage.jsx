@@ -25,7 +25,6 @@ const ProjectDetailsPage = () => {
   const { project, loading } = useContext(ProjectContext);
   const [isEditing, setIsEditing] = useState(false);
   const [editedProject, setEditedProject] = useState({});
-  const [activeTab, setActiveTab] = useState("active"); // active, suspended, invited
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [showSubTaskModal, setShowSubTaskModal] = useState(false);
