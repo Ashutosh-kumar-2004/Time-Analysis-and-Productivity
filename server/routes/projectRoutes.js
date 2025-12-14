@@ -10,6 +10,7 @@ import { getProjectFullDetails } from "../controllers/projectDataControllers.js"
 import {
   addProjectMember,
   getProjectMembers,
+  suspendProjectMember,
 } from "../controllers/projectMembersController.js";
 
 const router = express.Router();
@@ -28,7 +29,7 @@ router.patch("/restore-project/:projectId", restoreProject);
 // Get all members of a project
 router.get("/:projectId/members", getProjectMembers);
 router.post("/:projectId/members", addProjectMember);
-router.put("/:projectId/members/suspend");
+router.put("/:projectId/members/suspend",suspendProjectMember);
 
 // // Manager actions
 // router.post("/add", addMember);
