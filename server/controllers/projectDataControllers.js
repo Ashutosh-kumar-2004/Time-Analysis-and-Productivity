@@ -5,7 +5,7 @@ import Task from "../modal/Task.js";
 export const getProjectFullDetails = async (req, res) => {
   try {
     const { projectId } = req.params;
-    const currentUserId = req.user._id; // assuming you have auth middleware
+    const currentUserId = req.user.id; // assuming you have auth middleware
 
     if (!projectId) {
       return res.status(400).json({ success: false, message: "Project ID is required" });
@@ -13,12 +13,12 @@ export const getProjectFullDetails = async (req, res) => {
 
     // Fetch project and populate team members and managers
     const project = await Project.findById(projectId)
-      .populate("teamMembers", "_id firstName lastName email")
-      .populate("suspendedMembers", "_id firstName lastName email")
-      .populate("removedMembers", "_id firstName lastName email")
-      .populate("invitedMembers", "_id firstName lastName email")
-      .populate("managingUserId", "_id firstName lastName email")
-      .populate("projectStartedBy", "_id firstName lastName email")
+      .populate("teamMembers", "_id firstName lastName email avatar")
+      .populate("suspendedMembers", "_id firstName lastName email avatar")
+      .populate("removedMembers", "_id firstName lastName email avatar")
+      .populate("invitedMembers", "_id firstName lastName email avatar")
+      .populate("managingUserId", "_id firstName lastName email avatar")
+      .populate("projectStartedBy", "_id firstName lastName email avatar")
       .lean(); // lean() makes it a plain JS object, easier to modify
 
     if (!project) {
@@ -27,11 +27,11 @@ export const getProjectFullDetails = async (req, res) => {
 
     // Fetch tasks and populate subtasks, comments, replies, and reactions
     const tasks = await Task.find({ projectId: project._id })
-      .populate("createdBy", "_id firstName lastName email")
-      .populate("assignedTo", "_id firstName lastName email")
+      .populate("createdBy", "_id firstName lastName email avatar")
+      .populate("assignedTo", "_id firstName lastName email avatar")
       .populate({
         path: "subtasks.assignedTo",
-        select: "_id firstName lastName email"
+        select: "_id firstName lastName email avatar"
       })
       .lean();
 
