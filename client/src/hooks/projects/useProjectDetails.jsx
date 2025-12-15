@@ -41,5 +41,6 @@ export function useProjectDetails(projectId) {
     project,
     loading,
     fetchProjectDetails,
+    setProject
   };
 }

@@ -1,5 +1,4 @@
-// ProjectDetailsPage.jsx
-// todo -> work on the add modal for the user for a project also, soft delete feature for the user 
+// todo -> work on the add modal for the user for a project also, soft delete feature for the user
 
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
@@ -24,20 +23,12 @@ import TeamMembers from "./TeamMembers";
 const ProjectDetailsPage = () => {
   const navigate = useNavigate();
   const { isDark } = useContext(ThemeContext);
-  const { project, loading } = useContext(ProjectContext);
-  console.log(project)
+  const { project, loading, setProject } = useContext(ProjectContext);
   const [isEditing, setIsEditing] = useState(false);
   const [editedProject, setEditedProject] = useState({});
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [showSubTaskModal, setShowSubTaskModal] = useState(false);
-  const [newTask, setNewTask] = useState({
-    title: "",
-    description: "",
-    assignedTo: "",
-    priority: "medium",
-    dueDate: "",
-  });
 
   // Initialize edited project
   useEffect(() => {
@@ -73,17 +64,9 @@ const ProjectDetailsPage = () => {
     setEditedProject({ ...project });
   };
 
-  const handleCreateTask = () => {
-    console.log("Create task:", newTask);
+  const handleCreateTask = (newTask) => {
+    setSelectedTask(newTask);
     setShowTaskModal(false);
-    setSelectedTask(null);
-    setNewTask({
-      title: "",
-      description: "",
-      assignedTo: "",
-      priority: "medium",
-      dueDate: "",
-    });
   };
 
   const getStatusColor = (status) => {
@@ -126,10 +109,6 @@ const ProjectDetailsPage = () => {
           )
         )
       : 0;
-
-  const activeMembers = project.teamMembers || [];
-  const suspendedMembers = project.suspendedMembers || [];
-
   return (
     <div
       className={`min-h-screen ${
@@ -139,7 +118,7 @@ const ProjectDetailsPage = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <button
           onClick={() => navigate(-1)}
-          className="mb-6 inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors text-gray-900 dark:text-gray-100"
+          className="mb-6 inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
         >
           <FaArrowLeft /> Back to Projects
         </button>
@@ -407,9 +386,7 @@ const ProjectDetailsPage = () => {
             </div>
 
             {/* Team Members */}
-            
-            <TeamMembers/>
-            
+            <TeamMembers />
           </div>
         </div>
       </div>
@@ -434,6 +411,15 @@ const ProjectDetailsPage = () => {
           onClose={() => {
             setShowSubTaskModal(false);
             setSelectedTask(null);
+          }}
+          onUpdateTask={(updatedTask) => {
+            setProject((prev) => ({
+              ...prev,
+              tasks: prev.tasks.map((t) =>
+                t._id === updatedTask._id ? updatedTask : t
+              ),
+            }));
+            setSelectedTask(updatedTask);
           }}
         />
       )}

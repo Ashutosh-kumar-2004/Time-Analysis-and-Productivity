@@ -548,7 +548,6 @@ export const updateTaskStatus = async (req, res) => {
 
     // Find the task
     const task = await Task.findById(taskId);
-    console.log(status);
     if (!task) {
       return res.status(404).json({
         success: false,

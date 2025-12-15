@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AiOutlineClose, AiOutlineEdit } from "react-icons/ai";
 
-const TaskModalDetails = ({ isOpen, onClose, task }) => {
+const TaskModalDetails = ({ isOpen, onClose, task, onUpdateTask }) => {
   const [editingSubtaskId, setEditingSubtaskId] = useState(null);
   const [subtaskEdits, setSubtaskEdits] = useState({});
 
@@ -32,8 +32,20 @@ const TaskModalDetails = ({ isOpen, onClose, task }) => {
   };
 
   const handleSave = (subtask) => {
-    console.log("Updated subtask:", subtask._id, subtaskEdits);
+    const updatedSubtasks = task.subtasks.map((st) =>
+      st._id === subtask._id ? { ...st, ...subtaskEdits } : st
+    );
+
+    const updatedTask = {
+      ...task,
+      subtasks: updatedSubtasks,
+    };
+
     setEditingSubtaskId(null);
+
+    if (onUpdateTask) {
+      onUpdateTask(updatedTask);
+    }
   };
 
   const handleCancel = () => setEditingSubtaskId(null);

@@ -5,7 +5,7 @@ import ViewAllMembersModal from "./ViewAllMembersModal";
 import { useSuspendMember } from "../../../hooks/projects/membersActions/useSuspendMember";
 import { useRevokeMember } from "../../../hooks/projects/membersActions/useRevokeMember";
 
-const MAX_VISIBLE = 1; //currently for the ui checking i have kept it as 1 later i will make it 4
+const MAX_VISIBLE = 4; //currently for the ui checking i have kept it as 1 later i will make it 4
 
 const TeamMembers = () => {
   const [activeTab, setActiveTab] = useState("active");
@@ -133,7 +133,6 @@ const TeamMembers = () => {
   /* ---------------- MEMBERS TO SHOW ---------------- */
   const visibleActive = activeMembers.slice(0, MAX_VISIBLE);
   const visibleSuspended = suspendedMembers.slice(0, MAX_VISIBLE);
-  console.log(visibleSuspended)
 
   const showViewAll =
     (activeTab === "active" && activeMembers.length > MAX_VISIBLE) ||

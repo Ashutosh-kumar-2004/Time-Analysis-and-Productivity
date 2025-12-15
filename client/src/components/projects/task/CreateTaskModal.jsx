@@ -8,13 +8,15 @@ import {
   FaTag,
   FaExclamationCircle,
 } from "react-icons/fa";
-
+import { ProjectContext } from "../../../context/project/ProjectContext";
+import { useContext } from "react";
+import { useCreateTask } from "../../../hooks/projects/task/useCreateTask";
 
 const CreateTaskModal = ({
-  project,
   activeMembers = [],
   currentUser,
   onSubmit,
+  onCreate,
   onClose,
   isDark = false,
 }) => {
@@ -34,6 +36,10 @@ const CreateTaskModal = ({
   const [newSubtaskAssignee, setNewSubtaskAssignee] = useState("");
   const [newLabel, setNewLabel] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { project, loading } = useContext(ProjectContext);
+  const { createTask, loading: creating, error } = useCreateTask();
+
+  activeMembers = project.teamMembers;
 
   const availableLabels = [
     "bug",
@@ -53,7 +59,7 @@ const CreateTaskModal = ({
   };
 
   // Initialize with project ID and suggested due date
-   useEffect(() => {
+  useEffect(() => {
     if (project?._id) {
       const date = new Date();
       date.setDate(date.getDate() + 7);
@@ -143,19 +149,18 @@ const CreateTaskModal = ({
             ? currentUser?._id
             : ""),
       };
+      const createdTask = await createTask(taskToSubmit);
+      onCreate(createdTask); // <-- send to parent
 
-      console.log("Submitting task:", taskToSubmit);
-      await onSubmit(taskToSubmit);
       onClose();
     } catch (error) {
       console.error("Task creation failed", error);
-      alert("Failed to create task.");
+      alert(error?.response?.data?.message || "Failed to create task.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Handle escape key to close modal
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape") onClose();
@@ -643,9 +648,9 @@ const CreateTaskModal = ({
             </button>
             <button
               type="submit"
-              disabled={isSubmitting || !taskData.title.trim()}
+              disabled={creating || !taskData.title.trim()}
               className={`px-6 py-3 rounded-xl font-medium transition-all hover:scale-105 ${
-                isSubmitting
+                creating
                   ? "bg-gray-500 cursor-not-allowed"
                   : isDark
                   ? "bg-blue-600 hover:bg-blue-700 text-white"
@@ -654,7 +659,7 @@ const CreateTaskModal = ({
                 !taskData.title.trim() ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              {isSubmitting ? (
+              {creating ? (
                 <span className="flex items-center gap-2">
                   <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
                     <circle
@@ -681,21 +686,6 @@ const CreateTaskModal = ({
           </div>
         </form>
       </div>
-
-      {/* Add CSS animation */}
-      <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.2s ease-out;
-        }
-      `}</style>
     </div>
   );
 };
