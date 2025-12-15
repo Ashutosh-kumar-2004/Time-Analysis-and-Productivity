@@ -18,11 +18,14 @@ import {
 import { ProjectContext } from "../../../context/project/ProjectContext";
 import { ThemeContext } from "../../../context/ThemeContext";
 import { getPriorityColor, getStatusColor } from "../../../constants/tasklist";
+import { useDeleteTask } from "../../../hooks/projects/task/useDeleteTask";
 
 const TaskList = () => {
   const { project, setProject } = useContext(ProjectContext);
   const { isDark } = useContext(ThemeContext);
   const tasks = project?.tasks || [];
+  const { deleteTask, loading: deleting } = useDeleteTask();
+
   const [expandedTasks, setExpandedTasks] = useState({});
 
   const toggleTaskExpansion = (taskId) => {
@@ -30,6 +33,17 @@ const TaskList = () => {
       ...prev,
       [taskId]: !prev[taskId],
     }));
+  };
+
+  // delete a task 
+  const handleDelete = async (taskId) => {
+    if (confirm("Are you sure you want to delete this task?")) {
+      try {
+        await deleteTask(taskId);
+      } catch (err) {
+        console.error(err);
+      }
+    }
   };
 
   const getStatusIcon = (status) => {
@@ -266,7 +280,7 @@ const TaskList = () => {
                   </button>
                   <button
                     onClick={() => {
-                      /* delete task */
+                      handleDelete(task._id)
                     }}
                     className={`p-2 rounded-lg transition-colors ${
                       isDark
@@ -274,6 +288,7 @@ const TaskList = () => {
                         : "hover:bg-gray-100 text-red-600 hover:text-red-800"
                     }`}
                     title="Delete Task"
+                    
                   >
                     <FaTrash />
                   </button>
