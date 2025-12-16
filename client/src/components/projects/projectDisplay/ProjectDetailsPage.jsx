@@ -106,7 +106,7 @@ const ProjectDetailsPage = () => {
     >
       <div className="max-w-7xl mx-auto px-4 py-8">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/projects")}
           className="mb-6 inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
         >
           <FaArrowLeft /> Back to Projects

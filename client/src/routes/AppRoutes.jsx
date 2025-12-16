@@ -10,6 +10,7 @@ import { ProjectProvider } from "../context/project/ProjectContext";
 import { UserProvider } from "../context/user/UserContext";
 import Navbar from "../components/navbar/Navbar";
 import ProjectAnalysisPage from "../components/projects/analysis/ProjectAnalysisPage";
+import { ProjectAnalysisProvider } from "../context/analysis/ProjectAnalysisContext";
 
 const AppRoutes = () => {
   return (
@@ -66,8 +67,10 @@ const AppRoutes = () => {
             <ProtectedRoute>
                <ProjectProvider>
                 <UserProvider>
-                  <Navbar/>
-                  <ProjectAnalysisPage />
+                  <ProjectAnalysisProvider>
+                    <Navbar/>
+                    <ProjectAnalysisPage />
+                  </ProjectAnalysisProvider>
                 </UserProvider>
               </ProjectProvider>
             </ProtectedRoute>

@@ -5,16 +5,16 @@ import {
   PieChart, Pie, Cell,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from "recharts";
-import { useProjectAnalysis } from "../../../hooks/analysis/useProjectAnalysis";
+import { useProjectAnalysisContext } from "../../../context/analysis/ProjectAnalysisContext";
 import { ThemeContext } from "../../../context/ThemeContext";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
 
 const ProjectAnalysisPage = () => {
-  const { projectId } = useParams();
+  const { projectID: projectId } = useParams();
   const navigate = useNavigate();
   const { isDark } = useContext(ThemeContext);
-  const { loading, error, analysisData } = useProjectAnalysis(projectId);
+  const { loading, error, analysisData } = useProjectAnalysisContext();
 
   if (loading) {
     return (
@@ -62,9 +62,10 @@ const ProjectAnalysisPage = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Status Distribution */}
-            <div className={`p-6 rounded-xl shadow-sm border ${isDark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200"}`}>
+            <div className={`p-6 rounded-xl shadow-sm border min-w-0 ${isDark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200"}`}>
                 <h3 className="text-lg font-semibold mb-4">Task Status Distribution</h3>
-                <div className="h-64">
+                {statusDistribution?.length > 0 && (
+                <div className="h-[300px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                             <Pie
@@ -87,12 +88,14 @@ const ProjectAnalysisPage = () => {
                         </PieChart>
                     </ResponsiveContainer>
                 </div>
+                )}
             </div>
 
             {/* Priority Distribution */}
-            <div className={`p-6 rounded-xl shadow-sm border ${isDark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200"}`}>
+            <div className={`p-6 rounded-xl shadow-sm border min-w-0 ${isDark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200"}`}>
                 <h3 className="text-lg font-semibold mb-4">Task Priority Breakdown</h3>
-                <div className="h-64">
+                {priorityDistribution?.length > 0 && (
+                <div className="h-[300px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={priorityDistribution} layout="vertical">
                              <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#374151" : "#e5e7eb"} horizontal={false} />
@@ -110,12 +113,14 @@ const ProjectAnalysisPage = () => {
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
+                )}
             </div>
 
             {/* Member Workload */}
-            <div className={`p-6 rounded-xl shadow-sm border md:col-span-2 ${isDark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200"}`}>
+            <div className={`p-6 rounded-xl shadow-sm border md:col-span-2 min-w-0 ${isDark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200"}`}>
                 <h3 className="text-lg font-semibold mb-4">Team Workload (Tasks Assigned)</h3>
-                <div className="h-80">
+                {memberWorkload?.length > 0 ? (
+                <div className="h-[350px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={memberWorkload}>
                             <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#374151" : "#e5e7eb"} vertical={false} />
@@ -130,12 +135,14 @@ const ProjectAnalysisPage = () => {
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
+                ) : <p className="text-gray-500">No member activity recorded.</p>}
             </div>
 
             {/* Task Efficiency */}
-            <div className={`p-6 rounded-xl shadow-sm border md:col-span-2 ${isDark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200"}`}>
+            <div className={`p-6 rounded-xl shadow-sm border md:col-span-2 min-w-0 ${isDark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200"}`}>
                 <h3 className="text-lg font-semibold mb-4">Time Efficiency (Top Active Tasks)</h3>
-                <div className="h-96">
+                {taskEfficiency?.length > 0 ? (
+                <div className="h-[400px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={taskEfficiency}>
                             <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#374151" : "#e5e7eb"} vertical={false} />
@@ -151,6 +158,7 @@ const ProjectAnalysisPage = () => {
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
+                ) : <p className="text-gray-500">Not enough data for efficiency analysis.</p>}
             </div>
         </div>
       </div>
