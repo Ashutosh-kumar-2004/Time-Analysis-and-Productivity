@@ -13,6 +13,7 @@ import {
   addProjectMember,
   getProjectMembers,
   revokeProjectMember,
+  softRemoveProjectMember,
   suspendProjectMember,
 } from "../controllers/projectMembersController.js";
 
@@ -37,11 +38,8 @@ router.get("/:projectId/members", getProjectMembers);
 router.post("/:projectId/members", addProjectMember);
 router.put("/:projectId/members/suspend", suspendProjectMember);
 router.put("/:projectId/members/revoke", revokeProjectMember);
+router.put("/:projectId/members/remove", softRemoveProjectMember);
 
 // // Manager actions
-// router.post("/add", addMember);
-// router.post("/suspend", suspendMember);
-// router.post("/revoke", revokeMember);
-// router.post("/remove", removeMember);
 
 export default router;

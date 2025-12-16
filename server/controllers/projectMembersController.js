@@ -202,3 +202,83 @@ export const revokeProjectMember = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const softRemoveProjectMember = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const { memberId } = req.body;
+    const currentUserId = req.user.id;
+
+    if (!memberId) {
+      return res.status(400).json({ message: "memberId is required" });
+    }
+
+    // Fetch project
+    const project = await Project.findById(projectId)
+      .populate("teamMembers", "_id firstName lastName email")
+      .populate("managingUserId", "_id");
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    // Check if current user is manager
+    const isManager = project.managingUserId.some(
+      (u) => u._id.toString() === currentUserId.toString()
+    );
+    if (!isManager) {
+      return res
+        .status(403)
+        .json({ message: "Only managers can remove members" });
+    }
+
+    // Check if the member exists in teamMembers
+    const memberIndex = project.teamMembers.findIndex(
+      (u) => u._id.toString() === memberId.toString()
+    );
+    
+    if (memberIndex === -1) {
+      // Also check if member is already in removedMembers (soft-removed)
+      const isAlreadyRemoved = project.removedMembers.some(
+        (id) => id.toString() === memberId.toString()
+      );
+      
+      if (isAlreadyRemoved) {
+        return res.status(400).json({ message: "User is already removed from the project" });
+      }
+      
+      return res.status(400).json({ message: "User is not a member of this project" });
+    }
+
+    // Prevent removing a manager (optional - you can remove this check if managers can be removed)
+    const isMemberAlsoManager = project.managingUserId.some(
+      (u) => u._id.toString() === memberId.toString()
+    );
+    
+    if (isMemberAlsoManager) {
+      return res.status(400).json({ 
+        message: "Cannot remove a manager from the project. Please assign a new manager first." 
+      });
+    }
+
+    // Remove member from teamMembers and add to removedMembers (soft remove)
+    const removedMember = project.teamMembers[memberIndex];
+    project.teamMembers.splice(memberIndex, 1);
+    
+    // Add to removedMembers array
+    if (!project.removedMembers.includes(removedMember._id)) {
+      project.removedMembers.push(removedMember._id);
+    }
+
+    await project.save();
+
+    res.status(200).json({
+      message: "Member successfully removed from project",
+      removedMember,
+      removedAt: new Date(),
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
