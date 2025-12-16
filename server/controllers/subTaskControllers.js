@@ -187,12 +187,16 @@ export const updateSubtask = async (req, res) => {
     }
 
     // 5. Define allowed fields for each role
+    // 5. Define allowed fields for each role
     const allowedFieldsForAll = [
       "title",
       "description",
       "assignedTo",
       "estimatedHours",
       "order",
+      "status",
+      "loggedHours",
+      "workNotes",
     ];
 
     const allowedFieldsForAssignee = ["status", "loggedHours", "workNotes"];
