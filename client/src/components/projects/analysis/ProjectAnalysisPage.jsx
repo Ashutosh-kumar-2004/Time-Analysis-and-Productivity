@@ -161,6 +161,104 @@ const ProjectAnalysisPage = () => {
                 ) : <p className="text-gray-500">Not enough data for efficiency analysis.</p>}
             </div>
         </div>
+
+        {/* Improved Advanced Insights Section */}
+        {analysisData?.advanced && (
+            <div className="mt-8">
+                <h2 className="text-2xl font-bold mb-6">Advanced Insights</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    
+                    {/* Inefficiency Card */}
+                    <div className={`p-5 rounded-xl border ${isDark ? "bg-red-900/20 border-red-800" : "bg-red-50 border-red-200"}`}>
+                        <div className="flex items-center gap-2 mb-3">
+                            <span className="text-2xl">⚠️</span>
+                            <h3 className="font-semibold text-red-700 dark:text-red-300">Inefficiency Detected</h3>
+                        </div>
+                        {analysisData.advanced.inefficientTasks?.length > 0 ? (
+                            <ul className="space-y-3">
+                                {analysisData.advanced.inefficientTasks.map(t => (
+                                    <li key={t.id} className="text-sm">
+                                        <div className="font-medium text-red-800 dark:text-red-200">{t.title}</div>
+                                        <div className="text-xs text-red-600 dark:text-red-400">
+                                            Exceeded by {t.exceededBy} • {t.sso}
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-sm text-gray-500">No major inefficiencies found.</p>
+                        )}
+                    </div>
+
+                    {/* Delays Card */}
+                    <div className={`p-5 rounded-xl border ${isDark ? "bg-orange-900/20 border-orange-800" : "bg-orange-50 border-orange-200"}`}>
+                        <div className="flex items-center gap-2 mb-3">
+                            <span className="text-2xl">⏰</span>
+                            <h3 className="font-semibold text-orange-700 dark:text-orange-300">Project Delays</h3>
+                        </div>
+                         {analysisData.advanced.overdueTasks?.length > 0 ? (
+                            <ul className="space-y-3">
+                                {analysisData.advanced.overdueTasks.map(t => (
+                                    <li key={t.id} className="text-sm">
+                                        <div className="font-medium text-orange-800 dark:text-orange-200">{t.title}</div>
+                                        <div className="text-xs text-orange-600 dark:text-orange-400">
+                                            Overdue by {t.daysOverdue} days
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-sm text-gray-500">No overdue tasks.</p>
+                        )}
+                    </div>
+
+                    {/* Fake Productivity Card */}
+                    <div className={`p-5 rounded-xl border ${isDark ? "bg-yellow-900/20 border-yellow-800" : "bg-yellow-50 border-yellow-200"}`}>
+                        <div className="flex items-center gap-2 mb-3">
+                            <span className="text-2xl">🕵️</span>
+                            <h3 className="font-semibold text-yellow-700 dark:text-yellow-300">Suspicious Activity</h3>
+                        </div>
+                         {analysisData.advanced.suspicionTasks?.length > 0 ? (
+                            <ul className="space-y-3">
+                                {analysisData.advanced.suspicionTasks.map(t => (
+                                    <li key={t.id} className="text-sm">
+                                        <div className="font-medium text-yellow-800 dark:text-yellow-200">{t.title}</div>
+                                        <div className="text-xs text-yellow-600 dark:text-yellow-400">
+                                            {t.loggedHours} hrs logged but {t.reason}
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-sm text-gray-500">No suspicious logging patterns.</p>
+                        )}
+                    </div>
+
+                    {/* Burnout Risk Card */}
+                    <div className={`p-5 rounded-xl border ${isDark ? "bg-purple-900/20 border-purple-800" : "bg-purple-50 border-purple-200"}`}>
+                        <div className="flex items-center gap-2 mb-3">
+                            <span className="text-2xl">🔥</span>
+                            <h3 className="font-semibold text-purple-700 dark:text-purple-300">Workload Balance</h3>
+                        </div>
+                         {analysisData.advanced.burnoutRisk?.length > 0 ? (
+                            <ul className="space-y-3">
+                                {analysisData.advanced.burnoutRisk.map((m, idx) => (
+                                    <li key={idx} className="text-sm">
+                                        <div className="font-medium text-purple-800 dark:text-purple-200">{m.name}</div>
+                                        <div className="text-xs text-purple-600 dark:text-purple-400">
+                                            {m.totalHours} hrs estimated load
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-sm text-gray-500">Workload appears balanced.</p>
+                        )}
+                    </div>
+
+                </div>
+            </div>
+        )}
       </div>
     </div>
   );

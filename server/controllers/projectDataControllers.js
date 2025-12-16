@@ -153,10 +153,12 @@ export const getProjectAnalytics = async (req, res) => {
         "Estimated Hours": Math.round(stat.estimatedHours * 10) / 10
     }));
 
-    // 4. Task Efficiency (Top 10 Tasks by Logged Hours)
-    // Filter tasks that have some activity
+    // 4. Task Efficiency & Inefficiency
     const activeTasks = tasks
-        .filter(t => t.loggedHours > 0 || t.estimatedHours > 0)
+        .filter(t => t.loggedHours > 0 || t.estimatedHours > 0);
+    
+    // Top 10 most efficient/active for chart
+    const taskEfficiency = activeTasks
         .map(t => ({
             name: t.title.length > 20 ? t.title.substring(0, 20) + '...' : t.title,
             "Logged Hours": t.loggedHours || 0,
@@ -166,13 +168,60 @@ export const getProjectAnalytics = async (req, res) => {
         .sort((a, b) => b["Logged Hours"] - a["Logged Hours"])
         .slice(0, 10);
 
+    // 5. Advanced Insights
+    
+    // Inefficiency: Logged > Estimated
+    const inefficientTasks = tasks
+        .filter(t => t.estimatedHours > 0 && t.loggedHours > t.estimatedHours)
+        .map(t => ({
+            id: t._id,
+            title: t.title,
+            exceededBy: (t.loggedHours - t.estimatedHours).toFixed(1) + " hrs",
+            sso: t.assignedTo ? `${t.assignedTo.firstName} ${t.assignedTo.lastName}` : "Unassigned"
+        }));
+
+    // Delays: Past Due & Not Completed
+    const overdueTasks = tasks
+        .filter(t => t.dueDate && new Date(t.dueDate) < new Date() && t.status !== "completed")
+        .map(t => ({
+            id: t._id,
+            title: t.title,
+            dueDate: new Date(t.dueDate).toLocaleDateString(),
+            daysOverdue: Math.ceil((new Date() - new Date(t.dueDate)) / (1000 * 60 * 60 * 24))
+        }));
+
+    // Fake Productivity: High hours (>5) but status is 'todo' (no progress tracked)
+    const suspicionTasks = tasks
+        .filter(t => t.loggedHours > 5 && t.status === "todo")
+        .map(t => ({
+            id: t._id,
+            title: t.title,
+            loggedHours: t.loggedHours,
+            reason: "High logged hours with 'Todo' status"
+        }));
+
+    // Burnout Risk: Members with > 40 estimated hours of incomplete work
+    // (We actually need to sum this up from `memberStats` we built earlier)
+    const burnoutRisk = Object.values(memberStats)
+        .filter(stat => stat.estimatedHours > 40) // Threshold can be adjusted
+        .map(stat => ({
+            name: stat.name,
+            totalHours: stat.estimatedHours.toFixed(1)
+        }));
+
     return res.status(200).json({
       success: true,
       data: {
         statusDistribution,
         priorityDistribution,
         memberWorkload,
-        taskEfficiency: activeTasks
+        taskEfficiency,
+        advanced: {
+            inefficientTasks,
+            overdueTasks,
+            suspicionTasks,
+            burnoutRisk
+        }
       },
     });
   } catch (error) {
