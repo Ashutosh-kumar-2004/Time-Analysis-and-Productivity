@@ -9,7 +9,7 @@ import {
   updateProject,
 
 } from "../controllers/projectControllers.js";
-import { getProjectFullDetails } from "../controllers/projectDataControllers.js";
+import { getProjectFullDetails, getProjectAnalytics } from "../controllers/projectDataControllers.js";
 import {
   addProjectMember,
   getProjectMembers,
@@ -44,6 +44,9 @@ router.put("/:projectId/members/suspend", suspendProjectMember);
 router.put("/:projectId/members/revoke", revokeProjectMember);
 router.put("/:projectId/members/remove", softRemoveProjectMember);
 router.put("/:projectId/members/restore", restoreProjectMember);
+
+// Analytics
+router.get("/:projectId/analytics", getProjectAnalytics);
 
 
 export default router;

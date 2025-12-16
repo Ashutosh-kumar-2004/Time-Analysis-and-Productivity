@@ -13,18 +13,11 @@ export const useProjectAnalysis = (projectId) => {
       
       setLoading(true);
       try {
-        // TODO: Replace with actual API call
-        // const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/projects/${projectId}/analytics`);
-        // setAnalysisData(response.data.data);
-        
-        // Mock data for now
-        setTimeout(() => {
-            setAnalysisData({ mock: "data" });
-            setLoading(false);
-        }, 1000);
-
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/projects/${projectId}/analytics`, { withCredentials: true });
+        setAnalysisData(response.data.data);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch analysis");
+      } finally {
         setLoading(false);
       }
     };
