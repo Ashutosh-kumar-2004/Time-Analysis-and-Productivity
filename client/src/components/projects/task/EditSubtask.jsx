@@ -350,6 +350,20 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
                 <p>Current logged hours: <strong>{subtaskToEdit.loggedHours || 0}h</strong></p>
               </div>
 
+              {/* Work History Display */}
+              <div className="mb-4">
+                <label className={`block text-sm font-medium mb-1 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+                  Work History
+                </label>
+                <div className={`w-full px-3 py-2 rounded-lg border text-sm max-h-40 overflow-y-auto whitespace-pre-wrap ${
+                    isDark
+                      ? "bg-gray-700/50 border-gray-600 text-gray-300"
+                      : "bg-gray-50 border-gray-200 text-gray-600"
+                  }`}>
+                  {subtaskToEdit.workNotes ? subtaskToEdit.workNotes : "No work history recorded yet."}
+                </div>
+              </div>
+
               <div>
                 <label className={`block text-sm font-medium mb-1 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
                   Add Hours

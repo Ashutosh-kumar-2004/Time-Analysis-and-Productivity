@@ -209,7 +209,7 @@ const EditTask = ({ isOpen, onClose, taskIdToEdit }) => {
           {/* Work Description */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-              Work Description
+              Work Description / Notes
             </label>
             <textarea
               name="workDescription"
