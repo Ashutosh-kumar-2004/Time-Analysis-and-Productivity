@@ -35,7 +35,7 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
       setFormData({
         title: subtaskToEdit.title || "",
         estimatedHours: subtaskToEdit.estimatedHours || 0,
-        assignedTo: subtaskToEdit.assignedTo || "",
+        assignedTo: subtaskToEdit.assignedTo?._id || subtaskToEdit.assignedTo || "",
         status: subtaskToEdit.status || "todo",
       });
       // Reset log data

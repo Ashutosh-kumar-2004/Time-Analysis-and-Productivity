@@ -33,7 +33,7 @@ const ProjectDetailsPage = () => {
 
 
 
-  if (loading) return <ProjectDetailsShimmer />;
+  if (loading && !project) return <ProjectDetailsShimmer />;
 
   if (!project)
     return (

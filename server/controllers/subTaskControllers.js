@@ -499,16 +499,31 @@ export const logSubtaskHours = async (req, res) => {
       });
     }
 
-    // 4. Check permissions
-    // ONLY the assigned user can log hours to their own subtask
-    // (Trust-based system - user reports their own work)
+    // 4. Get Project for permission check
+    const project = await Project.findById(task.projectId);
+    if (!project) {
+        return res.status(404).json({
+            success: false,
+            message: "Project not found",
+        });
+    }
+
+    // 5. Check permissions
+    // Assigned user, Project creator, or Project managers can log hours
     const isAssigned =
       subtask.assignedTo && subtask.assignedTo.toString() === userId.toString();
+    
+    const isCreator = project.projectStartedBy.toString() === userId.toString();
+    const isManager = project.managingUserId.some((manager) =>
+      manager._id
+        ? manager._id.toString() === userId.toString()
+        : manager.toString() === userId.toString()
+    );
 
-    if (!isAssigned) {
+    if (!isAssigned && !isCreator && !isManager) {
       return res.status(403).json({
         success: false,
-        message: "Only the assigned user can log hours to this subtask",
+        message: "Only the assigned user, project creator, or managers can log hours",
       });
     }
 
