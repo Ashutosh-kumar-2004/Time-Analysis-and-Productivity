@@ -1,6 +1,12 @@
 import React, { useState, useContext } from 'react';
 import { ThemeContext } from '../../../context/ThemeContext';
 import { FiCalendar, FiFilter, FiCheck, FiX, FiChevronDown } from 'react-icons/fi';
+import StatsCards from './StatsCards';
+import TimeAllocationChart from './TimeAllocationChart';
+import ProductivityTrendChart from './ProductivityTrendChart';
+import CategoryComparisonChart from './CategoryComparisonChart';
+import DetailedCategoryBreakdown from './DetailedCategoryBreakdown';
+import ExportAnalyticsReport from './ExportAnalyticsReport';
 
 const PersonalAnalysisDashboard = () => {
   const { isDark } = useContext(ThemeContext);
@@ -49,6 +55,9 @@ const PersonalAnalysisDashboard = () => {
             Comprehensive productivity insights and detailed reporting
           </p>
         </div>
+
+        {/* Stats Cards */}
+        <StatsCards />
 
         {/* Time Range Filters */}
         <div className={`rounded-xl p-6 mb-6 ${
@@ -224,19 +233,25 @@ const PersonalAnalysisDashboard = () => {
           )}
         </div>
 
-        {/* Analytics Content Placeholder */}
-        <div className={`mt-6 rounded-xl p-12 text-center ${
-          isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
-        }`}>
-          <div className="text-6xl mb-4">📊</div>
-          <h3 className={`text-xl font-semibold mb-2 ${
-            isDark ? 'text-white' : 'text-gray-900'
-          }`}>
-            Analytics Data
-          </h3>
-          <p className={`${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            Your analytics charts and data will appear here based on the selected filters
-          </p>
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          <TimeAllocationChart />
+          <ProductivityTrendChart />
+        </div>
+
+        {/* Category Comparison Chart */}
+        <div className="mt-6">
+          <CategoryComparisonChart />
+        </div>
+
+        {/* Detailed Category Breakdown Table */}
+        <div className="mt-6">
+          <DetailedCategoryBreakdown />
+        </div>
+
+        {/* Export Analytics Report */}
+        <div className="mt-6">
+          <ExportAnalyticsReport />
         </div>
       </div>
     </div>
