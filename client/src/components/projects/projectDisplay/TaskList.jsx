@@ -21,6 +21,7 @@ import { getPriorityColor, getStatusColor } from "../../../constants/tasklist";
 import { useDeleteTask } from "../../../hooks/projects/task/useDeleteTask";
 import EditTask from "../task/EditTask";
 import EditSubtask from "../task/EditSubtask";
+import AddSubtask from "../task/AddSubtask";
 
 const TaskList = () => {
   const { project, setProject } = useContext(ProjectContext);
@@ -32,6 +33,7 @@ const TaskList = () => {
   const [showEditSubtaskModal, setShowEditSubtaskModal] = useState(false);
   const [subtaskToEdit, setSubtaskToEdit] = useState(null);
   const [parentTaskId, setParentTaskId] = useState(null);
+  const [showAddSubtaskModal, setShowAddSubtaskModal] = useState(false);
 
   const [expandedTasks, setExpandedTasks] = useState({});
 
@@ -333,11 +335,25 @@ const TaskList = () => {
 
 
                   {/* Subtasks */}
-                  {task.subtasks && task.subtasks.length > 0 && (
-                    <div className="mt-4">
-                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2 block">
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between mb-2">
+                       <span className="text-sm font-medium text-gray-600 dark:text-gray-400 block">
                         Subtasks:
                       </span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setParentTaskId(task._id);
+                          setShowAddSubtaskModal(true);
+                        }}
+                        className="text-xs flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:underline"
+                      >
+                        <FaPlus /> Add New
+                      </button>
+                    </div>
+                  
+                  {task.subtasks && task.subtasks.length > 0 && (
+                    <div className="mt-2">
                       <div className="space-y-2">
                         {task.subtasks.map((subtask) => (
                           <div
@@ -404,6 +420,7 @@ const TaskList = () => {
                       </div>
                     </div>
                   )}
+                  </div>
                 </div>
               )}
             </div>
@@ -430,6 +447,17 @@ const TaskList = () => {
             setParentTaskId(null);
           }}
           subtaskToEdit={subtaskToEdit}
+          parentTaskId={parentTaskId}
+        />
+      )}
+
+      {showAddSubtaskModal && parentTaskId && (
+        <AddSubtask
+          isOpen={showAddSubtaskModal}
+          onClose={() => {
+            setShowAddSubtaskModal(false);
+            setParentTaskId(null);
+          }}
           parentTaskId={parentTaskId}
         />
       )}
