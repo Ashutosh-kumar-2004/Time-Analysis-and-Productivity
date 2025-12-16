@@ -120,13 +120,21 @@ const TaskList = () => {
   return (
     <>
       <div className="space-y-4">
-        {tasks.map((task) => {
+        {tasks.map((task, index) => {
           const progress = calculateProgress(task);
           const isExpanded = expandedTasks[task._id];
+          const currentUserId = String(project?.currentUserId);
+          const isProjectCreator = String(project?.projectStartedBy?._id || project?.projectStartedBy) === currentUserId;
+          const isManager = project?.managingUserId?.some((u) => String(u._id || u) === currentUserId);
+          const isTaskCreator = String(task.createdBy?._id || task.createdBy) === currentUserId;
+          const isTaskAssigned = String(task.assignedTo?._id || task.assignedTo) === currentUserId;
+          
+          const canEditTask = isProjectCreator || isManager || isTaskCreator || isTaskAssigned;
+          const canAddSubtask = isProjectCreator || isManager || isTaskCreator;
 
           return (
             <div
-              key={task._id}
+              key={task._id || index}
               className={`rounded-xl border transition-all duration-300 hover:shadow-md ${
                 isDark
                   ? "border-gray-700 bg-gray-800/50"
@@ -275,26 +283,26 @@ const TaskList = () => {
 
                   {/* Actions */}
                   <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => {
-                        setTaskToEdit(task);
-                        setShowEditTaskModal(true);
-                      }}
-                      className={`p-2 rounded-lg transition-colors ${
-                        isDark
-                          ? "hover:bg-gray-700 text-blue-400 hover:text-blue-300"
-                          : "hover:bg-gray-100 text-blue-600 hover:text-blue-800"
-                      }`}
-                      title="Edit Task"
-                    >
-                      <FaEdit />
-                    </button>
+                    {canEditTask && (
+                      <button
+                        onClick={() => {
+                          setTaskToEdit(task);
+                          setShowEditTaskModal(true);
+                        }}
+                        className={`p-2 rounded-lg transition-colors ${
+                          isDark
+                            ? "hover:bg-gray-700 text-blue-400 hover:text-blue-300"
+                            : "hover:bg-gray-100 text-blue-600 hover:text-blue-800"
+                        }`}
+                        title="Edit Task"
+                      >
+                        <FaEdit />
+                      </button>
+                    )}
                     {(() => {
-                      const currentUserId = String(project?.currentUserId);
-                      const isProjectCreator = String(project?.projectStartedBy?._id || project?.projectStartedBy) === currentUserId;
-                      const isManager = project?.managingUserId?.some((u) => String(u._id || u) === currentUserId);
+                      const canDeleteTask = isProjectCreator || isManager;
                       
-                      if(isProjectCreator || isManager) {
+                      if(canDeleteTask) {
                           return (
                             <button
                               onClick={() => {
@@ -352,12 +360,6 @@ const TaskList = () => {
                         Subtasks:
                       </span>
                       {(() => {
-                        const currentUserId = String(project?.currentUserId);
-                        const isProjectCreator = String(project?.projectStartedBy?._id) === currentUserId;
-                        const isManager = project?.managingUserId?.some((u) => String(u._id) === currentUserId);
-                        const isTaskCreator = String(task.createdBy?._id) === currentUserId;
-                        const canAddSubtask = isProjectCreator || isManager || isTaskCreator;
-
                         return canAddSubtask && (
                           <button
                             onClick={(e) => {
@@ -376,15 +378,23 @@ const TaskList = () => {
                   {task.subtasks && task.subtasks.length > 0 && (
                     <div className="mt-2">
                       <div className="space-y-2">
-                        {task.subtasks.map((subtask) => (
+                        {task.subtasks.map((subtask, subIndex) => {
+                          const isSubtaskAssignee = String(subtask.assignedTo?._id || subtask.assignedTo) === currentUserId;
+                          const canEditSubtask = isProjectCreator || isManager || isTaskCreator || isSubtaskAssignee;
+
+                          return (
                           <div
-                            key={subtask._id}
+                            key={subtask._id || subIndex}
                             onClick={() => {
-                              setSubtaskToEdit(subtask);
-                              setParentTaskId(task._id);
-                              setShowEditSubtaskModal(true);
+                              if (canEditSubtask) {
+                                setSubtaskToEdit(subtask);
+                                setParentTaskId(task._id);
+                                setShowEditSubtaskModal(true);
+                              }
                             }}
-                            className={`flex items-center justify-between p-3 rounded-lg border transition-all cursor-pointer ${
+                            className={`flex items-center justify-between p-3 rounded-lg border transition-all ${
+                              canEditSubtask ? "cursor-pointer" : "cursor-default"
+                            } ${
                               isDark
                                 ? "bg-gray-900/50 border-gray-800 hover:border-gray-600 hover:bg-gray-800"
                                 : "bg-gray-50 border-gray-100 hover:border-blue-200 hover:bg-blue-50/50"
@@ -437,7 +447,7 @@ const TaskList = () => {
                               )}
                             </div>
                           </div>
-                        ))}
+                        )})}
                       </div>
                     </div>
                   )}

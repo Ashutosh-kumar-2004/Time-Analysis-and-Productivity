@@ -277,25 +277,38 @@ const EditSubtask = ({ isOpen, onClose, subtaskToEdit, parentTaskId }) => {
                   ) : <div></div>;
                 })()}
 
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      isDark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-800"
-                    }`}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={updating}
-                    className="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {updating ? <FaSpinner className="animate-spin" /> : <FaSave />}
-                    Save Changes
-                  </button>
-                </div>
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        isDark ? "bg-gray-700 hover:bg-gray-600 text-white" : "bg-gray-200 hover:bg-gray-300 text-gray-800"
+                      }`}
+                    >
+                      Cancel
+                    </button>
+                    {(() => {
+                         const parentTask = project?.tasks?.find(t => t._id === parentTaskId);
+                         const currentUserId = String(project?.currentUserId);
+                         const isProjectCreator = String(project?.projectStartedBy?._id || project?.projectStartedBy) === currentUserId;
+                         const isManager = project?.managingUserId?.some((u) => String(u._id || u) === currentUserId);
+                         const isTaskCreator = parentTask && String(parentTask.createdBy?._id || parentTask.createdBy) === currentUserId;
+                         const isAssigned = String(subtaskToEdit.assignedTo?._id || subtaskToEdit.assignedTo) === currentUserId;
+                         
+                         const canUpdate = isProjectCreator || isManager || isTaskCreator || isAssigned;
+                         
+                         return canUpdate && (
+                            <button
+                              type="submit"
+                              disabled={updating}
+                              className="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              {updating ? <FaSpinner className="animate-spin" /> : <FaSave />}
+                              Save Changes
+                            </button>
+                         )
+                    })()}
+                  </div>
               </div>
             </form>
           ) : (
