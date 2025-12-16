@@ -214,4 +214,21 @@ export const getProjectTasks = async (req, res) => {
   }
 };
 
+// get all the user detail for the create task modal here the data will be use to assign the task to the user
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("_id firstName email lastName avatar");
 
+    res.status(200).json({
+      success: true,
+      count: users.length,
+      data: users,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve users",
+      error: error.message,
+    });
+  }
+};

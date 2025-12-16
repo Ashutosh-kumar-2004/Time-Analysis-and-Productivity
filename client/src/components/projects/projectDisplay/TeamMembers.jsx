@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { FaTrash, FaUndo, FaUserPlus, FaUserSlash } from "react-icons/fa";
 import { ProjectContext } from "../../../context/project/ProjectContext";
 import ViewAllMembersModal from "./ViewAllMembersModal";
+import AddTeamMemberModal from "../members/AddTeamMemberModal";
 import { useSuspendMember } from "../../../hooks/projects/membersActions/useSuspendMember";
 import { useRevokeMember } from "../../../hooks/projects/membersActions/useRevokeMember";
 
@@ -10,6 +11,7 @@ const MAX_VISIBLE = 4; //currently for the ui checking i have kept it as 1 later
 const TeamMembers = () => {
   const [activeTab, setActiveTab] = useState("active");
   const [showAllModal, setShowAllModal] = useState(false);
+  const [showAddMemberModal, setShowAddMemberModal] = useState(false);
   const [confirmData, setConfirmData] = useState(null);
 
   const { project,setProject } = useContext(ProjectContext);
@@ -196,7 +198,10 @@ const TeamMembers = () => {
 
         {/* Add Member → manager only */}
         {isManager && (
-          <button className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 dark:text-white rounded-lg">
+          <button 
+            onClick={() => setShowAddMemberModal(true)}
+            className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          >
             <FaUserPlus /> Add Member
           </button>
         )}
@@ -270,7 +275,11 @@ const TeamMembers = () => {
         onSuspend={(id) => openConfirm("suspend", id)}
         onRemove={(id) => openConfirm("remove", id)}
         onRevoke={(id) => openConfirm("revoke", id)}
-        onAddMember={() => console.log("Open add member modal")}
+        onAddMember={() => setShowAddMemberModal(true)}
+      />
+      <AddTeamMemberModal 
+        isOpen={showAddMemberModal}
+        onClose={() => setShowAddMemberModal(false)}
       />
     </>
   );

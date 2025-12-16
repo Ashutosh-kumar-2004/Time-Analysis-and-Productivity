@@ -7,6 +7,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import LandingPageProject from "../components/projects/LandingPageProject";
 import ProjectDetailsPage from "../components/projects/projectDisplay/ProjectDetailsPage";
 import { ProjectProvider } from "../context/project/ProjectContext";
+import { UserProvider } from "../context/user/UserContext";
 import Navbar from "../components/navbar/Navbar";
 
 const AppRoutes = () => {
@@ -50,8 +51,10 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <ProjectProvider>
-                <Navbar/>
-                <ProjectDetailsPage />
+                <UserProvider>
+                  <Navbar/>
+                  <ProjectDetailsPage />
+                </UserProvider>
               </ProjectProvider>
             </ProtectedRoute>
           }
