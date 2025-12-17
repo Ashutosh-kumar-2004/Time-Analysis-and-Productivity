@@ -9,7 +9,7 @@ import {
   deleteTimeEntry,
 } from "../../controllers/personal/timeEntry.js";
 
-const   router = express.Router();
+const router = express.Router();
 
 router.route("/").post(createTimeEntry).get(getUserTimeEntries);
 

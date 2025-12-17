@@ -9,6 +9,7 @@ import DailyCheckInModal from "./formData/DailyCheckInModal";
 import DailyActivityLog from "./formData/DailyActivityLog";
 import LogTimeModal from "./formData/LogTimeModal";
 import ActivityHistoryModal from "./formData/ActivityHistoryModal";
+import ViewTimeLogModal from "./formData/ViewTimeLogModal";
 import { PersonalAnalysisProvider } from "../../context/personalAnalysis/PersonalAnalysisContext";
 
 const FormData = () => {
@@ -16,11 +17,18 @@ const FormData = () => {
   const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
   const [isLogTimeModalOpen, setIsLogTimeModalOpen] = useState(false);
   const [isActivityHistoryOpen, setIsActivityHistoryOpen] = useState(false);
+  const [isViewLogModalOpen, setIsViewLogModalOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState(null);
+  const [viewingEntry, setViewingEntry] = useState(null);
 
   const handleEditTimeLog = (entry) => {
     setEditingEntry(entry);
     setIsLogTimeModalOpen(true);
+  };
+
+  const handleViewTimeLog = (entry) => {
+    setViewingEntry(entry);
+    setIsViewLogModalOpen(true);
   };
 
   const handleLogTimeClose = () => {
@@ -43,6 +51,7 @@ const FormData = () => {
           <RecentActivity
             onViewAll={() => setIsActivityHistoryOpen(true)}
             onEdit={handleEditTimeLog}
+            onView={handleViewTimeLog}
           />
           <FocusTrends />
         </div>
@@ -76,6 +85,13 @@ const FormData = () => {
           isOpen={isActivityHistoryOpen}
           onClose={() => setIsActivityHistoryOpen(false)}
           onEdit={handleEditTimeLog}
+          onView={handleViewTimeLog}
+        />
+
+        <ViewTimeLogModal
+          isOpen={isViewLogModalOpen}
+          onClose={() => setIsViewLogModalOpen(false)}
+          entry={viewingEntry}
         />
       </div>
     </PersonalAnalysisProvider>

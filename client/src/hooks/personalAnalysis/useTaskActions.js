@@ -129,6 +129,25 @@ const useTaskActions = () => {
     }
   }, []);
 
+  const deleteTimeEntry = useCallback(async (entryId) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/time-entries/${entryId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Time entry deleted successfully");
+      return true;
+    } catch (err) {
+      console.error("Delete time entry error:", err);
+      toast.error(err.response?.data?.message || "Failed to delete time entry");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return {
     updateTaskStatus,
     startTrackingList,
@@ -136,6 +155,7 @@ const useTaskActions = () => {
     fetchActiveEntry,
     logManualTime,
     updateTimeEntry,
+    deleteTimeEntry,
     loading,
   };
 };

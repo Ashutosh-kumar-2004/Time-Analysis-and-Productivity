@@ -10,6 +10,7 @@ import {
   X,
   Clock,
   CheckCircle2,
+  Trash2,
 } from "lucide-react";
 import { usePersonalAnalysis } from "../../../context/personalAnalysis/PersonalAnalysisContext";
 import useCreatePersonalTask from "../../../hooks/personalAnalysis/useCreatePersonalTask";
@@ -28,9 +29,10 @@ const categories = [
 const LogTimeModal = ({ isOpen, onClose, editEntry = null }) => {
   const { tasks, refreshTasks } = usePersonalAnalysis();
   const { createTask } = useCreatePersonalTask();
-  const { logManualTime, updateTimeEntry } = useTaskActions();
+  const { logManualTime, updateTimeEntry, deleteTimeEntry } = useTaskActions();
 
   const [taskInput, setTaskInput] = useState("");
+  const [notes, setNotes] = useState("");
   const [selectedTaskId, setSelectedTaskId] = useState("");
   const [category, setCategory] = useState("studies");
   const [focus, setFocus] = useState(3);
@@ -52,6 +54,7 @@ const LogTimeModal = ({ isOpen, onClose, editEntry = null }) => {
         };
 
         setTaskInput(editEntry.taskTitle || editEntry.title || "");
+        setNotes(editEntry.additionalNotes || "");
         setSelectedTaskId(editEntry.taskId?._id || editEntry.taskId || "");
         setCategory(editEntry.category || "studies");
         setFocus(editEntry.focusScore || 3);
@@ -76,12 +79,26 @@ const LogTimeModal = ({ isOpen, onClose, editEntry = null }) => {
         setEndTime(format(now));
         setStartTime(format(oneHourAgo));
         setTaskInput("");
+        setNotes("");
         setSelectedTaskId("");
         setCategory("studies");
         setFocus(3);
       }
     }
   }, [isOpen, editEntry]);
+
+  const handleDelete = async () => {
+    if (!editEntry) return;
+    if (window.confirm("Are you sure you want to delete this time log?")) {
+      setIsSubmitting(true);
+      const success = await deleteTimeEntry(editEntry.id || editEntry._id);
+      if (success) {
+        refreshTasks(); // Refresh context/lists
+        onClose();
+      }
+      setIsSubmitting(false);
+    }
+  };
 
   const handleSubmit = async () => {
     if (!startTime || !endTime) {
@@ -129,19 +146,21 @@ const LogTimeModal = ({ isOpen, onClose, editEntry = null }) => {
         // Update existing entry
         success = await updateTimeEntry(editEntry.id || editEntry._id, {
           taskId: finalTaskId,
+          title: taskInput, // Save specific title
           startTimestamp: start,
           endTimestamp: end,
           focusScore: focus,
-          additionalNotes: taskInput && selectedTaskId ? taskInput : "",
+          additionalNotes: notes,
         });
       } else {
         // Create new entry
         success = await logManualTime({
           taskId: finalTaskId,
+          title: taskInput, // Save specific title
           startTimestamp: start,
           endTimestamp: end,
           focusScore: focus,
-          additionalNotes: taskInput && selectedTaskId ? taskInput : "",
+          additionalNotes: notes,
         });
       }
 
@@ -195,6 +214,9 @@ const LogTimeModal = ({ isOpen, onClose, editEntry = null }) => {
 
         {/* Task Input */}
         <div className="mb-6">
+          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1.5 block">
+            Task Name
+          </label>
           <input
             value={taskInput}
             onChange={(e) => setTaskInput(e.target.value)}
@@ -207,6 +229,20 @@ const LogTimeModal = ({ isOpen, onClose, editEntry = null }) => {
               Linked to selected task below
             </p>
           )}
+        </div>
+
+        {/* Notes Input */}
+        <div className="mb-6">
+          <label className="text-xs text-gray-500 dark:text-gray-400 mb-1.5 block">
+            Additional Notes
+          </label>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Add details about your session..."
+            rows={3}
+            className="w-full rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-black/20 px-4 py-3 text-sm text-gray-900 dark:text-gray-100 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all resize-none"
+          />
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -369,6 +405,16 @@ const LogTimeModal = ({ isOpen, onClose, editEntry = null }) => {
           >
             Cancel
           </button>
+          {editEntry && (
+            <button
+              onClick={handleDelete}
+              disabled={isSubmitting}
+              className="px-4 py-3 rounded-xl border border-red-200 dark:border-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors active:scale-95"
+              title="Delete Log"
+            >
+              <Trash2 className="w-5 h-5" />
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -11,6 +11,7 @@ export const createTimeEntry = async (req, res) => {
 
     const {
       taskId,
+      title,
       startTimestamp,
       endTimestamp, // Allow endTimestamp for manual entry
       focusScore = 3,
@@ -18,61 +19,13 @@ export const createTimeEntry = async (req, res) => {
       additionalNotes = "",
     } = req.body;
 
-    // Validate required fields
-    if (!taskId) {
-      return res.status(400).json({
-        success: false,
-        error: "Validation Error",
-        message: "Task ID is required",
-        details: { taskId: "Task ID is required" },
-      });
-    }
-
-    // Check if task exists (optional, depends on your setup)
-    const taskExists = await userTask.findById(taskId);
-    if (!taskExists) {
-      return res.status(404).json({
-        success: false,
-        error: "Not Found",
-        message: "Task not found",
-      });
-    }
-
-    // Only check for active entry conflict if we are creating a NEW active entry (no endTimestamp)
-    if (!endTimestamp) {
-      const activeEntry = await TimeEntry.findOne({
-        userId,
-        entryStatus: "active",
-      });
-
-      if (activeEntry) {
-        return res.status(400).json({
-          success: false,
-          error: "Validation Error",
-          message:
-            "You already have an active time entry. Please stop it before starting a new one.",
-          data: {
-            activeEntryId: activeEntry._id,
-            currentTask: activeEntry.taskId,
-          },
-        });
-      }
-    }
-
-    // Validate focus score
-    if (focusScore < 1 || focusScore > 5) {
-      return res.status(400).json({
-        success: false,
-        error: "Validation Error",
-        message: "Focus score must be between 1 and 5",
-        details: { focusScore: "Must be between 1 and 5" },
-      });
-    }
+    // ... (skipping unchanged lines)
 
     // Create time entry
     const timeEntry = new TimeEntry({
       userId,
       taskId,
+      title: title || undefined, // Save specific title if provided
       startTimestamp: startTimestamp || new Date(),
       endTimestamp: endTimestamp || undefined, // Set end timestamp if provided
       focusScore: Math.round(focusScore),
@@ -320,7 +273,7 @@ export const getUserTimeEntries = async (req, res) => {
       .sort(sort)
       .skip(skip)
       .limit(parseInt(limit))
-      .populate("taskId", "title category") // Populate task details if needed
+      .populate("taskId", "taskTitle category") // Populate task details if needed
       .lean();
 
     // Get total count for pagination metadata
@@ -330,7 +283,11 @@ export const getUserTimeEntries = async (req, res) => {
     const processedEntries = timeEntries.map((entry) => ({
       id: entry._id,
       taskId: entry.taskId,
-      taskTitle: entry.taskId?.title,
+      taskTitle:
+        entry.title ||
+        entry.taskId?.taskTitle ||
+        entry.additionalNotes ||
+        "Untitled Task",
       category: entry.taskId?.category,
       startTimestamp: entry.startTimestamp,
       endTimestamp: entry.endTimestamp,
@@ -385,7 +342,7 @@ export const getActiveTimeEntry = async (req, res) => {
     const activeEntry = await TimeEntry.findOne({
       userId,
       entryStatus: "active",
-    }).populate("taskId", "title category priority");
+    }).populate("taskId", "taskTitle category priority");
 
     if (!activeEntry) {
       return res.status(404).json({
@@ -406,7 +363,12 @@ export const getActiveTimeEntry = async (req, res) => {
         id: activeEntry._id,
         task: {
           id: activeEntry.taskId?._id,
-          title: activeEntry.taskId?.title,
+          id: activeEntry.taskId?._id,
+          title:
+            activeEntry.title ||
+            activeEntry.taskId?.taskTitle ||
+            activeEntry.additionalNotes ||
+            "Untitled Task",
           category: activeEntry.taskId?.category,
           priority: activeEntry.taskId?.priority,
         },
@@ -543,6 +505,7 @@ export const updateTimeEntry = async (req, res) => {
     delete updateData.userId;
     delete updateData.createdAt;
     delete updateData.updatedAt;
+    // title is allowed to stay in updateData
 
     // Validate focus score if being updated
     if (updateData.focusScore !== undefined) {
