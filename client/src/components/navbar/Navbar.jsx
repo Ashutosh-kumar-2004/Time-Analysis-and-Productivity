@@ -29,11 +29,6 @@ const Navbar = () => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
-
-  // Removed manual token checks and effects as AuthContext handles data fetching.
-  // We keep the auth check effect for redirect if critical, but Navbar typically just reflects state.
-  // If we want to force login on protected routes, that should be in a ProtectedRoute component, 
-  // but here we can keep the redirect if user is definitely not logged in on a protected page.
   
   useEffect(() => {
      // Basic check to redirect if no token found on mount (preserving existing behavior)
