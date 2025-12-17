@@ -1,7 +1,7 @@
 import React from 'react';
 import { Play, Plus, Calendar, Clock } from 'lucide-react';
 
-const QuickActions = () => {
+const QuickActions = ({ onAddTask }) => {
   const actions = [
     {
       title: 'Start Tracking',
@@ -13,7 +13,7 @@ const QuickActions = () => {
       title: 'Add Task',
       icon: <Plus className="w-5 h-5" />,
       color: 'bg-emerald-500 hover:bg-emerald-600',
-      action: () => console.log('Add Task')
+      action: onAddTask // Use the passed prop
     },
     {
       title: 'Daily Check-in',
@@ -37,7 +37,7 @@ const QuickActions = () => {
           <button
             key={index}
             onClick={action.action}
-            className={`${action.color} text-white p-4 rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl flex items-center justify-center gap-3 font-medium border border-white/10`}
+            className={`${action.color} text-white p-4 rounded-xl shadow-lg shadow-gray-200/50 dark:shadow-none transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl flex items-center justify-center gap-3 font-medium border border-white/10 cursor-pointer`}
           >
             {action.icon}
             {action.title}
