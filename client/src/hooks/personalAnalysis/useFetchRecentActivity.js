@@ -1,11 +1,20 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { usePersonalAnalysis } from "../../context/personalAnalysis/PersonalAnalysisContext";
 
 const useFetchRecentActivity = (limit = 5) => {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Get refreshTrigger from context safely (might be null if used outside provider, though unlikely here)
+  let refreshTrigger = 0;
+  try {
+    const context = usePersonalAnalysis();
+    refreshTrigger = context.refreshTrigger;
+  } catch (e) {
+    // Ignore error if used outside provider
+  }
 
   const fetchActivities = useCallback(async () => {
     setLoading(true);
@@ -36,7 +45,7 @@ const useFetchRecentActivity = (limit = 5) => {
 
   useEffect(() => {
     fetchActivities();
-  }, [fetchActivities]);
+  }, [fetchActivities, refreshTrigger]);
 
   return { activities, loading, error, refetch: fetchActivities };
 };

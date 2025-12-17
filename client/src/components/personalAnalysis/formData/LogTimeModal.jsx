@@ -191,7 +191,7 @@ const LogTimeModal = ({ isOpen, onClose, editEntry = null }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
       <div
         className="w-full max-w-3xl rounded-2xl bg-white dark:bg-[#1e1e1e] shadow-2xl p-6 md:p-8 transition-colors max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}

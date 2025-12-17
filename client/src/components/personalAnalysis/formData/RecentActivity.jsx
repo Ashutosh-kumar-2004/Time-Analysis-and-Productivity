@@ -99,7 +99,7 @@ const RecentActivity = ({ onViewAll, onEdit, onView }) => {
             return (
               <div
                 key={item.id}
-                className="flex gap-4 items-start group relative"
+                className="flex gap-4 items-start group relative p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
               >
                 <div
                   className={`p-3 rounded-xl ${style.bg} flex-shrink-0 transition-transform group-hover:scale-110`}

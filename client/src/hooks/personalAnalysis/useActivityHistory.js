@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import { usePersonalAnalysis } from "../../context/personalAnalysis/PersonalAnalysisContext";
 
 const useActivityHistory = (initialLimit = 20) => {
   const [activities, setActivities] = useState([]);
@@ -13,6 +14,15 @@ const useActivityHistory = (initialLimit = 20) => {
   });
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+
+  // Get refreshTrigger from context
+  let refreshTrigger = 0;
+  try {
+    const context = usePersonalAnalysis();
+    refreshTrigger = context.refreshTrigger;
+  } catch (e) {
+    // Ignore
+  }
 
   const fetchActivities = useCallback(
     async (isLoadMore = false) => {
@@ -62,7 +72,7 @@ const useActivityHistory = (initialLimit = 20) => {
 
   useEffect(() => {
     fetchActivities(page > 1);
-  }, [fetchActivities, page]);
+  }, [fetchActivities, page, refreshTrigger]);
 
   const updateFilter = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));

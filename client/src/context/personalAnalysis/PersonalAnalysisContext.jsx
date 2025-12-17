@@ -11,10 +11,13 @@ export const PersonalAnalysisProvider = ({ children }) => {
   const [activeTimeEntry, setActiveTimeEntry] = React.useState(null);
   const { fetchActiveEntry } = useTaskActions();
 
+  const [refreshTrigger, setRefreshTrigger] = React.useState(0);
+
   const refreshTasks = useCallback(async () => {
     refetch();
     const active = await fetchActiveEntry();
     setActiveTimeEntry(active);
+    setRefreshTrigger((prev) => prev + 1); // Trigger other listeners
   }, [refetch, fetchActiveEntry]);
 
   // Initial fetch of active entry
@@ -35,6 +38,7 @@ export const PersonalAnalysisProvider = ({ children }) => {
         refreshTasks,
         activeTimeEntry,
         setActiveTimeEntry,
+        refreshTrigger,
       }}
     >
       {children}
