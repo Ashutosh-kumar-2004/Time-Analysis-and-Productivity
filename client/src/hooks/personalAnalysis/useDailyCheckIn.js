@@ -58,29 +58,35 @@ const useDailyCheckIn = () => {
     }
   }, []);
 
-  const fetchCheckInHistory = useCallback(async (page = 1, limit = 7) => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get(
-        `${
-          import.meta.env.VITE_API_URL
-        }/api/daily-check-in/history?page=${page}&limit=${limit}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+  const fetchCheckInHistory = useCallback(
+    async (page = 1, limit = 7, filters = {}) => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem("token");
+        let query = `?page=${page}&limit=${limit}`;
 
-      if (res.data.success) {
-        return res.data;
+        if (filters.startDate) query += `&startDate=${filters.startDate}`;
+        if (filters.endDate) query += `&endDate=${filters.endDate}`;
+
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/daily-check-in/history${query}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        if (res.data.success) {
+          return res.data;
+        }
+        return null;
+      } catch (err) {
+        console.error("Fetch history error:", err);
+        toast.error("Failed to load history");
+        return null;
+      } finally {
+        setLoading(false);
       }
-      return null;
-    } catch (err) {
-      console.error("Fetch history error:", err);
-      toast.error("Failed to load history");
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   return {
     checkIn,

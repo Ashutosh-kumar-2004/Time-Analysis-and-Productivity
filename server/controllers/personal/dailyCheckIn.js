@@ -15,12 +15,16 @@ export const createDailyCheckIn = async (req, res) => {
       stressLevel,
       focusAreas,
       motivation,
+      date, // Extract date
     } = req.body;
 
-    // Check if check-in already exists for today
-    const startOfDay = new Date();
+    // Use provided date or default to now
+    const targetDate = date ? new Date(date) : new Date();
+
+    // Check if check-in already exists for target date
+    const startOfDay = new Date(targetDate);
     startOfDay.setHours(0, 0, 0, 0);
-    const endOfDay = new Date();
+    const endOfDay = new Date(targetDate);
     endOfDay.setHours(23, 59, 59, 999);
 
     let checkIn = await DailyCheckIn.findOne({
@@ -48,6 +52,7 @@ export const createDailyCheckIn = async (req, res) => {
     // Create new
     checkIn = await DailyCheckIn.create({
       userId,
+      date: targetDate, // Save the specific date
       priorities,
       energyLevel,
       moodLevel,
@@ -122,16 +127,32 @@ export const getTodayCheckIn = async (req, res) => {
 export const getCheckInHistory = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { limit = 7, page = 1 } = req.query;
+    const { limit = 7, page = 1, startDate, endDate } = req.query;
+
+    const query = { userId };
+
+    // Add date range filter if provided
+    if (startDate || endDate) {
+      query.date = {};
+      if (startDate) {
+        query.date.$gte = new Date(startDate);
+      }
+      if (endDate) {
+        // Set end date to end of day
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        query.date.$lte = end;
+      }
+    }
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
-    const history = await DailyCheckIn.find({ userId })
+    const history = await DailyCheckIn.find(query)
       .sort({ date: -1 })
       .skip(skip)
       .limit(parseInt(limit));
 
-    const total = await DailyCheckIn.countDocuments({ userId });
+    const total = await DailyCheckIn.countDocuments(query);
 
     res.status(200).json({
       success: true,

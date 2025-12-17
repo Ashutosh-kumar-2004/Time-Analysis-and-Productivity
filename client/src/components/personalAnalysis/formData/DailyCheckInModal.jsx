@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Plus, X } from "lucide-react";
 import useDailyCheckIn from "../../../hooks/personalAnalysis/useDailyCheckIn";
 import DailyLogView from "./DailyLogView";
+import DailyLogDetails from "./DailyLogDetails";
 
 const DailyCheckInModal = ({ isOpen, onClose }) => {
   const { fetchCheckInByDate, saveCheckIn, loading } = useDailyCheckIn();
@@ -10,6 +11,8 @@ const DailyCheckInModal = ({ isOpen, onClose }) => {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+
+  const [selectedLog, setSelectedLog] = useState(null);
 
   const [priorities, setPriorities] = useState([""]);
   const [energy, setEnergy] = useState(null);
@@ -67,6 +70,17 @@ const DailyCheckInModal = ({ isOpen, onClose }) => {
     );
   };
 
+  const handleViewLog = (log) => {
+    setSelectedLog(log);
+  };
+
+  const handleEditLog = (date) => {
+    // Extract date string YYYY-MM-DD
+    const dateStr = new Date(date).toISOString().split("T")[0];
+    setSelectedDate(dateStr);
+    setView("checkin");
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -117,7 +131,14 @@ const DailyCheckInModal = ({ isOpen, onClose }) => {
         {/* Content Area */}
         <div className="flex-1 overflow-y-auto pr-2">
           {view === "history" ? (
-            <DailyLogView />
+            selectedLog ? (
+              <DailyLogDetails
+                log={selectedLog}
+                onClose={() => setSelectedLog(null)}
+              />
+            ) : (
+              <DailyLogView onView={handleViewLog} onEdit={handleEditLog} />
+            )
           ) : (
             <>
               <div className="text-center mb-6">
