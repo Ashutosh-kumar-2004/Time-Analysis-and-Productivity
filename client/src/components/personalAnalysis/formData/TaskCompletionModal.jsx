@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Star, Clock, MessageSquare, Award } from "lucide-react";
 import useCompleteTask from "../../../hooks/personalAnalysis/useCompleteTask";
+import useTaskActions from "../../../hooks/personalAnalysis/useTaskActions";
 import { usePersonalAnalysis } from "../../../context/personalAnalysis/PersonalAnalysisContext";
 
 const TaskCompletionModal = ({ isOpen, onClose, task, onCompleteSuccess }) => {
   const { completeTask, loading } = useCompleteTask();
-  const { refreshTasks } = usePersonalAnalysis(); // Or use passed success callback if simpler
+  const { stopTrackingList } = useTaskActions();
+  const { refreshTasks, activeTimeEntry } = usePersonalAnalysis();
 
   const [formData, setFormData] = useState({
     timeSpentInMinutes: 0,
@@ -18,6 +20,11 @@ const TaskCompletionModal = ({ isOpen, onClose, task, onCompleteSuccess }) => {
   if (!isOpen || !task) return null;
 
   const handleSubmit = async () => {
+    // Stop active timer if it belongs to this task
+    if (activeTimeEntry && activeTimeEntry.task?.id === task.id) {
+      await stopTrackingList(activeTimeEntry.id);
+    }
+
     const completionData = {
       timeSpentInMinutes: parseInt(formData.timeSpentInMinutes),
       focusScore: formData.focusScore,

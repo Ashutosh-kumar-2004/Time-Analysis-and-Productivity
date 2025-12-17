@@ -8,9 +8,9 @@ import {
   Eye,
   Pencil,
   Play,
+  Square,
 } from "lucide-react";
 import { CheckCircle2 } from "lucide-react";
-
 
 const AllTasksModal = ({
   isOpen,
@@ -19,7 +19,9 @@ const AllTasksModal = ({
   onView,
   onEdit,
   onStartTracking,
+  onStopTracking,
   onComplete,
+  activeTimeEntry,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -244,16 +246,34 @@ const AllTasksModal = ({
                   >
                     <Pencil className="w-4 h-4" />
                   </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onStartTracking(task.id);
-                    }}
-                    className="p-2 text-gray-400 hover:text-green-500 hover:bg-green-50 dark:hover:bg-green-500/10 rounded-lg transition-all"
-                    title="Start Timer"
-                  >
-                    <Play className="w-4 h-4" />
-                  </button>
+                  {activeTimeEntry && activeTimeEntry.task?.id === task.id ? (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onStopTracking(activeTimeEntry.id);
+                      }}
+                      className="p-2 text-white bg-red-500 hover:bg-red-600 rounded-lg transition-all animate-pulse"
+                      title="Stop Timer"
+                    >
+                      <Square className="w-4 h-4 fill-current" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onStartTracking(task.id);
+                      }}
+                      disabled={!!activeTimeEntry}
+                      className={`p-2 rounded-lg transition-all ${
+                        activeTimeEntry
+                          ? "text-gray-300 cursor-not-allowed dark:text-gray-600"
+                          : "text-gray-400 hover:text-green-500 hover:bg-green-50 dark:hover:bg-green-500/10"
+                      }`}
+                      title={activeTimeEntry ? "Timer running" : "Start Timer"}
+                    >
+                      <Play className="w-4 h-4" />
+                    </button>
+                  )}
                   {task.status !== "completed" && (
                     <button
                       onClick={(e) => {

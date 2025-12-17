@@ -7,9 +7,10 @@ import {
   MoreVertical,
   Pencil,
   Trash2,
-  Eye,
   List,
   Plus,
+  Square,
+  Eye,
 } from "lucide-react";
 import useTaskActions from "../../../hooks/personalAnalysis/useTaskActions";
 import CreateTaskModal from "./CreateTaskModal";
@@ -21,8 +22,14 @@ import { usePersonalAnalysis } from "../../../context/personalAnalysis/PersonalA
 
 const ActiveTasks = () => {
   // Fetch 'in_progress' and 'not_started' from Context
-  const { tasks, loading, error, refreshTasks } = usePersonalAnalysis();
-  const { startTrackingList, loading: actionLoading } = useTaskActions();
+  // Fetch 'in_progress' and 'not_started' from Context
+  const { tasks, loading, error, refreshTasks, activeTimeEntry } =
+    usePersonalAnalysis();
+  const {
+    startTrackingList,
+    stopTrackingList,
+    loading: actionLoading,
+  } = useTaskActions();
   const { deleteTask, loading: deleteLoading } = useDeletePersonalTask();
 
   // State for edit modal
@@ -46,7 +53,17 @@ const ActiveTasks = () => {
   };
 
   const handleStartTracking = async (taskId) => {
-    await startTrackingList(taskId);
+    const result = await startTrackingList(taskId);
+    if (result) {
+      refreshTasks(); // This will refresh tasks and active entry
+    }
+  };
+
+  const handleStopTracking = async (entryId) => {
+    const result = await stopTrackingList(entryId);
+    if (result) {
+      refreshTasks();
+    }
   };
 
   const handleEditClick = (task) => {
@@ -202,13 +219,32 @@ const ActiveTasks = () => {
                         </div>
                       </div>
                     </div>
-                    <button
-                      onClick={() => handleStartTracking(task.id)}
-                      className="opacity-0 group-hover:opacity-100 p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all transform hover:scale-105 shadow-lg shadow-blue-500/30 cursor-pointer"
-                      title="Start Timer"
-                    >
-                      <Play className="w-4 h-4 fill-current" />
-                    </button>
+                    {activeTimeEntry && activeTimeEntry.task?.id === task.id ? (
+                      <button
+                        onClick={() => handleStopTracking(activeTimeEntry.id)}
+                        className="opacity-100 p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all transform hover:scale-105 shadow-lg shadow-red-500/30 cursor-pointer animate-pulse"
+                        title="Stop Timer"
+                      >
+                        <Square className="w-4 h-4 fill-current" />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleStartTracking(task.id)}
+                        disabled={!!activeTimeEntry}
+                        className={`opacity-0 group-hover:opacity-100 p-2 ${
+                          activeTimeEntry
+                            ? "bg-gray-300 cursor-not-allowed dark:bg-gray-700"
+                            : "bg-blue-600 hover:bg-blue-700 shadow-blue-500/30 hover:scale-105"
+                        } text-white rounded-lg transition-all shadow-lg cursor-pointer`}
+                        title={
+                          activeTimeEntry
+                            ? "Another active task running"
+                            : "Start Timer"
+                        }
+                      >
+                        <Play className="w-4 h-4 fill-current" />
+                      </button>
+                    )}
                   </div>
 
                   <div className="mb-4">
@@ -276,7 +312,9 @@ const ActiveTasks = () => {
         onView={handleViewClick}
         onEdit={handleEditClick}
         onStartTracking={handleStartTracking}
+        onStopTracking={handleStopTracking}
         onComplete={handleMarkComplete}
+        activeTimeEntry={activeTimeEntry}
       />
 
       {/* reusing CreateTaskModal for Editing */}
