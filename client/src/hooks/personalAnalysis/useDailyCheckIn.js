@@ -54,11 +54,36 @@ const useDailyCheckIn = () => {
     }
   }, []);
 
+  const fetchCheckInHistory = useCallback(async (page = 1, limit = 7) => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(
+        `${
+          import.meta.env.VITE_API_URL
+        }/api/daily-check-in/history?page=${page}&limit=${limit}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (res.data.success) {
+        return res.data;
+      }
+      return null;
+    } catch (err) {
+      console.error("Fetch history error:", err);
+      toast.error("Failed to load history");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return {
     checkIn,
     loading,
     fetchTodayCheckIn,
     saveCheckIn,
+    fetchCheckInHistory,
   };
 };
 

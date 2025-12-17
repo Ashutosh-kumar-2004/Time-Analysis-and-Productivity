@@ -110,3 +110,42 @@ export const getTodayCheckIn = async (req, res) => {
     });
   }
 };
+
+/**
+ * @desc    Get check-in history
+ * @route   GET /api/v1/daily-check-in/history
+ * @access  Private
+ */
+export const getCheckInHistory = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { limit = 7, page = 1 } = req.query;
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const history = await DailyCheckIn.find({ userId })
+      .sort({ date: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const total = await DailyCheckIn.countDocuments({ userId });
+
+    res.status(200).json({
+      success: true,
+      data: history,
+      meta: {
+        total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        pages: Math.ceil(total / parseInt(limit)),
+      },
+    });
+  } catch (error) {
+    console.error("Get Check-In History Error:", error);
+    res.status(500).json({
+      success: false,
+      error: "Server Error",
+      message: "Failed to fetch check-in history",
+    });
+  }
+};
