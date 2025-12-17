@@ -8,12 +8,25 @@ import CreateTaskModal from "./formData/CreateTaskModal";
 import DailyCheckInModal from "./formData/DailyCheckInModal";
 import DailyActivityLog from "./formData/DailyActivityLog";
 import LogTimeModal from "./formData/LogTimeModal";
+import ActivityHistoryModal from "./formData/ActivityHistoryModal";
 import { PersonalAnalysisProvider } from "../../context/personalAnalysis/PersonalAnalysisContext";
 
 const FormData = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
   const [isLogTimeModalOpen, setIsLogTimeModalOpen] = useState(false);
+  const [isActivityHistoryOpen, setIsActivityHistoryOpen] = useState(false);
+  const [editingEntry, setEditingEntry] = useState(null);
+
+  const handleEditTimeLog = (entry) => {
+    setEditingEntry(entry);
+    setIsLogTimeModalOpen(true);
+  };
+
+  const handleLogTimeClose = () => {
+    setIsLogTimeModalOpen(false);
+    setEditingEntry(null);
+  };
 
   return (
     <PersonalAnalysisProvider>
@@ -21,10 +34,16 @@ const FormData = () => {
         <QuickActions
           onAddTask={() => setIsModalOpen(true)}
           onCheckIn={() => setIsCheckInModalOpen(true)}
-          onLogTime={() => setIsLogTimeModalOpen(true)}
+          onLogTime={() => {
+            setEditingEntry(null);
+            setIsLogTimeModalOpen(true);
+          }}
         />
         <div className="flex flex-col lg:flex-row gap-6">
-          <RecentActivity />
+          <RecentActivity
+            onViewAll={() => setIsActivityHistoryOpen(true)}
+            onEdit={handleEditTimeLog}
+          />
           <FocusTrends />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -49,7 +68,14 @@ const FormData = () => {
 
         <LogTimeModal
           isOpen={isLogTimeModalOpen}
-          onClose={() => setIsLogTimeModalOpen(false)}
+          onClose={handleLogTimeClose}
+          editEntry={editingEntry}
+        />
+
+        <ActivityHistoryModal
+          isOpen={isActivityHistoryOpen}
+          onClose={() => setIsActivityHistoryOpen(false)}
+          onEdit={handleEditTimeLog}
         />
       </div>
     </PersonalAnalysisProvider>

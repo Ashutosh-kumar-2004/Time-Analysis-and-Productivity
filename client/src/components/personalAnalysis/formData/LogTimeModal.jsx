@@ -25,10 +25,10 @@ const categories = [
   { label: "other", icon: FileText },
 ];
 
-const LogTimeModal = ({ isOpen, onClose }) => {
+const LogTimeModal = ({ isOpen, onClose, editEntry = null }) => {
   const { tasks, refreshTasks } = usePersonalAnalysis();
   const { createTask } = useCreatePersonalTask();
-  const { logManualTime } = useTaskActions();
+  const { logManualTime, updateTimeEntry } = useTaskActions();
 
   const [taskInput, setTaskInput] = useState("");
   const [selectedTaskId, setSelectedTaskId] = useState("");
@@ -38,28 +38,50 @@ const LogTimeModal = ({ isOpen, onClose }) => {
   const [endTime, setEndTime] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Initialize dates when modal opens
+  // Initialize dates when modal opens or editEntry changes
   useEffect(() => {
     if (isOpen) {
-      const now = new Date();
-      const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+      if (editEntry) {
+        // Edit Mode: Pre-fill data
+        const format = (d) => {
+          const date = new Date(d);
+          const pad = (n) => n.toString().padStart(2, "0");
+          return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+            date.getDate()
+          )}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+        };
 
-      // Format for datetime-local: YYYY-MM-DDThh:mm
-      const format = (d) => {
-        const pad = (n) => n.toString().padStart(2, "0");
-        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(
-          d.getDate()
-        )}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-      };
+        setTaskInput(editEntry.taskTitle || editEntry.title || "");
+        setSelectedTaskId(editEntry.taskId?._id || editEntry.taskId || "");
+        setCategory(editEntry.category || "studies");
+        setFocus(editEntry.focusScore || 3);
+        setStartTime(
+          editEntry.startTimestamp ? format(editEntry.startTimestamp) : ""
+        );
+        setEndTime(
+          editEntry.endTimestamp ? format(editEntry.endTimestamp) : ""
+        );
+      } else {
+        // Create Mode: Default values
+        const now = new Date();
+        const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
 
-      setEndTime(format(now));
-      setStartTime(format(oneHourAgo));
-      setTaskInput("");
-      setSelectedTaskId("");
-      setCategory("studies");
-      setFocus(3);
+        const format = (d) => {
+          const pad = (n) => n.toString().padStart(2, "0");
+          return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(
+            d.getDate()
+          )}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        };
+
+        setEndTime(format(now));
+        setStartTime(format(oneHourAgo));
+        setTaskInput("");
+        setSelectedTaskId("");
+        setCategory("studies");
+        setFocus(3);
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, editEntry]);
 
   const handleSubmit = async () => {
     if (!startTime || !endTime) {
@@ -81,7 +103,9 @@ const LogTimeModal = ({ isOpen, onClose }) => {
     try {
       let finalTaskId = selectedTaskId;
 
-      // If no existing task selected, create one
+      // If no existing task selected, create one (only if not editing an entry that already has a task)
+      // Note: If editing, we might be changing the task, or creating a new one.
+      // If selectedTaskId is empty but taskInput is present, we create a new task.
       if (!finalTaskId) {
         const newTask = await createTask({
           taskTitle: taskInput,
@@ -100,13 +124,26 @@ const LogTimeModal = ({ isOpen, onClose }) => {
       const start = new Date(startTime);
       const end = new Date(endTime);
 
-      const success = await logManualTime({
-        taskId: finalTaskId,
-        startTimestamp: start,
-        endTimestamp: end,
-        focusScore: focus,
-        additionalNotes: taskInput && selectedTaskId ? taskInput : "", // Use input as notes if linking to existing task
-      });
+      let success;
+      if (editEntry) {
+        // Update existing entry
+        success = await updateTimeEntry(editEntry.id || editEntry._id, {
+          taskId: finalTaskId,
+          startTimestamp: start,
+          endTimestamp: end,
+          focusScore: focus,
+          additionalNotes: taskInput && selectedTaskId ? taskInput : "",
+        });
+      } else {
+        // Create new entry
+        success = await logManualTime({
+          taskId: finalTaskId,
+          startTimestamp: start,
+          endTimestamp: end,
+          focusScore: focus,
+          additionalNotes: taskInput && selectedTaskId ? taskInput : "",
+        });
+      }
 
       if (success) {
         refreshTasks(); // Refresh context
@@ -149,7 +186,7 @@ const LogTimeModal = ({ isOpen, onClose }) => {
             <X className="w-5 h-5" />
           </button>
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-            Log Time Manually
+            {editEntry ? "Edit Time Log" : "Log Time Manually"}
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             What did you work on?
@@ -320,6 +357,8 @@ const LogTimeModal = ({ isOpen, onClose }) => {
           >
             {isSubmitting ? (
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : editEntry ? (
+              "Update Log"
             ) : (
               "Log Time"
             )}
