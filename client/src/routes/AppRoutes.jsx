@@ -12,6 +12,7 @@ import Navbar from "../components/navbar/Navbar";
 import ProjectAnalysisPage from "../components/projects/analysis/ProjectAnalysisPage";
 import { ProjectAnalysisProvider } from "../context/analysis/ProjectAnalysisContext";
 import PersonalAnalysisDashboard from "../components/personalAnalysis/dashboard/PersonalAnalysisDashboard";
+import FormData from "../components/personalAnalysis/FormData";
 
 const AppRoutes = () => {
   return (
@@ -42,8 +43,8 @@ const AppRoutes = () => {
           path="/personal-analysis"
           element={
             <ProtectedRoute>
-              <Navbar />
-              <PersonalAnalysisDashboard />
+              
+              <div className="dark:bg-[#040711]"><Navbar/><FormData/></div>
             </ProtectedRoute>
           }
         />
