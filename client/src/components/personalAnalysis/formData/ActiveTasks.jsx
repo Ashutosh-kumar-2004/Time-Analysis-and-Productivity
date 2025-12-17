@@ -7,13 +7,13 @@ import {
   MoreVertical,
   Pencil,
 } from "lucide-react";
-import useFetchPersonalTasks from "../../../hooks/personalAnalysis/useFetchPersonalTasks.jsx";
 import useTaskActions from "../../../hooks/personalAnalysis/useTaskActions";
 import CreateTaskModal from "./CreateTaskModal";
+import { usePersonalAnalysis } from "../../../context/personalAnalysis/PersonalAnalysisContext";
 
 const ActiveTasks = () => {
-  // Fetch 'in_progress' and 'not_started' to show active tasks.
-  const { tasks, loading, error, refetch } = useFetchPersonalTasks();
+  // Fetch 'in_progress' and 'not_started' from Context
+  const { tasks, loading, error, refreshTasks } = usePersonalAnalysis();
   const {
     updateTaskStatus,
     startTrackingList,
@@ -27,7 +27,7 @@ const ActiveTasks = () => {
   const handleMarkComplete = async (taskId) => {
     const success = await updateTaskStatus(taskId, "completed");
     if (success) {
-      refetch(); // Refresh list to remove completed task
+      refreshTasks(); // Refresh list via context
     }
   };
 
@@ -43,7 +43,7 @@ const ActiveTasks = () => {
   const handleModalClose = () => {
     setIsEditModalOpen(false);
     setTaskToEdit(null);
-    refetch(); // Refresh tasks after edit
+    // Context handles refresh if update was successful via Modal
   };
 
   if (loading) {

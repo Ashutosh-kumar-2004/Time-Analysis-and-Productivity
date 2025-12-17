@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { List, Calendar, Pencil } from "lucide-react";
 import useCreatePersonalTask from "../../../hooks/personalAnalysis/useCreatePersonalTask";
 import useUpdatePersonalTask from "../../../hooks/personalAnalysis/useUpdatePersonalTask";
+import { usePersonalAnalysis } from "../../../context/personalAnalysis/PersonalAnalysisContext";
 
 const CreateTaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
   const { createTask, loading: createLoading } = useCreatePersonalTask();
   const { updateTask, loading: updateLoading } = useUpdatePersonalTask();
+  const { refreshTasks } = usePersonalAnalysis();
 
   // Determine mode based on taskToEdit
   const isEditMode = !!taskToEdit;
@@ -80,6 +82,7 @@ const CreateTaskModal = ({ isOpen, onClose, taskToEdit = null }) => {
     if (success !== false) {
       // Assuming hooks return generic success indicator or promise resolves
       // Hooks handle toasts
+      refreshTasks(); // Refresh the context data
       onClose();
     }
   };
