@@ -3,7 +3,7 @@ import QuickActions from "./formData/QuickActions";
 import RecentActivity from "./formData/RecentActivity";
 import FocusTrends from "./formData/FocusTrends";
 import ActiveTasks from "./formData/ActiveTasks";
-import Goals from "./formData/Goals";
+import MotivationalQuote from "./formData/MotivationalQuote";
 import CreateTaskModal from "./formData/CreateTaskModal";
 import DailyCheckInModal from "./formData/DailyCheckInModal";
 import DailyActivityLog from "./formData/DailyActivityLog";
@@ -52,7 +52,7 @@ const FormData = () => {
             onOpenCheckIn={() => setIsCheckInModalOpen(true)}
             onOpenHistory={() => setIsCheckInModalOpen(true)}
           />
-          <Goals />
+          <MotivationalQuote />
         </div>
 
         {/* Modal Portal/Overlay */}
