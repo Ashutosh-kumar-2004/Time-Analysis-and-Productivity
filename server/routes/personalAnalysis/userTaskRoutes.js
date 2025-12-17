@@ -5,13 +5,14 @@ import {
   updateUserTask,
   updateTaskProgress,
   getTaskAnalytics,
+  deleteUserTask,
 } from "../../controllers/personal/userTask.js";
 
 const router = express.Router();
 
 router.route("/").get(getUserTasks).post(createUserTask);
 
-router.route("/:taskId").put(updateUserTask);
+router.route("/:taskId").put(updateUserTask).delete(deleteUserTask);
 
 router.route("/:taskId/progress").put(updateTaskProgress);
 

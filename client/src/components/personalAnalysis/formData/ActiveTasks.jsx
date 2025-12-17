@@ -9,26 +9,25 @@ import {
 } from "lucide-react";
 import useTaskActions from "../../../hooks/personalAnalysis/useTaskActions";
 import CreateTaskModal from "./CreateTaskModal";
+import TaskCompletionModal from "./TaskCompletionModal";
 import { usePersonalAnalysis } from "../../../context/personalAnalysis/PersonalAnalysisContext";
 
 const ActiveTasks = () => {
   // Fetch 'in_progress' and 'not_started' from Context
   const { tasks, loading, error, refreshTasks } = usePersonalAnalysis();
-  const {
-    updateTaskStatus,
-    startTrackingList,
-    loading: actionLoading,
-  } = useTaskActions();
+  const { startTrackingList, loading: actionLoading } = useTaskActions();
 
   // State for edit modal
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState(null);
 
-  const handleMarkComplete = async (taskId) => {
-    const success = await updateTaskStatus(taskId, "completed");
-    if (success) {
-      refreshTasks(); // Refresh list via context
-    }
+  // State for completion modal
+  const [isCompletionModalOpen, setIsCompletionModalOpen] = useState(false);
+  const [taskToComplete, setTaskToComplete] = useState(null);
+
+  const handleMarkComplete = (task) => {
+    setTaskToComplete(task);
+    setIsCompletionModalOpen(true);
   };
 
   const handleStartTracking = async (taskId) => {
@@ -44,6 +43,11 @@ const ActiveTasks = () => {
     setIsEditModalOpen(false);
     setTaskToEdit(null);
     // Context handles refresh if update was successful via Modal
+  };
+
+  const handleCompletionClose = () => {
+    setIsCompletionModalOpen(false);
+    setTaskToComplete(null);
   };
 
   if (loading) {
@@ -173,7 +177,7 @@ const ActiveTasks = () => {
 
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => handleMarkComplete(task.id)}
+                      onClick={() => handleMarkComplete(task)}
                       disabled={actionLoading}
                       className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-600 dark:text-gray-400 transition-colors cursor-pointer disabled:opacity-50"
                     >
@@ -193,6 +197,13 @@ const ActiveTasks = () => {
         isOpen={isEditModalOpen}
         onClose={handleModalClose}
         taskToEdit={taskToEdit}
+      />
+
+      {/* Task Completion Modal */}
+      <TaskCompletionModal
+        isOpen={isCompletionModalOpen}
+        onClose={handleCompletionClose}
+        task={taskToComplete}
       />
     </>
   );
