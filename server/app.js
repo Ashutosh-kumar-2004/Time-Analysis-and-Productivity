@@ -14,6 +14,7 @@ import timeEntryRoutes from "./routes/personalAnalysis/timeEntryRoutes.js";
 import userTaskRoutes from "./routes/personalAnalysis/userTaskRoutes.js";
 import productivityGoalRoutes from "./routes/personalAnalysis/productivityGoalRoutes.js";
 import dailyCheckInRoutes from "./routes/personalAnalysis/dailyCheckInRoutes.js";
+import personalDashboardRoutes from "./routes/personalAnalysis/personalDashboardRoutes.js";
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use("/api/user-tasks", userTaskRoutes);
 app.use("/api/time-entries", timeEntryRoutes);
 app.use("/api/goals", productivityGoalRoutes);
 app.use("/api/daily-check-in", dailyCheckInRoutes);
+app.use("/api/personal-analysis", personalDashboardRoutes);
 
 app.get("/api/serverStatus", (req, res) => {
   res.send("Server is running...");

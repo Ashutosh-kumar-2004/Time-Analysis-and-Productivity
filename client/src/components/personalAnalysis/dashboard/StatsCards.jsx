@@ -1,65 +1,65 @@
-import React, { useContext } from 'react';
-import { ThemeContext } from '../../../context/ThemeContext';
-import { FiClock, FiTrendingUp, FiTarget, FiZap } from 'react-icons/fi';
+import React, { useContext } from "react";
+import { ThemeContext } from "../../../context/ThemeContext";
+import { FiClock, FiTrendingUp, FiTarget, FiZap } from "react-icons/fi";
 
-const StatsCards = () => {
+const StatsCards = ({ stats, loading }) => {
   const { isDark } = useContext(ThemeContext);
 
-  const stats = [
+  const statItems = [
     {
       id: 1,
-      title: 'Total Tracked Time',
-      value: '42.5',
-      unit: 'hours',
-      trend: '+12.3%',
+      title: "Total Tracked Time",
+      value: loading ? "..." : stats?.totalHours || "0",
+      unit: "hours",
+      trend: "+0.0%", // We can calculate trend if we fetch previous period
       trendUp: true,
       icon: FiClock,
-      iconBg: 'bg-blue-500',
+      iconBg: "bg-blue-500",
     },
     {
       id: 2,
-      title: 'Productivity Score',
-      value: '87',
-      unit: '%',
-      trend: '+5.2%',
+      title: "Productivity Score",
+      value: loading ? "..." : stats?.productivityScore || "0",
+      unit: "%",
+      trend: "+0.0%",
       trendUp: true,
       icon: FiTrendingUp,
-      iconBg: 'bg-green-500',
+      iconBg: "bg-green-500",
     },
     {
       id: 3,
-      title: 'Goal Achievement',
-      value: '92',
-      unit: '%',
-      trend: '+8.1%',
+      title: "Goal Achievement",
+      value: loading ? "..." : stats?.goalAchievement || "0",
+      unit: "%",
+      trend: "+0.0%",
       trendUp: true,
       icon: FiTarget,
-      iconBg: 'bg-purple-500',
+      iconBg: "bg-purple-500",
     },
     {
       id: 4,
-      title: 'Efficiency Rate',
-      value: '78',
-      unit: '%',
-      trend: '-2.4%',
-      trendUp: false,
+      title: "Efficiency Rate",
+      value: loading ? "..." : stats?.efficiencyRate || "0",
+      unit: "%",
+      trend: "0.0%",
+      trendUp: true,
       icon: FiZap,
-      iconBg: 'bg-orange-500',
+      iconBg: "bg-orange-500",
     },
   ];
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-      {stats.map((stat) => {
+      {statItems.map((stat) => {
         const Icon = stat.icon;
-        
+
         return (
           <div
             key={stat.id}
             className={`rounded-xl p-6 transition-all duration-300 hover:shadow-lg ${
               isDark
-                ? 'bg-gray-800 border border-gray-700 hover:border-gray-600'
-                : 'bg-white border border-gray-200 hover:border-gray-300'
+                ? "bg-gray-800 border border-gray-700 hover:border-gray-600"
+                : "bg-white border border-gray-200 hover:border-gray-300"
             }`}
           >
             {/* Icon and Trend */}
@@ -69,7 +69,7 @@ const StatsCards = () => {
               </div>
               <div
                 className={`flex items-center gap-1 text-sm font-medium ${
-                  stat.trendUp ? 'text-green-500' : 'text-red-500'
+                  stat.trendUp ? "text-green-500" : "text-red-500"
                 }`}
               >
                 <svg
@@ -101,7 +101,7 @@ const StatsCards = () => {
             {/* Title */}
             <h3
               className={`text-sm font-medium mb-2 ${
-                isDark ? 'text-gray-400' : 'text-gray-600'
+                isDark ? "text-gray-400" : "text-gray-600"
               }`}
             >
               {stat.title}
@@ -111,14 +111,14 @@ const StatsCards = () => {
             <div className="flex items-baseline gap-1">
               <span
                 className={`text-3xl font-bold ${
-                  isDark ? 'text-white' : 'text-gray-900'
+                  isDark ? "text-white" : "text-gray-900"
                 }`}
               >
                 {stat.value}
               </span>
               <span
                 className={`text-lg font-medium ${
-                  isDark ? 'text-gray-500' : 'text-gray-400'
+                  isDark ? "text-gray-500" : "text-gray-400"
                 }`}
               >
                 {stat.unit}

@@ -1,32 +1,39 @@
-import React, { useContext } from 'react';
-import { ThemeContext } from '../../../context/ThemeContext';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import React, { useContext } from "react";
+import { ThemeContext } from "../../../context/ThemeContext";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Legend,
+  Tooltip,
+} from "recharts";
 
-const TimeAllocationChart = () => {
+const TimeAllocationChart = ({ data, loading }) => {
   const { isDark } = useContext(ThemeContext);
 
-  const data = [
-    { name: 'Work', value: 34, color: '#4F46E5' },
-    { name: 'Meetings', value: 15, color: '#8B5CF6' },
-    { name: 'Development', value: 22, color: '#059669' },
-    { name: 'Learning', value: 10, color: '#F59E0B' },
-    { name: 'Breaks', value: 7, color: '#EF4444' },
-    { name: 'Personal', value: 8, color: '#EC4899' },
-    { name: 'Exercise', value: 4, color: '#06B6D4' },
-  ];
+  const chartData = data || [];
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
         <div
           className={`px-3 py-2 rounded-lg shadow-lg ${
-            isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+            isDark
+              ? "bg-gray-800 border border-gray-700"
+              : "bg-white border border-gray-200"
           }`}
         >
-          <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          <p
+            className={`font-semibold ${
+              isDark ? "text-white" : "text-gray-900"
+            }`}
+          >
             {payload[0].name}
           </p>
-          <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+          <p
+            className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}
+          >
             {payload[0].value}%
           </p>
         </div>
@@ -35,7 +42,15 @@ const TimeAllocationChart = () => {
     return null;
   };
 
-  const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }) => {
+  const renderCustomLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    percent,
+    name,
+  }) => {
     const RADIAN = Math.PI / 180;
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -48,7 +63,7 @@ const TimeAllocationChart = () => {
         x={x}
         y={y}
         fill="white"
-        textAnchor={x > cx ? 'start' : 'end'}
+        textAnchor={x > cx ? "start" : "end"}
         dominantBaseline="central"
         className="text-xs font-semibold"
       >
@@ -60,7 +75,9 @@ const TimeAllocationChart = () => {
   return (
     <div
       className={`rounded-xl p-6 ${
-        isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+        isDark
+          ? "bg-gray-800 border border-gray-700"
+          : "bg-white border border-gray-200"
       } shadow-sm`}
     >
       <div className="flex items-center gap-3 mb-6">
@@ -81,7 +98,7 @@ const TimeAllocationChart = () => {
         </div>
         <h3
           className={`text-lg font-semibold ${
-            isDark ? 'text-white' : 'text-gray-900'
+            isDark ? "text-white" : "text-gray-900"
           }`}
         >
           Time Allocation by Category
@@ -91,7 +108,7 @@ const TimeAllocationChart = () => {
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
-              data={data}
+              data={chartData}
               cx="50%"
               cy="50%"
               labelLine={false}
@@ -100,13 +117,13 @@ const TimeAllocationChart = () => {
               fill="#8884d8"
               dataKey="value"
             >
-              {data.map((entry, index) => (
+              {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>
             <Tooltip content={<CustomTooltip />} />
             <Legend
-              wrapperStyle={{ color: isDark ? '#E5E7EB' : '#374151' }}
+              wrapperStyle={{ color: isDark ? "#E5E7EB" : "#374151" }}
               iconType="circle"
             />
           </PieChart>

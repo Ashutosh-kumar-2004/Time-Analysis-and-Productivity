@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useCallback } from "react";
+import React, { createContext, useContext, useCallback, useState } from "react";
+import axios from "axios";
 import useFetchPersonalTasks from "../../hooks/personalAnalysis/useFetchPersonalTasks.jsx";
 import useTaskActions from "../../hooks/personalAnalysis/useTaskActions";
 
@@ -20,6 +21,31 @@ export const PersonalAnalysisProvider = ({ children }) => {
     setRefreshTrigger((prev) => prev + 1); // Trigger other listeners
   }, [refetch, fetchActiveEntry]);
 
+  // Dashboard Stats State
+  const [dashboardStats, setDashboardStats] = useState(null);
+  const [statsLoading, setStatsLoading] = useState(false);
+  const [statsError, setStatsError] = useState(null);
+
+  const fetchDashboardStats = useCallback(async (timeRange = "This Week") => {
+    setStatsLoading(true);
+    setStatsError(null);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(
+        `${
+          import.meta.env.VITE_API_URL
+        }/api/personal-analysis/dashboard?timeRange=${timeRange}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setDashboardStats(res.data);
+    } catch (err) {
+      console.error("Error fetching dashboard stats:", err);
+      setStatsError(err.message);
+    } finally {
+      setStatsLoading(false);
+    }
+  }, []);
+
   // Initial fetch of active entry
   React.useEffect(() => {
     const loadActive = async () => {
@@ -39,6 +65,10 @@ export const PersonalAnalysisProvider = ({ children }) => {
         activeTimeEntry,
         setActiveTimeEntry,
         refreshTrigger,
+        dashboardStats,
+        statsLoading,
+        statsError,
+        fetchDashboardStats,
       }}
     >
       {children}
