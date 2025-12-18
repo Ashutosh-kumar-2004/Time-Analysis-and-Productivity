@@ -35,7 +35,7 @@ router.get("/:projectId/tasks", getProjectTasks);
 // project actions
 router.post("/add-project", addProject);
 router.patch("/delete-project/:projectId", deleteProject);
-router.patch("/delete-project/:projectId", deleteProject);
+
 router.patch("/restore-project/:projectId", restoreProject);
 router.put("/update-project/:projectId", updateProject);
 
