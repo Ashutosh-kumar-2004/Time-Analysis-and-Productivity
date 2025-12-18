@@ -86,3 +86,74 @@ export const login = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const googleLogin = async (req, res) => {
+  try {
+    const { email, firstName, lastName, avatar } = req.body;
+
+    if (!email) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email is required." });
+    }
+
+    // Check if user exists
+    let user = await User.findOne({ email });
+
+    if (user) {
+      // User exists, generate token
+      const token = generateToken(user._id);
+
+      return res.status(200).json({
+        success: true,
+        message: "Login successful.",
+        data: {
+          user: {
+            id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            avatar: user.avatar,
+            projects: user.projects,
+          },
+          token,
+        },
+      });
+    } else {
+      // User doesn't exist, create new user
+      // Generate a random password since they are using Google Auth
+      const randomPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+
+      const newUser = await User.create({
+        firstName: firstName || "User",
+        lastName: lastName || "",
+        email,
+        password: randomPassword,
+        avatar: avatar || "",
+      });
+
+      const token = generateToken(newUser._id);
+
+      return res.status(201).json({
+        success: true,
+        message: "Google signup successful.",
+        data: {
+          user: {
+            id: newUser._id,
+            firstName: newUser.firstName,
+            lastName: newUser.lastName,
+            email: newUser.email,
+            avatar: newUser.avatar,
+            projects: newUser.projects,
+          },
+          token,
+        },
+      });
+    }
+  } catch (error) {
+    console.error("Google login error:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

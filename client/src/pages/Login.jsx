@@ -5,6 +5,7 @@ import loginPage from "../assets/loginPage.png";
 import { getRandomQuote } from "../constants";
 import { useEffect, useState } from "react";
 import useLogin from "../hooks/auth/useLogin";
+import useGoogleLogin from "../hooks/auth/useGoogleLogin";
 import { toast } from "react-toastify";
 
 const Login = () => {
@@ -13,6 +14,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
 
   const { login, loading } = useLogin();
+  const { googleLogin, loading: googleLoading } = useGoogleLogin();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -115,9 +117,13 @@ const Login = () => {
           </div>
 
           <div className="mt-4 w-full">
-            <button className="w-full py-3 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-3 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-700 transition dark:text-white cursor-pointer">
+            <button
+              onClick={googleLogin}
+              disabled={googleLoading}
+              className="w-full py-3 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-3 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-700 transition dark:text-white cursor-pointer disabled:opacity-50"
+            >
               <FcGoogle className="w-5 h-5" />
-              Continue with Google
+              {googleLoading ? "Connecting..." : "Continue with Google"}
             </button>
           </div>
         </div>

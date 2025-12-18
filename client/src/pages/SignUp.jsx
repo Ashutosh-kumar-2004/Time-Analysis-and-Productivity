@@ -5,6 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import loginPage from "../assets/loginPage.png";
 import { getRandomQuote } from "../constants";
 import useSignup from "../hooks/auth/useSignup";
+import useGoogleLogin from "../hooks/auth/useGoogleLogin";
 
 const SignUp = () => {
   const [quote, setQuote] = useState("");
@@ -15,6 +16,7 @@ const SignUp = () => {
   const [agree, setAgree] = useState(false);
 
   const { signup, loading } = useSignup();
+  const { googleLogin, loading: googleLoading } = useGoogleLogin();
 
   useEffect(() => {
     let quote = getRandomQuote();
@@ -137,9 +139,13 @@ const SignUp = () => {
           </div>
 
           <div className="mt-4 w-full">
-            <button className="w-full py-3 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-3 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-700 transition dark:text-white cursor-pointer">
+            <button
+              onClick={googleLogin}
+              disabled={googleLoading}
+              className="w-full py-3 rounded-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-3 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-700 transition dark:text-white cursor-pointer disabled:opacity-50"
+            >
               <FcGoogle className="w-5 h-5" />
-              Continue with Google
+              {googleLoading ? "Connecting..." : "Continue with Google"}
             </button>
           </div>
         </div>
