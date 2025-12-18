@@ -92,16 +92,27 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-6 items-center">
-            {visibleMenuItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.link}
-                className="flex items-center space-x-1 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200"
-              >
-                {item.icon}
-                <span>{item.name}</span>
-              </a>
-            ))}
+            {visibleMenuItems.map((item) => {
+              const isActive =
+                item.link === "/"
+                  ? location.pathname === "/"
+                  : location.pathname.startsWith(item.link);
+
+              return (
+                <a
+                  key={item.name}
+                  href={item.link}
+                  className={`flex items-center space-x-1 px-3 py-2 rounded-md transition-colors duration-200 ${
+                    isActive
+                      ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
+                      : "hover:text-blue-500 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                  }`}
+                >
+                  {item.icon}
+                  <span>{item.name}</span>
+                </a>
+              );
+            })}
 
             {/* Theme Toggle, Timer and Profile */}
             <div className="flex items-center space-x-4">
@@ -209,19 +220,30 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-          {visibleMenuItems.map((item) => (
-            <a
-              key={item.name}
-              href={item.link}
-              className="flex items-center px-4 py-3 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200"
-              onClick={() => setIsOpen(false)}
-            >
-              <span className="text-lg">{item.icon}</span>
-              <span className="ml-3 text-gray-800 dark:text-gray-200">
-                {item.name}
-              </span>
-            </a>
-          ))}
+          {visibleMenuItems.map((item) => {
+            const isActive =
+              item.link === "/"
+                ? location.pathname === "/"
+                : location.pathname.startsWith(item.link);
+
+            return (
+              <a
+                key={item.name}
+                href={item.link}
+                className={`flex items-center px-4 py-3 border-b border-gray-100 dark:border-gray-700 transition-colors duration-200 ${
+                  isActive
+                    ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                    : "hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200"
+                }`}
+                onClick={() => setIsOpen(false)}
+              >
+                <span className="text-lg">{item.icon}</span>
+                <span className={`ml-3 ${isActive ? "font-medium" : ""}`}>
+                  {item.name}
+                </span>
+              </a>
+            );
+          })}
           <a
             href="/profile"
             className="flex items-center px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"

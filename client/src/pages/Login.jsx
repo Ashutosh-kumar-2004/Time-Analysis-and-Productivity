@@ -73,7 +73,7 @@ const Login = () => {
       <div className="flex-1 dark:bg-slate-800 sm:px-10 flex justify-center items-center bg-[#e2595960]">
         <div className="w-full max-w-md">
           <h1 className="text-4xl font-bold text-slate-900 dark:text-white">
-            Welcome back to TimeFlow
+            Welcome back to Productivity Tracker
           </h1>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
             Don't have an account?{" "}
@@ -98,6 +98,15 @@ const Login = () => {
               placeholder="Enter your password"
               className="w-full mt-4 p-3 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border border-transparent focus:border-red-400 outline-none"
             />
+
+            <div className="flex justify-end mt-2">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-slate-600 dark:text-slate-400 hover:text-red-500 hover:underline"
+              >
+                Forgot Password?
+              </Link>
+            </div>
 
             <button
               type="submit"
