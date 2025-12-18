@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { ThemeContext } from '../../../context/ThemeContext';
+import React, { useContext } from "react";
+import { ThemeContext } from "../../../context/ThemeContext";
 import {
   BarChart,
   Bar,
@@ -9,35 +9,36 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from 'recharts';
+} from "recharts";
 
-const CategoryComparisonChart = () => {
+const CategoryComparisonChart = ({ data, loading }) => {
   const { isDark } = useContext(ThemeContext);
 
-  const data = [
-    { category: 'Work', thisWeek: 18, lastWeek: 16 },
-    { category: 'Meetings', thisWeek: 8, lastWeek: 9 },
-    { category: 'Development', thisWeek: 12, lastWeek: 10.5 },
-    { category: 'Learning', thisWeek: 5.5, lastWeek: 4 },
-    { category: 'Breaks', thisWeek: 3.5, lastWeek: 4.5 },
-    { category: 'Personal', thisWeek: 4, lastWeek: 3.5 },
-  ];
+  const chartData = data || [];
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
         <div
           className={`px-4 py-3 rounded-lg shadow-lg ${
-            isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+            isDark
+              ? "bg-gray-800 border border-gray-700"
+              : "bg-white border border-gray-200"
           }`}
         >
-          <p className={`font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          <p
+            className={`font-semibold mb-2 ${
+              isDark ? "text-white" : "text-gray-900"
+            }`}
+          >
             {label}
           </p>
           {payload.map((entry, index) => (
             <p
               key={index}
-              className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}
+              className={`text-sm ${
+                isDark ? "text-gray-400" : "text-gray-600"
+              }`}
               style={{ color: entry.color }}
             >
               {entry.name}: {entry.value} hours
@@ -52,7 +53,9 @@ const CategoryComparisonChart = () => {
   return (
     <div
       className={`rounded-xl p-6 ${
-        isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+        isDark
+          ? "bg-gray-800 border border-gray-700"
+          : "bg-white border border-gray-200"
       } shadow-sm`}
     >
       <div className="flex items-center gap-3 mb-6">
@@ -73,7 +76,7 @@ const CategoryComparisonChart = () => {
         </div>
         <h3
           className={`text-lg font-semibold ${
-            isDark ? 'text-white' : 'text-gray-900'
+            isDark ? "text-white" : "text-gray-900"
           }`}
         >
           Category Comparison (This Week vs Last Week)
@@ -81,29 +84,32 @@ const CategoryComparisonChart = () => {
       </div>
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} barGap={5}>
+          <BarChart data={chartData} barGap={5}>
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke={isDark ? '#374151' : '#E5E7EB'}
+              stroke={isDark ? "#374151" : "#E5E7EB"}
             />
             <XAxis
               dataKey="category"
-              stroke={isDark ? '#9CA3AF' : '#6B7280'}
-              style={{ fontSize: '12px' }}
+              stroke={isDark ? "#9CA3AF" : "#6B7280"}
+              style={{ fontSize: "12px" }}
             />
             <YAxis
-              stroke={isDark ? '#9CA3AF' : '#6B7280'}
-              style={{ fontSize: '12px' }}
+              stroke={isDark ? "#9CA3AF" : "#6B7280"}
+              style={{ fontSize: "12px" }}
               label={{
-                value: 'Hours',
+                value: "Hours",
                 angle: -90,
-                position: 'insideLeft',
-                style: { fill: isDark ? '#9CA3AF' : '#6B7280', fontSize: '12px' },
+                position: "insideLeft",
+                style: {
+                  fill: isDark ? "#9CA3AF" : "#6B7280",
+                  fontSize: "12px",
+                },
               }}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend
-              wrapperStyle={{ color: isDark ? '#E5E7EB' : '#374151' }}
+              wrapperStyle={{ color: isDark ? "#E5E7EB" : "#374151" }}
               iconType="circle"
             />
             <Bar

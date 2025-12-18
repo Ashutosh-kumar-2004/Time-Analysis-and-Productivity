@@ -41,7 +41,7 @@ app.use("/api/tasks", taskRoutes);
 // personal routes
 app.use("/api/user-tasks", userTaskRoutes);
 app.use("/api/time-entries", timeEntryRoutes);
-app.use("/api/goals", productivityGoalRoutes);
+// app.use("/api/goals", productivityGoalRoutes);
 app.use("/api/daily-check-in", dailyCheckInRoutes);
 app.use("/api/personal-analysis", personalDashboardRoutes);
 

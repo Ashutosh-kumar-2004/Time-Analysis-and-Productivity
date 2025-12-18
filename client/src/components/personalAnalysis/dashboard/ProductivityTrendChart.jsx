@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { ThemeContext } from '../../../context/ThemeContext';
+import React, { useContext } from "react";
+import { ThemeContext } from "../../../context/ThemeContext";
 import {
   LineChart,
   Line,
@@ -9,37 +9,36 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-} from 'recharts';
+} from "recharts";
 
-const ProductivityTrendChart = () => {
+const ProductivityTrendChart = ({ data, loading }) => {
   const { isDark } = useContext(ThemeContext);
 
-  const data = [
-    { date: '11/20', productivity: 75, efficiency: 78 },
-    { date: '11/21', productivity: 80, efficiency: 82 },
-    { date: '11/22', productivity: 78, efficiency: 80 },
-    { date: '11/23', productivity: 85, efficiency: 84 },
-    { date: '11/24', productivity: 92, efficiency: 87 },
-    { date: '11/25', productivity: 88, efficiency: 83 },
-    { date: '11/26', productivity: 90, efficiency: 85 },
-    { date: '11/27', productivity: 93, efficiency: 80 },
-  ];
+  const chartData = data || [];
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
         <div
           className={`px-4 py-3 rounded-lg shadow-lg ${
-            isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+            isDark
+              ? "bg-gray-800 border border-gray-700"
+              : "bg-white border border-gray-200"
           }`}
         >
-          <p className={`font-semibold mb-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          <p
+            className={`font-semibold mb-2 ${
+              isDark ? "text-white" : "text-gray-900"
+            }`}
+          >
             {label}
           </p>
           {payload.map((entry, index) => (
             <p
               key={index}
-              className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}
+              className={`text-sm ${
+                isDark ? "text-gray-400" : "text-gray-600"
+              }`}
               style={{ color: entry.color }}
             >
               {entry.name}: {entry.value}%
@@ -54,7 +53,9 @@ const ProductivityTrendChart = () => {
   return (
     <div
       className={`rounded-xl p-6 ${
-        isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+        isDark
+          ? "bg-gray-800 border border-gray-700"
+          : "bg-white border border-gray-200"
       } shadow-sm`}
     >
       <div className="flex items-center gap-3 mb-6">
@@ -75,7 +76,7 @@ const ProductivityTrendChart = () => {
         </div>
         <h3
           className={`text-lg font-semibold ${
-            isDark ? 'text-white' : 'text-gray-900'
+            isDark ? "text-white" : "text-gray-900"
           }`}
         >
           Productivity Trend Analysis
@@ -83,24 +84,24 @@ const ProductivityTrendChart = () => {
       </div>
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data}>
+          <LineChart data={chartData}>
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke={isDark ? '#374151' : '#E5E7EB'}
+              stroke={isDark ? "#374151" : "#E5E7EB"}
             />
             <XAxis
               dataKey="date"
-              stroke={isDark ? '#9CA3AF' : '#6B7280'}
-              style={{ fontSize: '12px' }}
+              stroke={isDark ? "#9CA3AF" : "#6B7280"}
+              style={{ fontSize: "12px" }}
             />
             <YAxis
               domain={[0, 100]}
-              stroke={isDark ? '#9CA3AF' : '#6B7280'}
-              style={{ fontSize: '12px' }}
+              stroke={isDark ? "#9CA3AF" : "#6B7280"}
+              style={{ fontSize: "12px" }}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend
-              wrapperStyle={{ color: isDark ? '#E5E7EB' : '#374151' }}
+              wrapperStyle={{ color: isDark ? "#E5E7EB" : "#374151" }}
               iconType="circle"
             />
             <Line
@@ -109,7 +110,7 @@ const ProductivityTrendChart = () => {
               name="Productivity Score"
               stroke="#3B82F6"
               strokeWidth={2}
-              dot={{ fill: '#3B82F6', r: 4 }}
+              dot={{ fill: "#3B82F6", r: 4 }}
               activeDot={{ r: 6 }}
             />
             <Line
@@ -118,7 +119,7 @@ const ProductivityTrendChart = () => {
               name="Efficiency Rate"
               stroke="#10B981"
               strokeWidth={2}
-              dot={{ fill: '#10B981', r: 4 }}
+              dot={{ fill: "#10B981", r: 4 }}
               activeDot={{ r: 6 }}
             />
           </LineChart>

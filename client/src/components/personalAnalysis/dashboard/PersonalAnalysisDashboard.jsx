@@ -307,23 +307,56 @@ const PersonalAnalysisDashboard = () => {
         </div>
 
         {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-          <TimeAllocationChart
-            data={dashboardStats?.timeAllocation}
-            loading={statsLoading}
-          />
-          <ProductivityTrendChart />
-        </div>
+        {!statsLoading && !dashboardStats?.stats?.hasData ? (
+          <div
+            className={`mt-8 p-12 text-center rounded-xl border-2 border-dashed ${
+              isDark
+                ? "border-gray-700 bg-gray-800"
+                : "border-gray-300 bg-gray-50"
+            }`}
+          >
+            <div
+              className={`text-xl font-medium mb-2 ${
+                isDark ? "text-gray-300" : "text-gray-700"
+              }`}
+            >
+              No Data Available for this Period
+            </div>
+            <p className={`mb-6 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+              Start tracking your tasks or time entries to see analytics here.
+            </p>
+            {/* You could add a button here to open Log Time modal if you had the handler passed down */}
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+              <TimeAllocationChart
+                data={dashboardStats?.timeAllocation}
+                loading={statsLoading}
+              />
+              <ProductivityTrendChart
+                data={dashboardStats?.productivityTrend}
+                loading={statsLoading}
+              />
+            </div>
 
-        {/* Category Comparison Chart */}
-        <div className="mt-6">
-          <CategoryComparisonChart />
-        </div>
+            {/* Category Comparison Chart */}
+            <div className="mt-6">
+              <CategoryComparisonChart
+                data={dashboardStats?.categoryComparison}
+                loading={statsLoading}
+              />
+            </div>
 
-        {/* Detailed Category Breakdown Table */}
-        <div className="mt-6">
-          <DetailedCategoryBreakdown />
-        </div>
+            {/* Detailed Category Breakdown Table */}
+            <div className="mt-6">
+              <DetailedCategoryBreakdown
+                data={dashboardStats?.detailedBreakdown}
+                loading={statsLoading}
+              />
+            </div>
+          </>
+        )}
 
         {/* Export Analytics Report */}
         <div className="mt-6">

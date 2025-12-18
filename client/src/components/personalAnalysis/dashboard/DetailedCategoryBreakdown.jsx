@@ -1,74 +1,17 @@
-import React, { useContext, useState } from 'react';
-import { ThemeContext } from '../../../context/ThemeContext';
-import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import React, { useContext, useState } from "react";
+import { ThemeContext } from "../../../context/ThemeContext";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
-const DetailedCategoryBreakdown = () => {
+const DetailedCategoryBreakdown = ({ data, loading }) => {
   const { isDark } = useContext(ThemeContext);
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
 
-  const categories = [
-    {
-      name: 'Work',
-      color: '#3B82F6',
-      totalTime: 18.5,
-      sessions: 24,
-      avgDuration: 0.77,
-      percentage: 35,
-    },
-    {
-      name: 'Development',
-      color: '#8B5CF6',
-      totalTime: 12.3,
-      sessions: 18,
-      avgDuration: 0.68,
-      percentage: 23,
-    },
-    {
-      name: 'Meetings',
-      color: '#10B981',
-      totalTime: 8.2,
-      sessions: 12,
-      avgDuration: 0.68,
-      percentage: 15,
-    },
-    {
-      name: 'Learning',
-      color: '#F59E0B',
-      totalTime: 5.7,
-      sessions: 8,
-      avgDuration: 0.71,
-      percentage: 11,
-    },
-    {
-      name: 'Personal',
-      color: '#EC4899',
-      totalTime: 4.2,
-      sessions: 15,
-      avgDuration: 0.28,
-      percentage: 8,
-    },
-    {
-      name: 'Breaks',
-      color: '#06B6D4',
-      totalTime: 3.8,
-      sessions: 22,
-      avgDuration: 0.17,
-      percentage: 7,
-    },
-    {
-      name: 'Exercise',
-      color: '#EF4444',
-      totalTime: 2.1,
-      sessions: 5,
-      avgDuration: 0.42,
-      percentage: 4,
-    },
-  ];
+  const categories = data || [];
 
   const handleSort = (key) => {
-    let direction = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
     }
     setSortConfig({ key, direction });
   };
@@ -80,10 +23,10 @@ const DetailedCategoryBreakdown = () => {
     const bValue = b[sortConfig.key];
 
     if (aValue < bValue) {
-      return sortConfig.direction === 'asc' ? -1 : 1;
+      return sortConfig.direction === "asc" ? -1 : 1;
     }
     if (aValue > bValue) {
-      return sortConfig.direction === 'asc' ? 1 : -1;
+      return sortConfig.direction === "asc" ? 1 : -1;
     }
     return 0;
   });
@@ -92,7 +35,7 @@ const DetailedCategoryBreakdown = () => {
     if (sortConfig.key !== columnKey) {
       return <FiChevronDown className="w-4 h-4 opacity-30" />;
     }
-    return sortConfig.direction === 'asc' ? (
+    return sortConfig.direction === "asc" ? (
       <FiChevronDown className="w-4 h-4" />
     ) : (
       <FiChevronUp className="w-4 h-4" />
@@ -102,7 +45,9 @@ const DetailedCategoryBreakdown = () => {
   return (
     <div
       className={`rounded-xl p-6 ${
-        isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
+        isDark
+          ? "bg-gray-800 border border-gray-700"
+          : "bg-white border border-gray-200"
       } shadow-sm`}
     >
       <div className="flex items-center gap-3 mb-6">
@@ -123,7 +68,7 @@ const DetailedCategoryBreakdown = () => {
         </div>
         <h3
           className={`text-lg font-semibold ${
-            isDark ? 'text-white' : 'text-gray-900'
+            isDark ? "text-white" : "text-gray-900"
           }`}
         >
           Detailed Category Breakdown
@@ -135,14 +80,14 @@ const DetailedCategoryBreakdown = () => {
           <thead>
             <tr
               className={`border-b ${
-                isDark ? 'border-gray-700' : 'border-gray-200'
+                isDark ? "border-gray-700" : "border-gray-200"
               }`}
             >
               <th
                 className={`text-left py-3 px-4 font-semibold text-sm cursor-pointer hover:bg-opacity-50 ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
+                  isDark ? "text-gray-300" : "text-gray-700"
                 }`}
-                onClick={() => handleSort('name')}
+                onClick={() => handleSort("name")}
               >
                 <div className="flex items-center gap-2">
                   Category
@@ -151,9 +96,9 @@ const DetailedCategoryBreakdown = () => {
               </th>
               <th
                 className={`text-left py-3 px-4 font-semibold text-sm cursor-pointer hover:bg-opacity-50 ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
+                  isDark ? "text-gray-300" : "text-gray-700"
                 }`}
-                onClick={() => handleSort('totalTime')}
+                onClick={() => handleSort("totalTime")}
               >
                 <div className="flex items-center gap-2">
                   Total Time
@@ -162,9 +107,9 @@ const DetailedCategoryBreakdown = () => {
               </th>
               <th
                 className={`text-left py-3 px-4 font-semibold text-sm cursor-pointer hover:bg-opacity-50 ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
+                  isDark ? "text-gray-300" : "text-gray-700"
                 }`}
-                onClick={() => handleSort('sessions')}
+                onClick={() => handleSort("sessions")}
               >
                 <div className="flex items-center gap-2">
                   Sessions
@@ -173,9 +118,9 @@ const DetailedCategoryBreakdown = () => {
               </th>
               <th
                 className={`text-left py-3 px-4 font-semibold text-sm cursor-pointer hover:bg-opacity-50 ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
+                  isDark ? "text-gray-300" : "text-gray-700"
                 }`}
-                onClick={() => handleSort('avgDuration')}
+                onClick={() => handleSort("avgDuration")}
               >
                 <div className="flex items-center gap-2">
                   Avg Duration
@@ -184,7 +129,7 @@ const DetailedCategoryBreakdown = () => {
               </th>
               <th
                 className={`text-left py-3 px-4 font-semibold text-sm ${
-                  isDark ? 'text-gray-300' : 'text-gray-700'
+                  isDark ? "text-gray-300" : "text-gray-700"
                 }`}
               >
                 Percentage
@@ -197,8 +142,8 @@ const DetailedCategoryBreakdown = () => {
                 key={index}
                 className={`border-b transition-colors ${
                   isDark
-                    ? 'border-gray-700 hover:bg-gray-750'
-                    : 'border-gray-100 hover:bg-gray-50'
+                    ? "border-gray-700 hover:bg-gray-750"
+                    : "border-gray-100 hover:bg-gray-50"
                 }`}
               >
                 <td className="py-4 px-4">
@@ -209,7 +154,7 @@ const DetailedCategoryBreakdown = () => {
                     />
                     <span
                       className={`font-medium ${
-                        isDark ? 'text-white' : 'text-gray-900'
+                        isDark ? "text-white" : "text-gray-900"
                       }`}
                     >
                       {category.name}
@@ -218,21 +163,21 @@ const DetailedCategoryBreakdown = () => {
                 </td>
                 <td
                   className={`py-4 px-4 ${
-                    isDark ? 'text-gray-300' : 'text-gray-700'
+                    isDark ? "text-gray-300" : "text-gray-700"
                   }`}
                 >
                   {category.totalTime}h
                 </td>
                 <td
                   className={`py-4 px-4 ${
-                    isDark ? 'text-gray-300' : 'text-gray-700'
+                    isDark ? "text-gray-300" : "text-gray-700"
                   }`}
                 >
                   {category.sessions}
                 </td>
                 <td
                   className={`py-4 px-4 ${
-                    isDark ? 'text-gray-300' : 'text-gray-700'
+                    isDark ? "text-gray-300" : "text-gray-700"
                   }`}
                 >
                   {category.avgDuration}h
@@ -250,7 +195,7 @@ const DetailedCategoryBreakdown = () => {
                     </div>
                     <span
                       className={`text-sm font-medium min-w-[40px] ${
-                        isDark ? 'text-gray-300' : 'text-gray-700'
+                        isDark ? "text-gray-300" : "text-gray-700"
                       }`}
                     >
                       {category.percentage}%
