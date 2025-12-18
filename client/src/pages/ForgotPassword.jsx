@@ -45,6 +45,8 @@ const ForgotPassword = () => {
       );
       const data = await response.json();
 
+      if (!response.ok) throw new Error(data.message);
+
       setGeneratedOtp(data.otp);
 
       // Send Email via EmailJS

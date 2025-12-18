@@ -1,7 +1,7 @@
-import e from "express";
+import express from "express";
 import { login, signup, googleLogin } from "../controllers/Register.js";
 
-const router = e.Router();
+const router = express.Router();
 
 router.post("/signup", signup);
 router.post("/login", login);

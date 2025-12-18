@@ -12,7 +12,6 @@ import taskRoutes from "./routes/taskRoutes.js";
 import protect from "./middleware/auth.js";
 import timeEntryRoutes from "./routes/personalAnalysis/timeEntryRoutes.js";
 import userTaskRoutes from "./routes/personalAnalysis/userTaskRoutes.js";
-import productivityGoalRoutes from "./routes/personalAnalysis/productivityGoalRoutes.js";
 import dailyCheckInRoutes from "./routes/personalAnalysis/dailyCheckInRoutes.js";
 import personalDashboardRoutes from "./routes/personalAnalysis/personalDashboardRoutes.js";
 
@@ -41,7 +40,6 @@ app.use("/api/tasks", taskRoutes);
 // personal routes
 app.use("/api/user-tasks", userTaskRoutes);
 app.use("/api/time-entries", timeEntryRoutes);
-// app.use("/api/goals", productivityGoalRoutes);
 app.use("/api/daily-check-in", dailyCheckInRoutes);
 app.use("/api/personal-analysis", personalDashboardRoutes);
 
