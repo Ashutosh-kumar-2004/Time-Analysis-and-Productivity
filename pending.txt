@@ -1,8 +1,0 @@
-src/
-├── hooks/
-│   └── projectTask/
-│       ├── taskSlice.js          # Main Redux slice
-│       ├── taskApi.js            # API calls
-│       ├── taskSelectors.js      # Selectors for computed data
-│       ├── websocket.js          # WebSocket connection
-│       └── index.js              # Barrel export

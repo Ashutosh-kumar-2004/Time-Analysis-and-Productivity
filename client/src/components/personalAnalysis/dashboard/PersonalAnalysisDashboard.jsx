@@ -360,7 +360,7 @@ const PersonalAnalysisDashboard = () => {
 
         {/* Export Analytics Report */}
         <div className="mt-6">
-          <ExportAnalyticsReport />
+          <ExportAnalyticsReport data={dashboardStats} />
         </div>
       </div>
     </div>
