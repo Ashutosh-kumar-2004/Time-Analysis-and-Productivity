@@ -21,7 +21,7 @@ const FocusTrends = ({ data }) => {
   ];
 
   return (
-    <div className="bg-white dark:bg-[#1e1e1e] rounded-2xl shadow-sm border border-gray-100 dark:border-white/5 p-6 w-full lg:w-[400px]">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-white/5 p-6 w-full h-full">
       <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-6">
         Focus Trends
       </h2>

@@ -11,7 +11,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const CategoryComparisonChart = ({ data, loading }) => {
+const CategoryComparisonChart = ({ data, loading, rangeLabel }) => {
   const { isDark } = useContext(ThemeContext);
 
   const chartData = data || [];
@@ -79,7 +79,7 @@ const CategoryComparisonChart = ({ data, loading }) => {
             isDark ? "text-white" : "text-gray-900"
           }`}
         >
-          Category Comparison (This Week vs Last Week)
+          Category Comparison ({rangeLabel || "This Week vs Last Week"})
         </h3>
       </div>
       <div className="h-80">

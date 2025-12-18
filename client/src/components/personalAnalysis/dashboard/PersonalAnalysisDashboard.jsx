@@ -341,16 +341,19 @@ const PersonalAnalysisDashboard = () => {
               />
             </div>
 
-            {/* Focus Trends Chart (Last 7 Days) */}
-            <div className="mt-6">
+            {/* Focus Trends and Category Comparison */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
               <FocusTrends data={dashboardStats?.focusTrends} />
-            </div>
-
-            {/* Category Comparison Chart */}
-            <div className="mt-6">
               <CategoryComparisonChart
                 data={dashboardStats?.categoryComparison}
                 loading={statsLoading}
+                rangeLabel={
+                  activeTimeRange === "Today"
+                    ? "Today vs Yesterday"
+                    : activeTimeRange === "This Month"
+                    ? "This Month vs Last Month"
+                    : "This Week vs Last Week"
+                }
               />
             </div>
 

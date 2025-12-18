@@ -207,17 +207,12 @@ export const getDashboardStats = async (req, res) => {
       efficiency: Math.round(Math.random() * 20 + 70), // Placeholder
     }));
 
-    // 6. Focus Trends (Last 7 Days - Specific for FocusTrends Component)
-    // Always fetch last 7 days regardless of timeRange
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    sevenDaysAgo.setHours(0, 0, 0, 0);
-
+    // 6. Focus Trends (Dynamic based on Time Range)
     const focusTrendsAgg = await TimeEntry.aggregate([
       {
         $match: {
           userId: userIdObj,
-          startTimestamp: { $gte: sevenDaysAgo },
+          startTimestamp: { $gte: startDate, $lte: endDate },
           focusScore: { $exists: true, $ne: null },
         },
       },
@@ -235,18 +230,23 @@ export const getDashboardStats = async (req, res) => {
     // Days mapping
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-    // Fill last 7 days including today
+    // Gap Filling Logic
     const focusTrendsData = [];
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const dateStr = d.toLocaleDateString("en-CA"); // YYYY-MM-DD
+    const currentDate = new Date(startDate);
+    // Clone end date to safely loop
+    const rangeEnd = new Date(endDate);
+
+    // Safety break loop if infinite (shouldn't happen with valid dates)
+    while (currentDate <= rangeEnd) {
+      const dateStr = currentDate.toLocaleDateString("en-CA");
       const found = focusTrendsAgg.find((f) => f._id === dateStr);
 
       focusTrendsData.push({
-        day: days[d.getDay()],
+        day: `${days[currentDate.getDay()]} ${currentDate.getDate()}`,
         focus: found ? Number(found.avgFocus.toFixed(1)) : 0,
       });
+
+      currentDate.setDate(currentDate.getDate() + 1);
     }
 
     // 7. Category Comparison
