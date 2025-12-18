@@ -13,7 +13,7 @@ export const getDashboardStats = async (req, res) => {
     let previousStartDate = new Date();
     let previousEndDate = new Date(); // To calculate previous period for comparison
 
-    // Determine date range
+    // Determine date range for Dashboard Filters
     if (timeRange === "Today") {
       startDate.setHours(0, 0, 0, 0);
       endDate.setHours(23, 59, 59, 999);
@@ -115,11 +115,7 @@ export const getDashboardStats = async (req, res) => {
     const avgFocus = productivityAgg[0]?.avgFocus || 0;
     const productivityScore = Math.round((avgFocus / 5) * 100);
 
-    // 3. Goal Achievement (Removed as per requirement)
-    // const goals = await ProductivityGoal.find({...});
-    // ...
-
-    // 4. Efficiency Rate
+    // 3. Efficiency Rate
     const efficiencyAgg = await UserTask.aggregate([
       {
         $match: {
@@ -137,7 +133,7 @@ export const getDashboardStats = async (req, res) => {
     ]);
     const efficiencyRate = Math.round(efficiencyAgg[0]?.avgEfficiency || 0);
 
-    // 5. Time Allocation by Category
+    // 4. Time Allocation by Category
     const categoryAllocation = await TimeEntry.aggregate([
       {
         $match: {
@@ -183,7 +179,7 @@ export const getDashboardStats = async (req, res) => {
       }))
       .filter((item) => item.value > 0);
 
-    // 6. Productivity Trend (Daily breakdown for current range)
+    // 5. Productivity Trend (Daily breakdown for current range)
     const trendAgg = await TimeEntry.aggregate([
       {
         $match: {
@@ -197,25 +193,63 @@ export const getDashboardStats = async (req, res) => {
             $dateToString: { format: "%Y-%m-%d", date: "$startTimestamp" },
           },
           avgFocus: { $avg: "$focusScore" },
-          // We can approximate efficiency from available data or just use focus for now
         },
       },
       { $sort: { _id: 1 } },
     ]);
 
-    // Fill in missing days for the graph
-    // (Simplification: just mapping existing data points for now, user can see gaps)
     const trendData = trendAgg.map((item) => ({
       date: new Date(item._id).toLocaleDateString("en-US", {
         month: "numeric",
         day: "numeric",
       }),
       productivity: Math.round((item.avgFocus / 5) * 100),
-      efficiency: Math.round(Math.random() * 20 + 70), // Placeholder/Mock for efficiency as it's harder to get per-day without more complex joins
+      efficiency: Math.round(Math.random() * 20 + 70), // Placeholder
     }));
 
-    // 7. Category Comparison (Current vs Previous)
-    // We already have `allocationData` (current). We need previous period.
+    // 6. Focus Trends (Last 7 Days - Specific for FocusTrends Component)
+    // Always fetch last 7 days regardless of timeRange
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+
+    const focusTrendsAgg = await TimeEntry.aggregate([
+      {
+        $match: {
+          userId: userIdObj,
+          startTimestamp: { $gte: sevenDaysAgo },
+          focusScore: { $exists: true, $ne: null },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$startTimestamp" },
+          },
+          avgFocus: { $avg: "$focusScore" },
+        },
+      },
+      { $sort: { _id: 1 } },
+    ]);
+
+    // Days mapping
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    // Fill last 7 days including today
+    const focusTrendsData = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toLocaleDateString("en-CA"); // YYYY-MM-DD
+      const found = focusTrendsAgg.find((f) => f._id === dateStr);
+
+      focusTrendsData.push({
+        day: days[d.getDay()],
+        focus: found ? Number(found.avgFocus.toFixed(1)) : 0,
+      });
+    }
+
+    // 7. Category Comparison
     const prevCategoryAllocation = await TimeEntry.aggregate([
       {
         $match: {
@@ -252,7 +286,6 @@ export const getDashboardStats = async (req, res) => {
       ]),
     ];
 
-    // Take top 6 active categories to avoid clutter
     const topCategories = categoriesList
       .map((cat) => ({
         id: cat,
@@ -273,7 +306,6 @@ export const getDashboardStats = async (req, res) => {
     }));
 
     // 8. Detailed Breakdown
-    // We need: Category, Total Time, Sessions, Avg Duration, Percentage
     const detailedBreakdown = await TimeEntry.aggregate([
       {
         $match: {
@@ -318,10 +350,11 @@ export const getDashboardStats = async (req, res) => {
         totalHours,
         productivityScore,
         efficiencyRate,
-        hasData: totalTimeAgg.length > 0, // Flag for empty state
+        hasData: totalTimeAgg.length > 0,
       },
       timeAllocation: allocationDataWithPercent,
       productivityTrend: trendData,
+      focusTrends: focusTrendsData, // New Data for FocusTrends component
       categoryComparison: comparisonData,
       detailedBreakdown: detailedData,
     });

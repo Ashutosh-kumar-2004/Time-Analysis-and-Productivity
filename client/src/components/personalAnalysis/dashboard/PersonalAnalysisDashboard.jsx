@@ -14,6 +14,7 @@ import ProductivityTrendChart from "./ProductivityTrendChart";
 import CategoryComparisonChart from "./CategoryComparisonChart";
 import DetailedCategoryBreakdown from "./DetailedCategoryBreakdown";
 import ExportAnalyticsReport from "./ExportAnalyticsReport";
+import FocusTrends from "../formData/FocusTrends";
 
 const PersonalAnalysisDashboard = () => {
   const { isDark } = useContext(ThemeContext);
@@ -338,6 +339,11 @@ const PersonalAnalysisDashboard = () => {
                 data={dashboardStats?.productivityTrend}
                 loading={statsLoading}
               />
+            </div>
+
+            {/* Focus Trends Chart (Last 7 Days) */}
+            <div className="mt-6">
+              <FocusTrends data={dashboardStats?.focusTrends} />
             </div>
 
             {/* Category Comparison Chart */}
