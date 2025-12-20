@@ -172,7 +172,6 @@ export default function SettingsPage() {
                 <p className="text-red-500 text-xs mt-2">{uploadError}</p>
               )}
             </div>
-
             {/* Stats */}
             <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 text-center sm:text-right flex flex-col sm:items-end gap-2">
               <div className="flex items-center gap-2 justify-center sm:justify-start">

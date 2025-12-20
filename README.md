@@ -1,54 +1,81 @@
-# TimeFlow - Productivity & Time Analysis Platform
+# Productivity Tracker - Productivity & Time Analysis Platform
 
-TimeFlow is a comprehensive productivity and time analysis application designed to help users track their tasks, manage projects, and gain insights into their productivity habits. It features a modern, responsive UI and a robust backend for secure data management.
+**Productivity Tracker** is a sophisticated productivity and time analysis application engineered to transform how users track tasks, manage complexity, and visualize their efficiency. Built with a modern, responsive **MERN stack** architecture, it combines intuitive design with powerful analytics to provide actionable insights into personal and professional time management.
 
 ## 🚀 Key Features
 
-### 🔐 Authentication & Security
+### 🔐 Advanced Authentication & Security
 
-- **Multi-method Login**: Support for traditional Email/Password and **Google Authentication** (integrated via Firebase).
-- **Secure Sign-up**: User registration with automatic handling for Google users.
-- **Forgot Password Workflow**: Complete 3-step recovery process (Email -> OTP -> New Password).
-  - **OTP Security**: OTPs are generated on the backend and sent via EmailJS.
-  - **Expiration**: OTPs are valid for 5 minutes with real-time countdowns.
-- **JWT Authorization**: Secure, token-based session management.
+- **Dual Login Methods**: Seamless access via **Google OAuth** (Firebase integration) or traditional **Email/Password**.
+- **Secure Registration**: Robust sign-up flow with automatic profile creation and existing user checks.
+- **Enterprise-Grade Security**:
+  - **JWT Authorization**: Stateless, secure session management with token-based access.
+  - **Bcrypt Hashing**: Industry-standard password encryption.
+  - **Protected Routes**: Client-side routing guards to prevent unauthorized access.
+- **Forgot Password Workflow**:
+  - 3-step recovery: Email Request -> OTP Verification -> Password Reset.
+  - **Real-time OTP**: backend-generated one-time passwords with 5-minute expiry and countdown timers.
 
-### 📊 Dashboard & Analytics
+### 📊 Deep Analytics Dashboard
 
-- **Personal Dashboard**: Visual overview of personal productivity with charts and stats.
-- **Focus Trends**: Dynamic tracking of daily focus scores and activity.
-- **Project Analysis**: Detailed insights into project progress and time allocation.
+- **Visual Productivity Hub**: A centralized dashboard aggregating key metrics.
+- **Dynamic Focus Score**: Proprietary algorithm calculating daily "Focus Scores" based on task completion and time logged.
+- **Activity Heatmaps**: Visual representation of activity density over time.
+- **Category Breakdown**: Pie and Bar charts displaying time distribution across categories (Work, Study, Creative, etc.).
 
-### 📁 Project & Task Management
+### � Personal Analysis Module
 
-- **Project Organization**: Create, edit, and delete projects with metadata (priority, status, dates).
-- **Task Tracking**: Manage tasks and subtasks within projects.
-- **Role-Based Access**: Project Manager roles with specific permissions (e.g., editing project details).
+- **Detailed Reports**: Granular views of time expenditure by day, week, or custom data ranges.
+- **Goal Tracking**: Set and monitor daily/weekly hour goals (e.g., "Study for 20 hours/week").
+- **Trend Analysis**: Compare current performance against historical data to identify productivity patterns.
 
-### 👤 User Profile
+### 📁 Comprehensive Project Management
 
-- **Profile Management**: Update personal information and avatar (integrated with Cloudinary).
-- **Activity History**: View recent logs and actions.
+- **Project Lifecycle**: Full CRUD capabilities for projects with rich metadata (Start/End dates, Priority, Status).
+- **Hierarchical Task System**:
+  - **Projects** contain **Tasks**.
+  - **Tasks** contain **Subtasks** for granular tracking.
+- **Smart Task Management**:
+  - Status tracking (Todo, In Progress, Completed).
+  - Priority flagging (Low, Medium, High).
+  - Due date reminders.
+- **Project Analysis**: Dedicated analytics page for each project showing progress velocity and team contributions.
+- **Role-Based Access Control**:
+  - **Managers**: Can edit project details, assign members, and manage configuration.
+  - **Members**: Can view tasks and update their own progress.
+
+### 👤 User-Centric Experience
+
+- **Customizable Profile**:
+  - Manage personal details, bio, and professional role.
+  - **Cloudinary Integration**: High-performance image upload and optimization for profile avatars.
+- **Theme Customization**: Fully supported **Dark Mode** and Light Mode with persistence.
+- **Responsive Design**: Mobile-first architecture ensuring a seamless experience across Desktop, Tablet, and Mobile devices.
+- **Persistent Navigation**: Smooth transitions and easy access to core features via a smart Navbar.
 
 ## 🛠️ Technology Stack
 
 ### Frontend (Client)
 
-- **Framework**: [React](https://react.dev/) with [Vite](https://vitejs.dev/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) for responsive design.
-- **State Management**: [Redux Toolkit](https://redux-toolkit.js.org/) & React Context.
-- **Routing**: [React Router DOM](https://reactrouter.com/).
-- **Data Visualization**: [Recharts](https://recharts.org/) and Chart.js.
-- **Forms**: [React Hook Form](https://react-hook-form.com/) with Yup validation.
-- **Utilities**: EmailJS (email sending), Axios (API requests), Moment.js/Date-fns (date handling).
+- **Core**: [React.js](https://react.dev/) (v18) with [Vite](https://vitejs.dev/) for lightning-fast builds.
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) for a utility-first, custom design system.
+- **State Management**:
+  - [Redux Toolkit](https://redux-toolkit.js.org/) for global app state (Auth, UI).
+  - React Context API for specialized features (Theme, Toast).
+- **Routing**: [React Router DOM](https://reactrouter.com/) (v6) with nested routes and layouts.
+- **Data Visualization**: [Recharts](https://recharts.org/) for responsive, composable charts.
+- **Forms**: [React Hook Form](https://react-hook-form.com/) combined with [Yup](https://github.com/jquense/yup) validation.
+- **Icons**: [React Icons](https://react-icons.github.io/react-icons/) (Lucide, FontAwesome, etc.).
+- **HTTP Client**: [Axios](https://axios-http.com/) with interceptors.
 
 ### Backend (Server)
 
-- **Runtime**: [Node.js](https://nodejs.org/) & [Express.js](https://expressjs.com/).
-- **Database**: [MongoDB](https://www.mongodb.com/) with Mongoose ODM.
-- **Authentication**: Firebase Admin (for Google Auth verification) & JWT.
-- **File Storage**: Cloudinary for image uploads.
-- **Security**: Bcrypt for password hashing, CORS protection.
+- **Runtime**: [Node.js](https://nodejs.org/) with [Express.js](https://expressjs.com/) REST API.
+- **Database**: [MongoDB](https://www.mongodb.com/) (Atlas) with Mongoose for schema modeling.
+- **Auth**: Firebase Admin SDK (Google Verify) & `jsonwebtoken` (JWT).
+- **Storage**: Cloudinary SDK for media asset management.
+- **Email**: EmailJS / Nodemailer integration for transactional emails.
+- **Validation**: Joi / express-validator for request payload sanitization.
 
 ## 📂 Project Structure
 
@@ -56,119 +83,109 @@ TimeFlow is a comprehensive productivity and time analysis application designed 
 /
 ├── client/                 # Frontend React Application
 │   ├── src/
-│   │   ├── components/     # Reusable UI components
-│   │   ├── hooks/          # Custom React hooks (useGoogleLogin, useLogin, etc.)
-│   │   ├── pages/          # Application pages (Login, Dashboard, etc.)
-│   │   ├── context/        # React Context providers
-│   │   ├── config/         # Firebase and app config
-│   │   └── ...
-│   ├── .env                # Client environment variables
-│   └── box.json            # Dependencies
+│   │   ├── assets/         # Static assets (images, vectors)
+│   │   ├── components/     # Atomic reusable UI components
+│   │   │   ├── layout/     # MainLayout, Sidebar
+│   │   │   ├── navbar/     # Responsive Navbar
+│   │   │   └── ...
+│   │   ├── hooks/          # Custom Hooks (useAuth, useTheme)
+│   │   ├── pages/          # Route Views (Dashboard, ProjectDetails)
+│   │   ├── context/        # Context Providers
+│   │   ├── redux/          # Redux Slices and Store
+│   │   └── utils/          # Helper functions
+│   └── ...
 │
 └── server/                 # Backend Node.js Application
-    ├── controllers/        # Request handlers (Auth, Projects, Tasks)
-    ├── routes/             # API Route definitions
-    ├── modal/              # Mongoose Data Models
-    ├── middleware/         # Auth and error middleware
-    ├── config/             # DB and service configuration
-    └── .env                # Server environment variables
+    ├── controllers/        # Logic Layer (Auth, Project, Task logic)
+    ├── routes/             # API Endpoints
+    ├── models/             # Database Schemas (User, Project, Task)
+    ├── middleware/         # Auth guards, Error handling
+    ├── services/           # External services (Email, Storage)
+    └── config/             # Environment & DB Config
 ```
 
 ## ⚙️ Installation & Setup
 
 ### Prerequisites
 
-- Node.js (v14+)
-- MongoDB (Local or Atlas)
-- Firebase Project (for Google Auth)
-- EmailJS Account (for Forgot Password)
-- Cloudinary Account (for Image Uploads)
+- Node.js (v16+)
+- MongoDB Connection String (Atlas URI)
+- Firebase Project Credentials
+- Cloudinary Account
+- EmailJS Keys
 
-### 1. Clone the Repository
+### 1. Clone & Install
 
 ```bash
-git clone <repository-url>
-cd Time_Analysis_Website
+git clone https://github.com/yourusername/TimeFlow.git
+cd TimeFlow
 ```
 
-### 2. Backend Setup
+### 2. Backend Configuration
+
+Navigate to `/server` and install dependencies:
 
 ```bash
 cd server
 npm install
 ```
 
-Create a `.env` file in the `server` directory:
+Create `.env` in `/server`:
 
 ```env
 PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-EMAILJS_SERVICE_ID=your_emailjs_service_id  # Optional (if backend logic used)
-EMAILJS_TEMPLATE_ID=your_emailjs_template_id
-EMAILJS_PUBLIC_KEY=your_emailjs_public_key
+MONGO_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/timeflow
+JWT_SECRET=your_super_secret_jwt_key
+CLOUDINARY_CLOUD_NAME=...
+CLOUDINARY_API_KEY=...
+CLOUDINARY_API_SECRET=...
+# Email Configuration
+EMAILJS_SERVICE_ID=...
+EMAILJS_TEMPLATE_ID=...
+EMAILJS_PUBLIC_KEY=...
 ```
 
-Start the server:
+Start Development Server:
 
 ```bash
 npm run dev
 ```
 
-### 3. Client Setup
+### 3. Client Configuration
+
+Navigate to `/client` and install dependencies:
 
 ```bash
-cd client
+cd ../client
 npm install
 ```
 
-Create a `.env` file in the `client` directory:
+Create `.env` in `/client`:
 
 ```env
 VITE_API_URL=http://localhost:5000
-VITE_FIREBASE_API_KEY=your_firebase_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_bucket
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
-VITE_EMAILJS_SERVICE_ID=your_emailjs_service_id
-VITE_EMAILJS_TEMPLATE_ID=your_emailjs_template_id
-VITE_EMAILJS_PUBLIC_KEY=your_emailjs_public_key
+# Firebase Config
+VITE_FIREBASE_API_KEY=...
+VITE_FIREBASE_AUTH_DOMAIN=...
+VITE_FIREBASE_PROJECT_ID=...
+# EmailJS Config (Client-side failover)
+VITE_EMAILJS_PUBLIC_KEY=...
 ```
 
-Start the client:
+Start the React App:
 
 ```bash
 npm run dev
 ```
 
-## 🧪 Key Workflows
+## � Contribution
 
-### Forgot Password Flow
-
-1.  User enters email on `/forgot-password`.
-2.  Server generates a 6-digit OTP, hashes it, and saves it to the DB with a 5-minute expiry.
-3.  Server returns the OTP (in response) to the client.
-4.  Client uses EmailJS to send the OTP to the user's email.
-5.  User enters OTP; server verifies it against the hashed version.
-6.  User resets password.
-
-### Google Login
-
-1.  User clicks "Continue with Google".
-2.  Firebase Popup handles authentication.
-3.  Client sends Firebase token/user info to Backend
-4.  Backend verifies/creates user and issues a session JWT.
-5.  User is logged in.
-
-## 🤝 Contribution
+Contributions are welcome! Please follow these steps:
 
 1.  Fork the repository.
-2.  Create a feature branch (`git checkout -b feature/AmazingFeature`).
-3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-4.  Push to the branch (`git push origin feature/AmazingFeature`).
+2.  Create a feature branch (`git checkout -b feature/NewFeature`).
+3.  Commit changes (`git commit -m 'Add NewFeature'`).
+4.  Push to branch (`git push origin feature/NewFeature`).
 5.  Open a Pull Request.
+
+---
