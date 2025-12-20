@@ -13,6 +13,7 @@ import ProjectAnalysisPage from "../components/projects/analysis/ProjectAnalysis
 import { ProjectAnalysisProvider } from "../context/analysis/ProjectAnalysisContext";
 import FormData from "../components/personalAnalysis/FormData";
 import MainLayout from "../components/layout/MainLayout";
+import NotFound from "../pages/NotFound";
 
 const AppRoutes = () => {
   return (
@@ -71,6 +72,9 @@ const AppRoutes = () => {
               }
             />
           </Route>
+
+          {/* 404 Route */}
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </BrowserRouter>
