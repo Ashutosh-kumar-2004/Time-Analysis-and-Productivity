@@ -14,6 +14,7 @@ import timeEntryRoutes from "./routes/personalAnalysis/timeEntryRoutes.js";
 import userTaskRoutes from "./routes/personalAnalysis/userTaskRoutes.js";
 import dailyCheckInRoutes from "./routes/personalAnalysis/dailyCheckInRoutes.js";
 import personalDashboardRoutes from "./routes/personalAnalysis/personalDashboardRoutes.js";
+import chatbotRoutes from "./routes/chatbotRoutes.js";
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.get("/api/serverStatus", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/gemini", chatbotRoutes);
 
 app.use(protect);
 app.use("/api/navbar", navbarRoutes);

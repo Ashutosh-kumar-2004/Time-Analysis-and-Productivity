@@ -1,5 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { MessageCircle, X, Send, RefreshCw, Minus } from "lucide-react";
+import {
+  MessageCircle,
+  X,
+  Send,
+  RefreshCw,
+  Minus,
+  Loader2,
+} from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
 
 const Chatbot = () => {
@@ -26,6 +33,7 @@ const Chatbot = () => {
     },
   ]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const { isDark, toggleTheme } = useTheme();
   const messagesEndRef = useRef(null);
 
@@ -39,11 +47,11 @@ const Chatbot = () => {
     setIsOpen(false);
   };
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
 
-    const newMessage = {
+    const userMessage = {
       id: Date.now(),
       text: input,
       sender: "user",
@@ -53,16 +61,51 @@ const Chatbot = () => {
       }),
     };
 
-    setMessages([...messages, newMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
+    setIsLoading(true);
 
-    // Simulate bot response
-    setTimeout(() => {
+    try {
+      // Prepare history for API (basic context)
+      // Filter only last few messages for context to keep it lightweight if needed,
+      // or map all. Gemini expects 'user' and 'model'.
+      const history = messages.map((msg) => ({
+        role: msg.sender === "user" ? "user" : "model",
+        text: msg.text,
+      }));
+
+      const token = localStorage.getItem("token"); // Assuming auth needed if middleware is applied
+
+      const res = await fetch("/api/gemini", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          message: input,
+          history: history,
+        }),
+      });
+
+      const textData = await res.text();
+      let data;
+      try {
+        data = JSON.parse(textData);
+      } catch (e) {
+        console.error("Failed to parse JSON response:", textData);
+        throw new Error("Invalid server response");
+      }
+
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to get response");
+      }
+
       setMessages((prev) => [
         ...prev,
         {
           id: Date.now() + 1,
-          text: "I'm just a demo for now, but I like what you said!",
+          text: data.text,
           sender: "bot",
           time: new Date().toLocaleTimeString([], {
             hour: "2-digit",
@@ -70,7 +113,23 @@ const Chatbot = () => {
           }),
         },
       ]);
-    }, 1000);
+    } catch (error) {
+      console.error("Chat error:", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          text: "Sorry, I encountered an error. Please try again.",
+          sender: "bot",
+          time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const scrollToBottom = () => {
@@ -162,6 +221,19 @@ const Chatbot = () => {
               </div>
             ))}
             <div ref={messagesEndRef} />
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mr-2 text-purple-600 dark:text-purple-400">
+                  <MessageCircle size={16} />
+                </div>
+                <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 px-4 py-3 rounded-2xl rounded-tl-none shadow-sm flex items-center">
+                  <Loader2 className="w-4 h-4 animate-spin text-purple-600" />
+                  <span className="text-xs text-gray-500 ml-2">
+                    Thinking...
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Input Area */}
