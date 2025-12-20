@@ -15,17 +15,12 @@ import CategoryComparisonChart from "./CategoryComparisonChart";
 import DetailedCategoryBreakdown from "./DetailedCategoryBreakdown";
 import ExportAnalyticsReport from "./ExportAnalyticsReport";
 import FocusTrends from "../formData/FocusTrends";
-import { ShimmerChart } from "../../shimmer/Shimmer";
 
 const PersonalAnalysisDashboard = () => {
   const { isDark } = useContext(ThemeContext);
   const { fetchDashboardStats, dashboardStats, statsLoading } =
     usePersonalAnalysis();
   const [activeTimeRange, setActiveTimeRange] = useState("This Week");
-  const [showFilters, setShowFilters] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedTag, setSelectedTag] = useState("");
-  const [minDuration, setMinDuration] = useState("");
 
   const timeRanges = [
     { id: "today", label: "Today", icon: FiCalendar },
@@ -33,44 +28,6 @@ const PersonalAnalysisDashboard = () => {
     { id: "month", label: "This Month", icon: FiCalendar },
     { id: "custom", label: "Custom Range", icon: FiCalendar },
   ];
-
-  const categories = [
-    "Development",
-    "Meetings",
-    "Learning",
-    "Break",
-    "Admin",
-    "Creative",
-  ];
-  const tags = [
-    "Urgent",
-    "Important",
-    "Low Priority",
-    "Bug Fix",
-    "Feature",
-    "Documentation",
-  ];
-  const durations = [
-    "Any duration",
-    "< 30 min",
-    "30-60 min",
-    "1-2 hours",
-    "> 2 hours",
-  ];
-
-  const handleApplyFilters = () => {
-    console.log("Applying filters:", {
-      selectedCategory,
-      selectedTag,
-      minDuration,
-    });
-  };
-
-  const handleResetFilters = () => {
-    setSelectedCategory("");
-    setSelectedTag("");
-    setMinDuration("");
-  };
 
   useEffect(() => {
     fetchDashboardStats(activeTimeRange);
@@ -136,178 +93,6 @@ const PersonalAnalysisDashboard = () => {
             })}
           </div>
         </div>
-
-        {/* Advanced Filters */}
-        <div
-          className={`rounded-xl overflow-hidden print:hidden ${
-            isDark
-              ? "bg-gray-800 border border-gray-700"
-              : "bg-white border border-gray-200"
-          } shadow-sm`}
-        >
-          {/* Filter Header */}
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className={`w-full flex items-center justify-between p-6 transition-colors ${
-              isDark ? "hover:bg-gray-750" : "hover:bg-gray-50"
-            }`}
-          >
-            <div className="flex items-center gap-2">
-              <FiFilter
-                className={`w-5 h-5 ${
-                  isDark ? "text-gray-400" : "text-gray-600"
-                }`}
-              />
-              <span
-                className={`font-semibold ${
-                  isDark ? "text-white" : "text-gray-900"
-                }`}
-              >
-                Advanced Filters
-              </span>
-            </div>
-            <FiChevronDown
-              className={`w-5 h-5 transition-transform duration-200 ${
-                showFilters ? "rotate-180" : ""
-              } ${isDark ? "text-gray-400" : "text-gray-600"}`}
-            />
-          </button>
-
-          {/* Filter Content */}
-          {showFilters && (
-            <div
-              className={`px-6 pb-6 border-t ${
-                isDark ? "border-gray-700" : "border-gray-200"
-              }`}
-            >
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                {/* Categories */}
-                <div>
-                  <label
-                    className={`block text-sm font-medium mb-3 ${
-                      isDark ? "text-gray-300" : "text-gray-700"
-                    }`}
-                  >
-                    Categories
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={selectedCategory}
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      className={`w-full px-4 py-2.5 rounded-lg border transition-all duration-200 ${
-                        isDark
-                          ? "bg-gray-700 border-gray-600 text-white focus:border-blue-500"
-                          : "bg-white border-gray-300 text-gray-900 focus:border-blue-500"
-                      } focus:outline-none focus:ring-2 focus:ring-blue-500/20 appearance-none`}
-                    >
-                      <option value="">Select categories</option>
-                      {categories.map((category) => (
-                        <option key={category} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                    </select>
-                    <FiChevronDown
-                      className={`absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none ${
-                        isDark ? "text-gray-400" : "text-gray-600"
-                      }`}
-                    />
-                  </div>
-                </div>
-
-                {/* Tags */}
-                <div>
-                  <label
-                    className={`block text-sm font-medium mb-3 ${
-                      isDark ? "text-gray-300" : "text-gray-700"
-                    }`}
-                  >
-                    Tags
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={selectedTag}
-                      onChange={(e) => setSelectedTag(e.target.value)}
-                      className={`w-full px-4 py-2.5 rounded-lg border transition-all duration-200 ${
-                        isDark
-                          ? "bg-gray-700 border-gray-600 text-white focus:border-blue-500"
-                          : "bg-white border-gray-300 text-gray-900 focus:border-blue-500"
-                      } focus:outline-none focus:ring-2 focus:ring-blue-500/20 appearance-none`}
-                    >
-                      <option value="">Select tags</option>
-                      {tags.map((tag) => (
-                        <option key={tag} value={tag}>
-                          {tag}
-                        </option>
-                      ))}
-                    </select>
-                    <FiChevronDown
-                      className={`absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none ${
-                        isDark ? "text-gray-400" : "text-gray-600"
-                      }`}
-                    />
-                  </div>
-                </div>
-
-                {/* Minimum Duration */}
-                <div>
-                  <label
-                    className={`block text-sm font-medium mb-3 ${
-                      isDark ? "text-gray-300" : "text-gray-700"
-                    }`}
-                  >
-                    Minimum Duration
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={minDuration}
-                      onChange={(e) => setMinDuration(e.target.value)}
-                      className={`w-full px-4 py-2.5 rounded-lg border transition-all duration-200 ${
-                        isDark
-                          ? "bg-gray-700 border-gray-600 text-white focus:border-blue-500"
-                          : "bg-white border-gray-300 text-gray-900 focus:border-blue-500"
-                      } focus:outline-none focus:ring-2 focus:ring-blue-500/20 appearance-none`}
-                    >
-                      {durations.map((duration) => (
-                        <option key={duration} value={duration}>
-                          {duration}
-                        </option>
-                      ))}
-                    </select>
-                    <FiChevronDown
-                      className={`absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none ${
-                        isDark ? "text-gray-400" : "text-gray-600"
-                      }`}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-3 mt-6">
-                <button
-                  onClick={handleApplyFilters}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 shadow-md"
-                >
-                  <FiCheck className="w-4 h-4" />
-                  Apply Filters
-                </button>
-                <button
-                  onClick={handleResetFilters}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium transition-colors duration-200 ${
-                    isDark
-                      ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
-                >
-                  <FiX className="w-4 h-4" />
-                  Reset Filters
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-
         {/* Charts Section */}
         {!statsLoading && !dashboardStats?.stats?.hasData ? (
           <div
