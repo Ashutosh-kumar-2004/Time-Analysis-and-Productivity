@@ -176,13 +176,13 @@ const Navbar = () => {
 
                     <div className="border-t dark:border-gray-700 my-1"></div>
 
-                    <Link
-                      className="flex items-center px-4 py-3 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                    <button
+                      className="w-full flex items-center px-4 py-3 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-left"
                       onClick={handleLogout}
                     >
                       <FaTimes className="mr-3" />
                       Logout
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </div>
