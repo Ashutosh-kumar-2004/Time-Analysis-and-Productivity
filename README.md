@@ -6,6 +6,9 @@
 
 ### 🔐 Advanced Authentication & Security
 
+- **Immersive User Experience**:
+  - **Galaxy Background**: A stunning, interactive 3D particle background using `ogl` for a visually engaging login/signup experience.
+  - **Unified Sliding Interface**: Seamless transitions between Login and Signup forms without page reloads.
 - **Dual Login Methods**: Seamless access via **Google OAuth** (Firebase integration) or traditional **Email/Password**.
 - **Secure Registration**: Robust sign-up flow with automatic profile creation and existing user checks.
 - **Enterprise-Grade Security**:
@@ -13,6 +16,7 @@
   - **Bcrypt Hashing**: Industry-standard password encryption.
   - **Protected Routes**: Client-side routing guards to prevent unauthorized access.
 - **Forgot Password Workflow**:
+  - **Modern UI**: Consistent Galaxy-themed interface for password recovery.
   - 3-step recovery: Email Request -> OTP Verification -> Password Reset.
   - **Real-time OTP**: backend-generated one-time passwords with 5-minute expiry and countdown timers.
 
@@ -27,6 +31,7 @@
 
 - **Detailed Reports**: Granular views of time expenditure by day, week, or custom data ranges.
 - **Goal Tracking**: Set and monitor daily/weekly hour goals (e.g., "Study for 20 hours/week").
+- **Dynamic Focus Trends**: Real-time visualization of your focus consistency over the last 7 days.
 - **Trend Analysis**: Compare current performance against historical data to identify productivity patterns.
 
 ### 📁 Comprehensive Project Management
@@ -39,7 +44,10 @@
   - Status tracking (Todo, In Progress, Completed).
   - Priority flagging (Low, Medium, High).
   - Due date reminders.
+  - **Subtask Deletion**: granular control to remove subtasks as needed.
 - **Project Analysis**: Dedicated analytics page for each project showing progress velocity and team contributions.
+- **Advanced Project Controls**:
+  - **Edit Project Modal**: Managers can update project details, deadlines, and priorities instantly.
 - **Role-Based Access Control**:
   - **Managers**: Can edit project details, assign members, and manage configuration.
   - **Members**: Can view tasks and update their own progress.
