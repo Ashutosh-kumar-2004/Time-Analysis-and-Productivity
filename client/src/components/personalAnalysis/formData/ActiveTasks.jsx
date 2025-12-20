@@ -138,7 +138,7 @@ const ActiveTasks = () => {
           </button>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
           {tasks.filter((t) => t.status !== "completed").length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <p className="text-gray-500 dark:text-gray-400 mb-4">
@@ -158,7 +158,6 @@ const ActiveTasks = () => {
           ) : (
             tasks
               .filter((t) => t.status !== "completed") // Only show non-completed in the main list
-              .slice(0, 5) // Optional: limit number of active tasks shown if list is huge
               .map((task) => (
                 <div
                   key={task.id}
