@@ -45,6 +45,30 @@ export const getDashboardStats = async (req, res) => {
       previousEndDate = new Date(startDate);
       previousEndDate.setDate(0); // Last day of previous month
       previousEndDate.setHours(23, 59, 59, 999);
+    } else if (timeRange === "custom") {
+      const { startDate: qStart, endDate: qEnd } = req.query;
+      if (!qStart || !qEnd) {
+        return res
+          .status(400)
+          .json({
+            message: "Start date and end date are required for custom range",
+          });
+      }
+      startDate = new Date(qStart);
+      startDate.setHours(0, 0, 0, 0);
+      endDate = new Date(qEnd);
+      endDate.setHours(23, 59, 59, 999);
+
+      // Calculate duration in milliseconds
+      const duration = endDate.getTime() - startDate.getTime();
+
+      // Previous period = Same duration ending before start date
+      previousEndDate = new Date(startDate);
+      previousEndDate.setDate(previousEndDate.getDate() - 1);
+      previousEndDate.setHours(23, 59, 59, 999);
+
+      previousStartDate = new Date(previousEndDate.getTime() - duration);
+      previousStartDate.setHours(0, 0, 0, 0);
     } else {
       // Default to This Week
       const day = startDate.getDay();

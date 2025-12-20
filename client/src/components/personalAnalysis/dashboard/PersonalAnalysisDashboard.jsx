@@ -30,8 +30,28 @@ const PersonalAnalysisDashboard = () => {
   ];
 
   useEffect(() => {
-    fetchDashboardStats(activeTimeRange);
+    if (activeTimeRange !== "Custom Range") {
+      fetchDashboardStats(activeTimeRange);
+    }
   }, [activeTimeRange, fetchDashboardStats]);
+
+  // Custom Date States
+  const [customStartDate, setCustomStartDate] = useState("");
+  const [customEndDate, setCustomEndDate] = useState("");
+
+  const handleCustomDateSubmit = () => {
+    if (customStartDate && customEndDate) {
+      // Basic validation
+      if (new Date(customStartDate) > new Date(customEndDate)) {
+        alert("Start date cannot be after end date");
+        return;
+      }
+      fetchDashboardStats("custom", {
+        startDate: customStartDate,
+        endDate: customEndDate,
+      });
+    }
+  };
 
   return (
     <div
@@ -93,6 +113,65 @@ const PersonalAnalysisDashboard = () => {
             })}
           </div>
         </div>
+
+        {/* Custom Date Range Picker */}
+        {activeTimeRange === "Custom Range" && (
+          <div
+            className={`rounded-xl p-4 mb-6 -mt-4 animate-in fade-in slide-in-from-top-2 duration-200 ${
+              isDark
+                ? "bg-gray-800 border-x border-b border-gray-700"
+                : "bg-white border-x border-b border-gray-200"
+            }`}
+          >
+            <div className="flex flex-wrap items-end gap-4">
+              <div>
+                <label
+                  className={`block text-xs font-medium mb-1 ${
+                    isDark ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  value={customStartDate}
+                  onChange={(e) => setCustomStartDate(e.target.value)}
+                  className={`px-3 py-2 rounded-lg border text-sm ${
+                    isDark
+                      ? "bg-gray-700 border-gray-600 text-white"
+                      : "bg-white border-gray-300 text-gray-900"
+                  } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                />
+              </div>
+              <div>
+                <label
+                  className={`block text-xs font-medium mb-1 ${
+                    isDark ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  value={customEndDate}
+                  onChange={(e) => setCustomEndDate(e.target.value)}
+                  className={`px-3 py-2 rounded-lg border text-sm ${
+                    isDark
+                      ? "bg-gray-700 border-gray-600 text-white"
+                      : "bg-white border-gray-300 text-gray-900"
+                  } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                />
+              </div>
+              <button
+                onClick={handleCustomDateSubmit}
+                disabled={!customStartDate || !customEndDate}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Apply Range
+              </button>
+            </div>
+          </div>
+        )}
         {/* Charts Section */}
         {!statsLoading && !dashboardStats?.stats?.hasData ? (
           <div

@@ -26,25 +26,33 @@ export const PersonalAnalysisProvider = ({ children }) => {
   const [statsLoading, setStatsLoading] = useState(false);
   const [statsError, setStatsError] = useState(null);
 
-  const fetchDashboardStats = useCallback(async (timeRange = "This Week") => {
-    setStatsLoading(true);
-    setStatsError(null);
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.get(
-        `${
+  const fetchDashboardStats = useCallback(
+    async (timeRange = "This Week", customDates = null) => {
+      setStatsLoading(true);
+      setStatsError(null);
+      try {
+        const token = localStorage.getItem("token");
+        let url = `${
           import.meta.env.VITE_API_URL
-        }/api/personal-analysis/dashboard?timeRange=${timeRange}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setDashboardStats(res.data);
-    } catch (err) {
-      console.error("Error fetching dashboard stats:", err);
-      setStatsError(err.message);
-    } finally {
-      setStatsLoading(false);
-    }
-  }, []);
+        }/api/personal-analysis/dashboard?timeRange=${timeRange}`;
+
+        if (timeRange === "custom" && customDates) {
+          url += `&startDate=${customDates.startDate}&endDate=${customDates.endDate}`;
+        }
+
+        const res = await axios.get(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setDashboardStats(res.data);
+      } catch (err) {
+        console.error("Error fetching dashboard stats:", err);
+        setStatsError(err.message);
+      } finally {
+        setStatsLoading(false);
+      }
+    },
+    []
+  );
 
   // Initial fetch of active entry
   React.useEffect(() => {
