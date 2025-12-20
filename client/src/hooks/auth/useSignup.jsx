@@ -22,15 +22,18 @@ const useSignup = () => {
 
       if (!data.success) {
         toast.error(data.message);
+        return false;
       } else {
         toast.success(data.message);
         // Auto Login
         if (data.data && data.data.token) {
           await authLogin(data.data.token, data.data.user);
         }
+        return true;
       }
     } catch (err) {
       toast.error("Signup failed. Try again later.");
+      return false;
     } finally {
       setLoading(false);
     }

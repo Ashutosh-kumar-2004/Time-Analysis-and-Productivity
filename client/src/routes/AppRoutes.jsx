@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
-import Login from "../pages/Login";
-import SignUp from "../pages/SignUp";
+import AuthForm from "../pages/AuthForm";
 import ForgotPassword from "../pages/ForgotPassword";
 import Profile from "../components/profile/Profile";
 import Dashboard from "../components/personalAnalysis/Dashboard";
@@ -33,8 +32,8 @@ const AppRoutes = () => {
         />
         <Route element={<MainLayout />}>
           {/* Public Routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<AuthForm />} />
+          <Route path="/signup" element={<AuthForm />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
 
           {/* Protected Routes */}
