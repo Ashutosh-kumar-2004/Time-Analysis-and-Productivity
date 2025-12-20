@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MessageCircle, X, Send, RefreshCw, Minus } from "lucide-react";
 import { useTheme } from "../../context/ThemeContext";
-import { FiSun, FiMoon } from "react-icons/fi";
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +17,7 @@ const Chatbot = () => {
     },
     {
       id: 2,
-      text: "You can ask me about your focus trends, project status, or just change the theme!",
+      text: "You can ask me about your focus trends and suggesstions.",
       sender: "bot",
       time: new Date().toLocaleTimeString([], {
         hour: "2-digit",
@@ -37,12 +36,6 @@ const Chatbot = () => {
 
   const minimzeChat = (e) => {
     e.stopPropagation();
-    setIsOpen(false);
-    // Or we could have a minimized state bar, but standard behavior usually is just closing or specialized minimized view.
-    // For now, let's treat minimize as close or maybe just hiding the main window but keeping state?
-    // The design shows a minimize button. Let's make it just close for now or small icon.
-    // Re-reading: Design shows "Button for minimizing the widget".
-    // Let's implement minimize to show just the bubble.
     setIsOpen(false);
   };
 
@@ -112,15 +105,6 @@ const Chatbot = () => {
               </div>
             </div>
             <div className="flex items-center space-x-1">
-              {/* Theme Toggle in Header */}
-              <button
-                onClick={toggleTheme}
-                className="p-1.5 hover:bg-white/10 rounded-full transition-colors"
-                title="Toggle Theme"
-              >
-                {isDark ? <FiSun size={18} /> : <FiMoon size={18} />}
-              </button>
-
               <button className="p-1.5 hover:bg-white/10 rounded-full transition-colors">
                 <RefreshCw size={18} />
               </button>
@@ -212,7 +196,7 @@ const Chatbot = () => {
               <span className="text-[10px] text-gray-400 flex items-center justify-center gap-1">
                 Powered by{" "}
                 <span className="font-bold text-gray-600 dark:text-gray-300">
-                  Antigravity
+                  Productivity Tracker
                 </span>
               </span>
             </div>
