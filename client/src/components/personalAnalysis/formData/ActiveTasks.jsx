@@ -246,47 +246,32 @@ const ActiveTasks = () => {
                     )}
                   </div>
 
-                  <div className="mb-4">
-                    <div className="flex justify-between text-xs mb-1.5">
-                      <span className="text-gray-500 dark:text-gray-400">
-                        Progress
-                      </span>
-                      <span className="font-medium text-gray-700 dark:text-gray-300">
-                        {task.completionPercentage || 0}%
-                      </span>
-                    </div>
-                    <div className="h-2 w-full bg-gray-200 dark:bg-white/5 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full transition-all duration-500"
-                        style={{ width: `${task.completionPercentage || 0}%` }}
-                      ></div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between text-xs pt-3 border-t border-gray-200 dark:border-white/5">
-                    <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400">
-                      <div className="flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5" />
-                        <span>
-                          {task.actualDuration || 0}m / {task.estimatedDuration}
-                          m
-                        </span>
-                      </div>
-                      {task.deadline && (
-                        <div
-                          className={`flex items-center gap-1.5 ${
-                            task.isOverdue ? "text-red-500" : ""
-                          }`}
-                        >
-                          <AlertCircle className="w-3.5 h-3.5" />
+                  <div className="flex flex-col gap-3 text-xs pt-3 border-t border-gray-200 dark:border-white/5">
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400">
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="w-3.5 h-3.5" />
                           <span>
-                            {new Date(task.deadline).toLocaleDateString()}
+                            {task.actualDuration || 0}m /{" "}
+                            {task.estimatedDuration}m
                           </span>
                         </div>
-                      )}
+                        {task.deadline && (
+                          <div
+                            className={`flex items-center gap-1.5 ${
+                              task.isOverdue ? "text-red-500" : ""
+                            }`}
+                          >
+                            <AlertCircle className="w-3.5 h-3.5" />
+                            <span>
+                              {new Date(task.deadline).toLocaleDateString()}
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 self-end">
                       <button
                         onClick={() => handleMarkComplete(task)}
                         disabled={actionLoading}
