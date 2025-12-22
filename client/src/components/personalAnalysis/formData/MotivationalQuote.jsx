@@ -34,13 +34,13 @@ const MotivationalQuote = () => {
   }, []);
 
   return (
-    <div className="bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden group">
+    <div className="bg-linear-to-br from-purple-600 to-indigo-600 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden group">
       {/* Background decoration */}
       <div className="absolute top-0 right-0 p-4 opacity-10 transform translate-x-1/4 -translate-y-1/4 group-hover:scale-110 transition-transform duration-500">
         <Quote size={120} />
       </div>
 
-      <div className="relative z-10 flex flex-col h-full justify-between min-h-[160px]">
+      <div className="relative z-10 flex flex-col h-full justify-between min-h-40">
         <div className="flex items-center gap-2 mb-4 opacity-80">
           <Quote size={20} className="fill-current" />
           <span className="text-xs font-bold tracking-wider uppercase">

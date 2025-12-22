@@ -20,7 +20,7 @@ const NotFound = () => {
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-2xl mx-auto">
-        <h1 className="text-[150px] md:text-[200px] leading-none font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 animate-pulse select-none filter drop-shadow-[0_0_15px_rgba(124,58,237,0.5)]">
+        <h1 className="text-[150px] md:text-[200px] leading-none font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 via-purple-500 to-pink-500 animate-pulse select-none filter drop-shadow-[0_0_15px_rgba(124,58,237,0.5)]">
           404
         </h1>
 

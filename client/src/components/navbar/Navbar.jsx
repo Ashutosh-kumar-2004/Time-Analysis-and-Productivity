@@ -94,7 +94,7 @@ const Navbar = () => {
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
           <div className="relative cursor-pointer">
-            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg blur opacity-30 animate-pulse"></div>
+            <div className="absolute -inset-1 bg-linear-to-r from-blue-500 to-purple-600 rounded-lg blur opacity-30 animate-pulse"></div>
             <div className="flex items-center space-x-2 cursor-pointer">
               <Link to={"/"}>
                 <Brain className="w-8 h-8 text-blue-400 relative" />

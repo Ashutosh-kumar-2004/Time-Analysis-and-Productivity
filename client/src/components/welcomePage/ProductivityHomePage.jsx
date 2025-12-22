@@ -291,7 +291,7 @@ const ProductivityHomepage = () => {
               </a>
               <a
                 href="/login"
-                className="block w-full text-center px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-medium transition"
+                className="block w-full text-center px-6 py-2.5 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-medium transition"
               >
                 Get Started
               </a>
@@ -305,7 +305,7 @@ const ProductivityHomepage = () => {
         {/* Animated Background */}
         <div className="absolute inset-0 overflow-hidden">
           {/* Main gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-purple-950/30 to-blue-950/30"></div>
+          <div className="absolute inset-0 bg-linear-to-br from-slate-950 via-purple-950/30 to-blue-950/30"></div>
 
           {/* Animated grid overlay */}
           <div className="absolute inset-0 opacity-10">
@@ -323,7 +323,7 @@ const ProductivityHomepage = () => {
           {floatingElements.map((el, i) => (
             <div
               key={i}
-              className={`absolute ${el.size} rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-500/30 animate-float`}
+              className={`absolute ${el.size} rounded-full bg-linear-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-500/30 animate-float`}
               style={{
                 top: el.top,
                 left: el.left,
@@ -358,9 +358,9 @@ const ProductivityHomepage = () => {
         <div className="relative max-w-7xl mx-auto">
           <div className="text-center space-y-8 mb-16">
             {/* Animated tag */}
-            <div className="inline-flex items-center space-x-2 px-5 py-2.5 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full backdrop-blur-sm animate-fadeIn group hover:scale-105 transition-transform">
+            <div className="inline-flex items-center space-x-2 px-5 py-2.5 bg-linear-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full backdrop-blur-sm animate-fadeIn group hover:scale-105 transition-transform">
               <Sparkles className="w-4 h-4 text-blue-400 group-hover:rotate-180 transition-transform duration-500" />
-              <span className="text-sm bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent font-medium">
+              <span className="text-sm bg-linear-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent font-medium">
                 Data-Driven Productivity • Actionable Time Insights
               </span>
             </div>
@@ -368,16 +368,16 @@ const ProductivityHomepage = () => {
             {/* Main headline with enhanced gradient */}
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight animate-fadeIn">
               <span className="relative">
-                <span className="relative z-10 bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent animate-gradient-shift">
+                <span className="relative z-10 bg-linear-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent animate-gradient-shift">
                   Master Your Time,
                 </span>
-                <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg blur opacity-30 -z-10"></div>
+                <div className="absolute -inset-1 bg-linear-to-r from-blue-500 to-purple-600 rounded-lg blur opacity-30 -z-10"></div>
               </span>
               <br />
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-white">
                 <span className="relative">
                   Boost Your Productivity
-                  <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                  <div className="absolute -bottom-2 left-0 right-0 h-1 bg-linear-to-r from-blue-500 to-purple-500 rounded-full"></div>
                 </span>
               </span>
             </h1>
@@ -393,7 +393,7 @@ const ProductivityHomepage = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-fadeIn">
               <a
                 href="/login"
-                className="group px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-medium text-lg transition-all hover:shadow-xl hover:shadow-blue-500/50 flex items-center space-x-2 transform hover:scale-105"
+                className="group px-8 py-4 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg font-medium text-lg transition-all hover:shadow-xl hover:shadow-blue-500/50 flex items-center space-x-2 transform hover:scale-105"
               >
                 <span className="flex items-center space-x-2">
                   <Rocket className="w-5 h-5 group-hover:rotate-12 transition-transform" />
@@ -415,8 +415,8 @@ const ProductivityHomepage = () => {
                   className="text-center group cursor-pointer transform hover:scale-105 transition-all duration-300"
                 >
                   <div className="relative">
-                    <div className="absolute -inset-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="relative inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 mb-3 group-hover:from-blue-900/30 group-hover:to-purple-900/30 transition-all border border-slate-700 group-hover:border-blue-500/50">
+                    <div className="absolute -inset-2 bg-linear-to-r from-blue-500/20 to-purple-500/20 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="relative inline-flex items-center justify-center w-14 h-14 rounded-full bg-linear-to-br from-slate-800 to-slate-900 mb-3 group-hover:from-blue-900/30 group-hover:to-purple-900/30 transition-all border border-slate-700 group-hover:border-blue-500/50">
                       <stat.icon className={`w-7 h-7 ${stat.color}`} />
                     </div>
                   </div>
@@ -433,10 +433,10 @@ const ProductivityHomepage = () => {
 
           {/* Advanced Dashboard Preview */}
           <div className="relative animate-fadeIn">
-            <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-2xl opacity-50"></div>
+            <div className="absolute -inset-4 bg-linear-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-2xl opacity-50"></div>
             <div className="relative rounded-2xl overflow-hidden border border-slate-700/50 shadow-2xl hover:shadow-blue-500/30 transition-all duration-500 group hover:scale-[1.02]">
               {/* Dashboard header */}
-              <div className="bg-gradient-to-r from-slate-900/80 to-slate-800/80 backdrop-blur-xl p-6 border-b border-slate-700">
+              <div className="bg-linear-to-r from-slate-900/80 to-slate-800/80 backdrop-blur-xl p-6 border-b border-slate-700">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
@@ -464,24 +464,24 @@ const ProductivityHomepage = () => {
               </div>
 
               {/* Dashboard content */}
-              <div className="bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-sm p-8">
+              <div className="bg-linear-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-sm p-8">
                 <div className="space-y-8">
                   {/* Action buttons with glow */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <button className="group relative bg-gradient-to-r from-green-500/10 to-emerald-600/10 hover:from-green-600/20 hover:to-emerald-700/20 p-6 rounded-xl font-medium transition-all transform hover:scale-105 flex items-center justify-center space-x-2 border border-green-500/30 hover:border-green-400/50">
-                      <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                    <button className="group relative bg-linear-to-r from-green-500/10 to-emerald-600/10 hover:from-green-600/20 hover:to-emerald-700/20 p-6 rounded-xl font-medium transition-all transform hover:scale-105 flex items-center justify-center space-x-2 border border-green-500/30 hover:border-green-400/50">
+                      <div className="absolute inset-0 bg-linear-to-r from-green-500 to-emerald-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
                       <span className="text-2xl group-hover:scale-125 transition-transform">
                         +
                       </span>
                       <span className="text-green-400">Add Task</span>
                     </button>
-                    <button className="group relative bg-gradient-to-r from-blue-500/10 to-indigo-600/10 hover:from-blue-600/20 hover:to-indigo-700/20 p-6 rounded-xl font-medium transition-all transform hover:scale-105 flex items-center justify-center space-x-2 border border-blue-500/30 hover:border-blue-400/50">
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                    <button className="group relative bg-linear-to-r from-blue-500/10 to-indigo-600/10 hover:from-blue-600/20 hover:to-indigo-700/20 p-6 rounded-xl font-medium transition-all transform hover:scale-105 flex items-center justify-center space-x-2 border border-blue-500/30 hover:border-blue-400/50">
+                      <div className="absolute inset-0 bg-linear-to-r from-blue-500 to-indigo-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
                       <Calendar className="w-5 h-5 text-blue-400" />
                       <span className="text-blue-400">Daily Check-in</span>
                     </button>
-                    <button className="group relative bg-gradient-to-r from-orange-500/10 to-amber-600/10 hover:from-orange-600/20 hover:to-amber-700/20 p-6 rounded-xl font-medium transition-all transform hover:scale-105 flex items-center justify-center space-x-2 border border-orange-500/30 hover:border-orange-400/50">
-                      <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-amber-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                    <button className="group relative bg-linear-to-r from-orange-500/10 to-amber-600/10 hover:from-orange-600/20 hover:to-amber-700/20 p-6 rounded-xl font-medium transition-all transform hover:scale-105 flex items-center justify-center space-x-2 border border-orange-500/30 hover:border-orange-400/50">
+                      <div className="absolute inset-0 bg-linear-to-r from-orange-500 to-amber-600 rounded-xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
                       <Clock className="w-5 h-5 text-orange-400" />
                       <span className="text-orange-400">Log Time</span>
                     </button>
@@ -491,7 +491,7 @@ const ProductivityHomepage = () => {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Recent Activity Card */}
                     <div className="relative bg-slate-800/50 backdrop-blur rounded-2xl p-6 border border-slate-700/50 hover:border-slate-600/50 transition-all group">
-                      <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      <div className="absolute -inset-1 bg-linear-to-r from-blue-500/10 to-purple-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
                       <div className="relative">
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="font-semibold text-lg flex items-center space-x-2">
@@ -552,7 +552,7 @@ const ProductivityHomepage = () => {
 
                     {/* Focus Trends Card */}
                     <div className="relative bg-slate-800/50 backdrop-blur rounded-2xl p-6 border border-slate-700/50 hover:border-slate-600/50 transition-all group">
-                      <div className="absolute -inset-1 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                      <div className="absolute -inset-1 bg-linear-to-r from-purple-500/10 to-pink-500/10 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
                       <div className="relative">
                         <h3 className="font-semibold text-lg mb-4 flex items-center space-x-2">
                           <TrendingUpIcon className="w-5 h-5 text-purple-400" />
@@ -620,7 +620,7 @@ const ProductivityHomepage = () => {
                   </div>
 
                   {/* Productivity Score */}
-                  <div className="relative bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur rounded-2xl p-6 border border-blue-500/20">
+                  <div className="relative bg-linear-to-r from-blue-500/10 to-purple-500/10 backdrop-blur rounded-2xl p-6 border border-blue-500/20">
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="font-semibold text-lg mb-1">
@@ -631,7 +631,7 @@ const ProductivityHomepage = () => {
                         </p>
                       </div>
                       <div className="text-right">
-                        <div className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                        <div className="text-4xl font-bold bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                           87%
                         </div>
                         <div className="text-sm text-green-400 flex items-center space-x-1">
@@ -642,7 +642,7 @@ const ProductivityHomepage = () => {
                     </div>
                     <div className="mt-4 w-full bg-slate-700/50 rounded-full h-2">
                       <div
-                        className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-full h-2 transition-all duration-1000"
+                        className="bg-linear-to-r from-blue-500 to-purple-500 rounded-full h-2 transition-all duration-1000"
                         style={{ width: "87%" }}
                       ></div>
                     </div>
@@ -653,13 +653,13 @@ const ProductivityHomepage = () => {
 
             {/* Floating badges around dashboard */}
             <div
-              className="absolute -top-3 -left-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1.5 rounded-full text-sm font-medium animate-float"
+              className="absolute -top-3 -left-3 bg-linear-to-r from-blue-600 to-purple-600 text-white px-4 py-1.5 rounded-full text-sm font-medium animate-float"
               style={{ animationDelay: "1s" }}
             >
               🚀 Live Preview
             </div>
             <div
-              className="absolute -bottom-3 -right-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-1.5 rounded-full text-sm font-medium animate-float"
+              className="absolute -bottom-3 -right-3 bg-linear-to-r from-green-600 to-emerald-600 text-white px-4 py-1.5 rounded-full text-sm font-medium animate-float"
               style={{ animationDelay: "2s" }}
             >
               ⚡ Real-time Data
@@ -675,7 +675,7 @@ const ProductivityHomepage = () => {
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold mb-4">
               Everything You Need to
-              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 {" "}
                 Stay Productive
               </span>
@@ -692,7 +692,7 @@ const ProductivityHomepage = () => {
                 className="group bg-slate-800/50 backdrop-blur rounded-2xl p-8 border border-slate-700 hover:border-slate-600 transition-all duration-300 hover:transform hover:scale-105"
               >
                 <div
-                  className={`w-16 h-16 bg-gradient-to-br ${feature.gradient} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg`}
+                  className={`w-16 h-16 bg-linear-to-br ${feature.gradient} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg`}
                 >
                   <feature.icon className="w-8 h-8" />
                 </div>
