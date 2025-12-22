@@ -1,5 +1,3 @@
-// WorkPatternAnalysis Model (for deeper behavioral insights)
-// models/WorkPatternAnalysis.model.js
 import mongoose from "mongoose";
 
 const WorkPatternAnalysisSchema = new mongoose.Schema(

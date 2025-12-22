@@ -1,4 +1,3 @@
-// models/DailyProductivitySnapshot.model.js
 import mongoose from "mongoose";
 
 const DailyProductivitySnapshotSchema = new mongoose.Schema(

@@ -1,5 +1,3 @@
-//  ProductivityGoal Model (for goal tracking)
-// models/ProductivityGoal.model.js
 import mongoose from "mongoose";
 
 const ProductivityGoalSchema = new mongoose.Schema(

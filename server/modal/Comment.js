@@ -1,4 +1,3 @@
-// models/Comment.js
 import mongoose from "mongoose";
 import Task from "./Task.js";
 

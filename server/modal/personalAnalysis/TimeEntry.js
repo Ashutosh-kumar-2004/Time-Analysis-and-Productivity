@@ -1,4 +1,3 @@
-// models/TimeEntry.model.js
 import mongoose from "mongoose";
 
 const TimeEntrySchema = new mongoose.Schema(
