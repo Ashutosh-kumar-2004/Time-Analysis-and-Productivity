@@ -401,10 +401,19 @@ const ProductivityHomepage = () => {
                 </span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition" />
               </a>
-              <button className="group px-8 py-4 bg-slate-800/50 hover:bg-slate-700/50 rounded-lg font-medium text-lg transition-all border border-slate-700 hover:border-slate-600 flex items-center space-x-2 backdrop-blur-sm">
+              {/* <button className="group px-8 py-4 bg-slate-800/50 hover:bg-slate-700/50 rounded-lg font-medium text-lg transition-all border border-slate-700 hover:border-slate-600 flex items-center space-x-2 backdrop-blur-sm">
                 <Play className="w-5 h-5 text-blue-400 group-hover:text-blue-300" />
                 <span>Watch Demo</span>
-              </button>
+              </button> */}
+              <a
+                href="https://www.youtube.com/watch?v=9-d7LaWaafU"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group px-8 py-4 bg-slate-800/50 hover:bg-slate-700/50 rounded-lg font-medium text-lg transition-all border border-slate-700 hover:border-slate-600 flex items-center space-x-2 backdrop-blur-sm"
+              >
+                <Play className="w-5 h-5 text-blue-400 group-hover:text-blue-300" />
+                <span>Watch Demo</span>
+              </a>
             </div>
 
             {/* Stats with icons */}
