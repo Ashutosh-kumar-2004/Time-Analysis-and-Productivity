@@ -23,8 +23,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://time-analysis-and-productivity.vercel.app",
-      "https://time-analysis-and-productivity-q8tt.vercel.app",
+      process.env.FRONTEND_URL,
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
